@@ -316,4 +316,15 @@ export function generateDocument(result: AssessmentResult): string {
     const score = scores.find((s) => s.dimensionId === dimId);
     if (!score) continue;
 
-    // Skip low-signal sections in quick mode (level 'low' = no 
+    // Skip low-signal sections in quick mode (level 'low' = no strong pattern)
+    // Always include 'moderate' and 'high'; include 'low' only in full mode
+    if (assessmentDepth === 'quick' && score.level === 'low') continue;
+
+    const block = getBlock(dimId, lensId, score.level);
+    if (block) {
+      sections.push(block);
+    }
+  }
+
+  return sections.join('\n\n');
+}
