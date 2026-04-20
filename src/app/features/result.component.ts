@@ -93,7 +93,7 @@ function track(event: string): void {
         <p class="font-semibold text-blue-900">Used your document? Tell us what happened.</p>
         <p class="text-blue-700 text-xs">Anonymous · Takes 3 minutes · Helps us improve</p>
         <a
-          href="FEEDBACK_FORM_URL"
+          href="https://forms.gle/LEPLwyKgqQpZ6ga17"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-block mt-2 px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm">
