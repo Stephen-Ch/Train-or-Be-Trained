@@ -8,13 +8,24 @@
 
 ## Pre-Flight Checks (< 2 minutes)
 
-- [ ] **RUN START OF SESSION DOCS AUDIT** — This single command chains: kit update (subtree pull) → kit version print → forGPT sync → Consumer doc-audit (hard fail) → audit print. Run it first; everything below is verified automatically (including overlay structure and required files).
+- [ ] **RUN START OF SESSION DOCS AUDIT** — This single command chains: kit update (subtree pull) → kit version print → Consumer-Kit Drift Gate → forGPT sync → Consumer doc-audit (hard fail) → Staleness Expiry Gate → Decision-Queue Gate → Tool/Auth Fragility Gate → audit print. Run it first; everything below is verified automatically (including overlay structure and required files).
+- [ ] **Consumer-Kit Drift** *(consumer repos only)* — Verify kit subtree is CURRENT (not STALE or DIVERGENT). Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Consumer-Kit Drift Gate](protocol/protocol-v7.md#consumer-kit-drift-gate-mandatory-at-session-start-in-consumer-repos).
+- [ ] **Staleness Expiry** — Verify PAUSE.md handoff state is CURRENT (not STALE or EXPIRED). Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Staleness Expiry Gate](protocol/protocol-v7.md#staleness-expiry-gate-mandatory-at-session-boundaries).
+- [ ] **Decision Queue** — Verify DECISION NEEDED items are well-formed, bounded, and reviewed. Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Decision-Queue Gate](protocol/protocol-v7.md#decision-queue-gate-mandatory-at-session-boundaries).
+- [ ] **Tool/Auth Fragility** — Verify verification toolchain (gh, fetch) is healthy. Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Tool/Auth Fragility Gate](protocol/protocol-v7.md#toolauth-fragility-gate-mandatory-at-session-boundaries).
 - [ ] **Goal Anchor** — Write North Star, Current Slice, and Proof before any work.
 - [ ] **NEXT.md Status** — Open [NEXT.md](../project/NEXT.md). Confirm Status = ACTIVE or PAUSED with clear Next Step.
+- [ ] **NEXT.md Freshness** — Surfaced automatically by Staleness Expiry Gate. Review `NEXT.md` "Immediate Next Steps" against current local and remote repo state before proceeding. Update or remove any items that are already completed, merged, resolved, blocked by changed circumstances, or otherwise obsolete. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Staleness Expiry Gate](protocol/protocol-v7.md#staleness-expiry-gate-mandatory-at-session-boundaries).
+- [ ] **Remote Reality Check** *(after any break)* — Run `git fetch origin`, then `gh pr list --state open --json number,title,headRefName,baseRefName,url`. Confirm NEXT.md and active branches match remote state. Repair mismatches or document as debt before starting work. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Remote Reality Gate](protocol/protocol-v7.md#remote-reality-gate-mandatory-at-session-boundaries).
+
+### Informational (review if relevant, do not block on these)
+
 - [ ] **Open PRs** — Run `gh pr list --state open` or check GitHub. Note any blocking dependencies.
-- [ ] **Branch Hygiene** — Run `git branch -a --no-merged origin/develop | Select-String -NotMatch "docs/"`. If runtime branches exist without PRs, address first.
 - [ ] **Blockers** — Check [tech-debt-and-future-work.md](../project/tech-debt-and-future-work.md) for known blockers.
-- [ ] **Research Index** — Confirm any prior session research is indexed in [ResearchIndex.md](../research/ResearchIndex.md).
+
+> **Note:** Branch hygiene, research indexing, and orphan-branch cleanup are
+> **end-of-session** concerns handled by `run-vibe -Tool end-session`.
+> They do not need to block session start.
 
 ---
 
@@ -24,17 +35,35 @@
 |-------|--------|
 | NEXT.md unclear | Update NEXT.md before proceeding |
 | PRs blocking | Note in prompt; consider docs-only work |
-| Orphan branches | Open PR or document why parked |
-| Unindexed research | Add to ResearchIndex.md |
+| Remote Reality: WARN | Repair mismatch or document as debt in NEXT.md/branches.md before starting work |
+| Remote Reality: BLOCKED | Note in PAUSE.md; proceed with awareness of unverified remote state |
+| Consumer-Kit Drift: WARN (STALE) | Run `git subtree pull` to update kit, or document version lag as known debt |
+| Consumer-Kit Drift: BLOCKED (DIVERGENT) | STOP. Investigate and revert unauthorized changes inside the kit subtree |
+| Staleness Expiry: WARN (STALE) | Review PAUSE.md; confirm or update handoff state and Date; then proceed |
+| Staleness Expiry: BLOCKED (EXPIRED) | STOP. Re-verify all handoff state against current reality; rebuild PAUSE.md |
+| Decision Queue: WARN | Review Decision Queue section in PAUSE.md; resolve or confirm items; reduce count if possible |
+| Decision Queue: BLOCKED | STOP. Malformed items or count >5 or item >30 days old. Fix Decision Queue before proceeding |
+| Tool/Auth: WARN | Record which dependencies are degraded. Other gate verdicts already reflect the degradation — no block |
+| Tool/Auth: BLOCKED | STOP. A gate verdict claims PASS but its evidence tool was unavailable. Fix toolchain or downgrade the affected verdict |
 
 ---
 
 ## End of Session
 
-- [ ] **RUN END OF SESSION** -- Run `run-vibe -Tool end-session` to check repo hygiene (path-independent; no hardcoded DOCS_ROOT needed).
-- [ ] If tracked changes reported: commit or stash before closing.
-- [ ] If non-merged branches listed: open PRs or clean up per repo policy.
+- [ ] **RUN END OF SESSION** — Run `run-vibe -Tool end-session` to execute the **full end-of-session contract** (not just local hygiene). See [protocol-v7.md § End-of-Session Full Contract](protocol/protocol-v7.md#end-of-session-full-contract-canonical-meaning-of-run-end-of-session).
+- [ ] **Active Lane** — If tracked changes reported: commit to a branch (preferred) or stash for short-lived interruptions only.
+- [ ] **Remote Reality** — Verify fetch + PR state + branch classification. Record status (PASS / WARN / BLOCKED).
+- [ ] **Workspace Reality** — Verify worktrees, stashes, unmerged branches, untracked files. Classify all leftovers. Record status (PASS / WARN / BLOCKED). See [protocol-v7.md § Workspace Reality Gate](protocol/protocol-v7.md#workspace-reality-gate-mandatory-at-session-close).
+- [ ] **Disposition table** — Every leftover non-main item classified: ACTIVE / PR OPEN / PARKED / MERGED / OBSOLETE / DECISION NEEDED / BLOCKED.
+- [ ] **CLEAN FIELD READY** — Print `YES` only when Active Lane + Remote Reality + Workspace Reality all qualify. Otherwise `NO` with action items.
+- [ ] **NEXT.md Freshness** — If session work changed current priorities or closed planned work, update `NEXT.md` before wrap-up so the next session does not inherit stale "Immediate Next Steps."
+- [ ] **PAUSE.md** — Record parked leftovers, decision-needed items, and exact next step. Update the Date field to today (Staleness Expiry freshness stamp). Populate the Decision Queue section for every DECISION NEEDED disposition item.
+- [ ] **Friction Log** — If qualifying kit/process friction occurred this session, append one MEDIUM/HIGH entry to `.kit-feedback/FRICTION-LOG.local.md` per [friction-log-standard.md](standards/friction-log-standard.md). If none, skip.
 - [ ] Optionally: add `-WriteReport` to save a status snapshot under `<DOCS_ROOT>/status/`.
+
+> **"RUN END OF SESSION" means the full contract.** Active-lane green alone is NOT sufficient.
+> `CLEAN FIELD READY: YES` requires all three gates (Active Lane, Remote Reality, Workspace Reality) to qualify.
+> See [protocol-v7.md § Workspace Reality and Closure Language](protocol/protocol-v7.md#workspace-reality-and-closure-language) for forbidden casual closure phrases.
 
 ---
 
@@ -43,10 +72,10 @@
 | Doc | Purpose |
 |-----|---------|
 | [protocol-lite.md](protocol-lite.md) | Quick reference (start here) |
-| [NEXT.md](../project/NEXT.md) | Active story + next step |
-| [PAUSE.md](PAUSE.md) | Handoff docs (if paused) |
-| [ResearchIndex.md](../research/ResearchIndex.md) | Research catalog |
+| [NEXT.md](../project/NEXT.md) | **Active story + next step (live work-state authority)** |
 | [protocol-v7.md](protocol/protocol-v7.md) | Full protocol rules |
 | [PROTOCOL-INDEX.md](protocol/PROTOCOL-INDEX.md) | Navigate protocol-v7 by task |
+| [PAUSE.md](PAUSE.md) | End-of-session handoff (not needed during active work) |
+| [critical-transition-checklist.md](critical-transition-checklist.md) | Preflight for critical transitions only (subtree updates, broad staging, handoffs) — **not part of per-prompt flow** |
 | [branches.md](../status/branches.md) | Branch/PR tracking |
 | [tech-debt-and-future-work.md](../project/tech-debt-and-future-work.md) | Known issues |

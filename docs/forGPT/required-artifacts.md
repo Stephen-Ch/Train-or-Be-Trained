@@ -120,7 +120,15 @@ Start-of-Session Doc Audit (see consumer Start-Here doc; repo-specific, referenc
 2. required-artifacts.md exists (this file)
 3. <DOCS_ROOT>/project/VISION.md, <DOCS_ROOT>/project/EPICS.md, <DOCS_ROOT>/project/NEXT.md all exist with required content
 
-**Doc Audit Rerun Detection:** After each commit, Doc Audit rerun is required if required-artifacts.md or Control Deck files changed since last audit. See the consumer Start-Here doc "Rerun Trigger Detection (Required Command)" for the exact git command and path matching rule.
+**Doc Audit Rerun Detection:** After each commit, Doc Audit rerun is required if `required-artifacts.md` or Control Deck files changed since last audit. Run:
+
+    git diff --name-only HEAD~1..HEAD
+
+Rerun required if any output path matches:
+- `<DOCS_ROOT>/project/` (any Control Deck file — VISION.md, EPICS.md, NEXT.md)
+- `<DOCS_ROOT>/vibe-coding/protocol/required-artifacts.md`
+
+**EXCEPTION:** If `HEAD~1` does not exist (initial commit or detached HEAD), treat as rerun required.
 
 If ANY required artifact is missing or <DOCS_ROOT>/project/NEXT.md is unclear/outdated:
 - Work state: IN-PROGRESS → STOP CODING
@@ -156,7 +164,7 @@ Any occurrence of these markers in Control Deck files (<DOCS_ROOT>/project/VISIO
 **WARNING:** Running git ls-files VISION.md from docs/project will return nothing (relative path). Always anchor to repo root using Set-Location (git rev-parse --show-toplevel); git rev-parse --show-toplevel; Get-Location before any git path checks.
 
 **PASS example (no markers):**
-"ExampleProject is a training-first application that helps users practice core skills and track progress."
+"AcmeApp is a training-first application that helps users practice core skills and track progress."
 
 **FAIL example (contains placeholder):**
 "Purpose: TBD — needs Stephen's input" (contains TBD placeholder marker)
@@ -173,7 +181,7 @@ Use objective word-count thresholds below to determine PASS vs FAIL.
 4. **Non-Goals** (non-placeholder): At least 2 explicit constraints or scope boundaries ("We are NOT..." format), each >= 10 words
 
 **PASS example (Purpose section):**
-"ExampleProject is a training-first application that helps users practice core skills and, optionally, advanced techniques in a low-stakes, learn-by-doing loop. It exists to make decision-making feel understandable, repeatable, and measurable for everyday users."
+"AcmeApp is a training-first application that helps users practice core skills and, optionally, advanced techniques in a low-stakes, learn-by-doing loop. It exists to make decision-making feel understandable, repeatable, and measurable for everyday users."
 
 **FAIL example (Purpose section):**
 "A game about politics." (only 4 words, lacks explanation of problem solved)
@@ -227,4 +235,4 @@ If Population Gate **PASS** → Work state READY, proceed with coding.
 
 ---
 
-Last updated: 2026-02-24
+Last updated: 2026-03-14

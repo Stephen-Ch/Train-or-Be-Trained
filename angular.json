@@ -64,10 +64,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "rawls-game:build:production"
+              "buildTarget": "working-with-me:build:production"
             },
             "development": {
-              "buildTarget": "rawls-game:build:development"
+              "buildTarget": "working-with-me:build:development"
             }
           },
           "defaultConfiguration": "development"

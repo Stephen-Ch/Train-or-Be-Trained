@@ -1,6 +1,6 @@
 # Protocol v7 — Vibe-Coding Protocol
 
-> **File Version:** 2026-03-02
+> **File Version:** 2026-03-18
 > **Quick reference:** For mandatory gates only, see [hard-rules.md](hard-rules.md).
 
 **v7.2.1 Changes:**
@@ -83,13 +83,22 @@ Every work prompt MUST include:
 - Repo safety gates are satisfied (clean tree, tests pass, build passes), AND
 - 3-Party Approval Gate is satisfied (see [alignment-mode.md](alignment-mode.md) → 3-Party Approval Gate (Canonical))
 
-**<DOCS_ROOT>/project/NEXT.md Freshness Rule:** "Best next step? YES" is only possible when the ACTIVE NEXT STEP is still current. If you just completed it (work shipped per DoD), the next action is closeout/advance <DOCS_ROOT>/project/NEXT.md, NOT new feature work. See [Start-Here-For-AI.md](../../Start-Here-For-AI.md) "<DOCS_ROOT>/project/NEXT.md Freshness Rule" for detection command and enforcement.
+**<DOCS_ROOT>/project/NEXT.md Freshness Rule:** "Best next step? YES" is only possible when the ACTIVE NEXT STEP is still current. If you just completed it (work shipped per DoD), the next action is closeout/advance <DOCS_ROOT>/project/NEXT.md, NOT new feature work. Detection: run `git diff --name-only HEAD~1..HEAD`; if `<DOCS_ROOT>/project/NEXT.md` is not in the diff after the NEXT STEP is shipped, STOP and advance NEXT.md before starting new work.
 
 **Population Gate Pre-Flight:** Population Gate is verified during the Start-of-Session Doc Audit (after reading <DOCS_ROOT>/project/VISION.md, <DOCS_ROOT>/project/EPICS.md, and <DOCS_ROOT>/project/NEXT.md), not in the Prompt Review Gate. The Doc Audit MUST have been run in this session and returned Population Gate PASS before any coding work. If Doc Audit has not been run or returned FAIL, STOP and run/remediate it first (see [Start-Here-For-AI.md](../../Start-Here-For-AI.md)).
 
-**Doc Audit Sequencing (Session Prerequisite):** Doc Audit is a session-level prerequisite that occurs AFTER Proof-of-Read, never before the Prompt Review Gate. Work prompts in a fresh session must run Doc Audit first as per the ordered sequence in [Start-Here-For-AI.md](../../Start-Here-For-AI.md): Prompt Review Gate → Proof-of-Read → Doc Audit → (if PASS) proceed to work. After each commit, run the rerun-trigger detection command defined in [Start-Here-For-AI.md](../../Start-Here-For-AI.md) to determine if Doc Audit must be rerun. When `tools/session-start.ps1` exists in the vibe-coding subtree, the **RUN START OF SESSION DOCS AUDIT** command invokes it; the wrapper chains kit update → forGPT sync → 5-line audit print automatically.
+**Doc Audit Sequencing:** Doc Audit is a **session-level gate**, not a per-prompt gate.
 
-**Consumer Start-Here callout:** Consumer repos should include the standard session-start callout snippet from [templates/start-here-session-start-callout.example.md](../templates/start-here-session-start-callout.example.md) in their Start-Here-For-AI.md to ensure the automated chain is the default entry point.
+- **Session level (once per session):** Doc Audit runs at session start via `RUN START OF SESSION DOCS AUDIT` (which invokes `tools/session-start.ps1`). The wrapper chains: kit update → forGPT sync → Consumer-Kit Drift Gate → Staleness Expiry Gate → Decision-Queue Gate → Tool/Auth Fragility Gate → doc-audit Population Gate. Doc Audit MUST have returned PASS in this session before any coding work begins.
+- **Per-prompt level:** Doc Audit does NOT re-run before each prompt. The Prompt Review Gate references the session-level Doc Audit result. If Doc Audit was not run this session or returned FAIL, STOP and run/remediate it first.
+- **Post-commit rerun trigger:** After each commit, run rerun-trigger detection to determine whether Doc Audit must be rerun (see [required-artifacts.md](../required-artifacts.md) "Doc Audit Rerun Detection" for the git command and path rule).
+
+Ordered sequence within a session:
+1. `RUN START OF SESSION DOCS AUDIT` (session-level, once)
+2. First prompt: Prompt Review Gate → Proof-of-Read → work
+3. After each commit: check rerun trigger → rerun if triggered
+
+**Consumer Start-Here:** Consumer repos should create `<DOCS_ROOT>/Start-Here-For-AI.md` from [templates/start-here-template.md](../templates/start-here-template.md) — a thin-shell consumer file containing only repo-specific paths, overlays, and local notes. Do not copy kit protocol text into it.
 
 **Tech Debt Rule:** Any TECH-DEBT prompt and any new tech-debt row MUST include a Story ID (even if it's a "Maintenance/Protocol" story). Put it in the tech-debt row description as: "Story: <ID> — …".
 
@@ -169,6 +178,88 @@ When a new concern appears:
 
 **Rule:** Parking entries must be "outcome + proof", not status.
 
+### Mid-Session Reset (Operator Confusion Recovery)
+
+**Trigger phrase:** `RUN MID-SESSION RESET`
+
+**Purpose:** When the operator loses confidence about the current state mid-session — which branch is active, whether hidden work exists, whether docs match reality — this protocol stops edits and re-establishes ground truth before resuming.
+
+This is NOT end-of-session closeout. This is NOT the Reset Ritual (which re-prioritizes threads). This is a fast reality check for operator confusion.
+
+**When to invoke:**
+- "I don't know which branch has the real work"
+- "I'm not sure what NEXT.md says vs what I'm actually doing"
+- "I'm afraid there's hidden uncommitted work somewhere"
+- "My confidence dropped and I should not keep editing blindly"
+- "Docs and Git reality seem misaligned"
+
+**Steps (under 2 minutes):**
+
+1. **STOP EDITS** — No more file changes until the reset completes.
+
+2. **Reality Snapshot** — Gather and print:
+
+   | Check | Command / Source |
+   |-------|-----------------|
+   | Current branch | `git branch --show-current` |
+   | Working tree | `git status --short` (dirty / clean) |
+   | Stash list | `git stash list` |
+   | Open PRs (if available) | `gh pr list --state open` or session-start audit |
+   | NEXT.md current step | Read `<DOCS_ROOT>/project/NEXT.md` first actionable line |
+   | Work matches NEXT.md? | YES / NO / UNCLEAR |
+
+3. **Classify Confusion** — Pick the primary bucket:
+
+   | Bucket | Meaning |
+   |--------|---------|
+   | **Branch confusion** | Unsure which branch has real work or which is the active lane |
+   | **Scope confusion** | Current edits have drifted from the stated goal / NEXT.md |
+   | **Docs/state drift** | NEXT.md, PAUSE.md, or branch ledger no longer reflects reality |
+   | **Hidden-work fear** | Suspicion that uncommitted or stashed work exists somewhere |
+   | **Confidence too low** | Cannot name the next safe edit with ≥95% confidence |
+
+4. **Research-Only Fallback** — If the confusion bucket is "Confidence too low" OR the reality snapshot reveals unexpected state (dirty tree you cannot explain, branches you don't recognize), enter **RESEARCH-ONLY mode** immediately. Do not resume edits until confidence reaches ≥95%.
+
+5. **State Next Safe Step** — Before resuming edits, write one sentence:
+   > "The next safe step is: ___"
+
+   If you cannot write that sentence with confidence, stay in RESEARCH-ONLY.
+
+**Rule:** No edits may resume after a mid-session reset until step 5 is complete.
+
+## Staleness Classification (Session Boundary vs Active Work)
+
+**Purpose:** Prevent false-alarm investigations during active implementation. Not every out-of-date file is a problem. This table defines severity so agents and operators can distinguish expected drift from real breakage.
+
+| File / Artifact | Mid-Session Staleness | Severity | Required Action |
+|---|---|---|---|
+| **forGPT/ copies** | Expected between sync points | **Normal** | No action. forGPT is a checkpoint snapshot, not a live mirror (see below). |
+| **VERSION-MANIFEST.md** | Expected between sync points | **Normal** | No action. Hashes prove what was synced and when; mismatch after edits is routine. |
+| **PAUSE.md** (blank/template) | Expected during active work | **Normal** | No action. PAUSE.md is populated at session close only. |
+| **branches.md** | Expected after branch operations | **Normal** | No action until end-of-session cleanup. |
+| **NEXT.md** not updated after completing step | — | **Actionable** | Update before next prompt. NEXT.md is the live work-state authority. |
+| **Manifest mismatches after fresh sync** | — | **Actionable** | Re-run sync; if it fails again, investigate. |
+| **Source file missing from manifest** | — | **Bug** | Investigate immediately. |
+| **Sync script error** | — | **Bug** | Investigate immediately. |
+| **Required file missing after session-start audit** | — | **Bug** | Fix before proceeding. |
+
+**Mid-session NEXT.md review:** Trigger-based, not routine. Re-check "Immediate Next Steps" only after meaningful state change — for example: PR merged, task abandoned, blocker discovered, remote/repo state materially changed, or the current "next" item was completed. Do not add standing mid-session NEXT.md review to per-prompt checklists.
+
+### forGPT Freshness Rule
+
+forGPT is a **point-in-time snapshot** for agent handoff, not a live mirror of canonical docs.
+
+**Sync schedule (when forGPT MUST be current):**
+- Session start (automated via `session-start.ps1`)
+- Session end (run `run-vibe -Tool sync-forgpt` before handoff)
+- Explicit agent handoff (GPT ↔ Copilot)
+- Major milestone close
+
+**Between sync points, stale forGPT copies are NOT a workflow failure.**
+Do not investigate or repair forGPT mid-session unless there is evidence of **actual breakage** — meaning: sync script errors, missing expected files after sync, or manifest/file mismatch immediately after a fresh sync run.
+
+Small timing gaps (edits after last sync) are routine, low-severity drift — not system failures.
+
 ## Green Gate — Stack-Aware Rules
 
 **Purpose:** Ensure builds/tests pass before commit, using the correct toolchain for the project type.
@@ -190,11 +281,10 @@ Before running any gate commands:
 
 **Build (REQUIRED per stack-profile):**
 
-    msbuild ExampleProject.csproj /p:Configuration=Release
+    msbuild <YourProject>.csproj /p:Configuration=Release
 
 **Unit Tests (if test project exists):**
-- Check: `Test-Path **/ExampleProject.Tests.csproj` or similar
-- Current status: No .NET unit test framework configured (per R-004)
+- Check: `Test-Path **/<YourProject>.Tests.csproj` or similar
 - When tests exist: Run via VS Test Explorer or `vstest.console.exe`
 
 **Tech Debt:** CLI test runner not standardized yet. See [tech-debt-and-future-work.md](../../project/tech-debt-and-future-work.md).
@@ -230,14 +320,14 @@ For docs-only changes (`.md` files only):
 
 Refer to [`<DOCS_ROOT>/project/stack-profile.md`](../../project/stack-profile.md) for the authoritative gate configuration.
 
-**ExampleProject Summary (per stack-profile):**
+**Example Summary (per stack-profile):**
 
 | Gate | Command | Required |
 |------|---------|----------|
-| .NET Build | `msbuild ExampleProject.csproj /p:Configuration=Release` | ✅ YES |
+| .NET Build | `msbuild <YourProject>.csproj /p:Configuration=Release` | ✅ YES |
 | .NET Tests | (none configured) | N/A |
-| JS Build | (no build script) | N/A |
-| Playwright E2E | `npm run test:smoke` | Optional |
+| JS Build | (per stack-profile) | N/A |
+| E2E | (per stack-profile) | Optional |
 
 ---
 
@@ -584,8 +674,8 @@ Every research effort MUST produce an Evidence Pack containing:
     | bin/X.dll | abc123... | 2026-02-05 10:30 |
     
     ### Connection Targets
-    - TeachModel: <server>/<database>
-    - TopLevelSqlConn: <server>/<database>
+    - <ConnectionName1>: <server>/<database>
+    - <ConnectionName2>: <server>/<database>
     
     ### Observed Error
     <exact message or behavior>
@@ -672,6 +762,593 @@ If PRs are aging (>2 days without merge), flag for review.
 ### C) Docs-Only PRs
 
 Docs-only PRs (no runtime code) MAY be merged with less scrutiny, but MUST still be tracked and not abandoned.
+
+### D) Runtime-Weighted Merge Review
+
+**Runtime file definition:** controllers, services/helpers, models/entities,
+repositories, migrations, middleware, routing, and API handlers. Docs-only
+files (markdown, config comments, test fixtures) do not count toward this threshold.
+
+**Merge block — any Yes answer from the completion report self-state check
+(see [copilot-instructions-v7.md § Backend/Runtime Completion Reports](copilot-instructions-v7.md#backendruntime-completion-reports--additional-required-fields))
+blocks merge until the concern is resolved or explicitly accepted by Stephen.**
+
+**Hostile Self-Audit (mandatory) — triggered by EITHER condition:**
+
+1. **Volume trigger:** PR changes 9 or more runtime files.
+
+2. **Cross-layer trigger:** PR changes a cross-layer runtime slice, defined as
+   any combination that spans request-handling + business-logic + persistence:
+   - controller + helper/service + entity/model
+   - controller + helper/service + database/migration
+   - controller + model/entity + repository/query/persistence
+   - or equivalent: any two of {controller, service, model} plus the third
+     OR any of those three plus a migration or query file
+
+When triggered, before requesting merge the executor MUST:
+
+    1. Re-read every changed runtime file top-to-bottom.
+    2. For each file, answer: "Does this change introduce an assumption
+       the rest of the runtime path does not yet satisfy?"
+    3. Report findings in the completion report under:
+       Hostile Self-Audit: PASS (no cross-layer assumptions violated)
+       — or —
+       Hostile Self-Audit: FAIL — <one-line description per concern>
+    4. If FAIL: treat as merge-blocked until concern is resolved.
+
+---
+
+## Remote Reality Gate (MANDATORY at Session Boundaries)
+
+**Purpose:** Verify that session close and session open are grounded in remote/GitHub truth, not only local git state. Local cleanliness is necessary but not sufficient.
+
+### Definitions
+
+**Active runtime branch:** Any local or remote branch that is not merged into the repo's default branch on GitHub AND has at least one of: an open PR, commits ahead of the default branch, or explicit ACTIVE/PAUSED classification in NEXT.md or branches.md.
+
+**Remote Reality Status (3-status model):**
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | Fetch succeeded; all active branches classified; NEXT.md and branches.md match current remote/PR state |
+| **WARN** | Mismatch found (stale NEXT.md, unclassified branch, PR on wrong base, branch ahead of origin) but repairable now; repair or document as debt before declaring session close |
+| **BLOCKED** | Remote verification could not complete (gh unavailable, network/auth failure, or `-SkipFetch` used); record "Remote Reality: BLOCKED — [reason]" in PAUSE.md |
+
+### A) Session Close — Required Evidence
+
+Before declaring "ready to pause," "done," or handing off, produce evidence or a BLOCKED declaration covering:
+
+    1. git fetch --all --prune                                                     → OK / FAILED / BLOCKED
+    2. git status --porcelain=v1 -uall                                            → CLEAN / DIRTY
+    3. git branch -vv                                                              → branch + upstream + ahead/behind
+    4. git rev-list --left-right --count origin/<default>...HEAD                  → behind N / ahead N
+    5. gh pr list --state open --json number,title,headRefName,baseRefName,url    → table or "none"
+    6. Active branch classification (see §B)                                      → one status per branch
+    7. NEXT.md vs remote: does active story describe uncommitted work?            → CURRENT / STALE
+
+        Remote Reality: PASS | WARN | BLOCKED
+
+The `run-vibe -Tool end-session` script surfaces items 1–5 automatically when `gh` is available.
+
+### B) Active Branch Classification (Required per Branch at Session Close)
+
+For every branch returned by `git branch --no-merged origin/<default>`, record one classification:
+
+- **ACTIVE** — work in progress on this branch (no PR yet)
+- **PR OPEN** — open pull request exists for this branch
+- **PARKED** — no open PR; intentionally paused; document last commit date in branches.md
+- **MERGED** — already merged remotely; local branch pending deletion
+- **OBSOLETE** — no PR, no recent activity; ready to delete
+
+Unclassified branches = automatic **WARN** condition.
+
+### C) Session Start — Remote Reality Check (After Break)
+
+After resuming from PAUSE.md, before starting new work:
+
+    1. git fetch origin
+    2. NEXT.md currency: is ACTIVE STORY branch still open (not yet merged)?
+       → gh pr list --state open --json number,title,headRefName | filter for active branch
+    3. branches.md currency: do listed branches match remote state?
+
+    Status: PASS | WARN (repair or document as debt) | BLOCKED (gh unavailable — note in PAUSE.md)
+
+### D) Acceptable and Unacceptable Closure Language
+
+**Acceptable** (with Remote Reality evidence cited):
+- "Remote Reality: PASS. NEXT.md current. Open PRs: [list]. Branch [name]: behind 0 / ahead 0."
+- "Remote Reality: WARN. Branch [name] ahead 2 of origin/<default> — pushed before close."
+- "Remote Reality: BLOCKED — gh auth unavailable. Local state clean. Noted in PAUSE.md."
+
+**Not acceptable** without Remote Reality evidence:
+- "Repo is clean." — local-only claim; does not establish remote truth
+- "We're in good shape." — no evidence cited
+- "Ready to continue next session." — no NEXT.md or PR check documented
+- "Safe to pause." — no remote fetch evidence
+
+---
+
+## Workspace Reality Gate (MANDATORY at Session Close)
+
+**Purpose:** Verify that the full local workspace is accounted for before declaring session close. Active-lane green does NOT mean the workspace is clean. Tracked-file cleanliness does NOT mean safe-to-pause.
+
+### Definitions
+
+**Active Lane reality:** The current branch has no uncommitted tracked changes, tests pass (if applicable), and the branch is up to date with its upstream. This is necessary but NOT sufficient for session close.
+
+**Remote Reality:** The remote/GitHub state matches local expectations (fetch succeeded, PRs classified, NEXT.md current). Governed by [Remote Reality Gate](#remote-reality-gate-mandatory-at-session-boundaries).
+
+**Workspace Reality:** The full local workspace — all branches, worktrees, stashes, untracked files, and leftover items — is accounted for and classified. This gate exists because active-lane green can mask significant workspace debt.
+
+**Clean Field:** All three realities (Active Lane + Remote Reality + Workspace Reality) qualify. Only then may `CLEAN FIELD READY: YES` be declared.
+
+### Workspace Reality Status (3-status model)
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | All evidence categories checked; all leftover items classified; counts within default caps |
+| **WARN** | Leftover items exist but are classified and within caps; at least one requires attention before next session |
+| **BLOCKED** | Caps exceeded, unclassified items remain, or evidence could not be gathered |
+
+### Required Evidence Categories
+
+At session close, produce evidence covering all of the following:
+
+    1. git status --porcelain=v1 -uall          → dirty + untracked file count
+    2. git branch -vv                            → all local branches + upstream + ahead/behind
+    3. git branch --no-merged origin/<default>   → unmerged branch count
+    4. git worktree list                         → worktree count (1 = normal; >1 = extra)
+    5. git stash list                            → stash count
+    6. gh pr list --state open --json number,title,headRefName,baseRefName,url → open PR count + PR IDs
+
+Every leftover non-main item (branch, worktree, stash, untracked cluster) MUST appear in a disposition table.
+
+### Required Disposition Model
+
+Every leftover non-main item must be classified using one of:
+
+| Disposition | Meaning |
+|-------------|---------|
+| **ACTIVE** | Work in progress; has a clear next step |
+| **PR OPEN** | Open pull request exists for this item |
+| **PARKED** | Intentionally paused; documented in PAUSE.md or branches.md |
+| **MERGED** | Already merged remotely; local artifact pending cleanup |
+| **OBSOLETE** | No PR, no recent activity; safe to delete |
+| **DECISION NEEDED** | Ambiguous; requires operator judgment before next session |
+| **BLOCKED** | Depends on external factor (approval, upstream, etc.) |
+
+Unclassified items = automatic **BLOCKED** condition for the gate.
+
+### Default Caps (Kit Portable Defaults)
+
+These are conservative defaults. Consumer repos may override via overlay.
+
+| Category | Default Cap | Exceeding Cap → |
+|----------|-------------|-----------------|
+| Active implementation lanes | ≤ 2 | WARN (≤ 3) / BLOCKED (> 3) |
+| Local-only unmerged branches (no PR, no ACTIVE/PARKED classification) | ≤ 3 | WARN (≤ 5) / BLOCKED (> 5) |
+| Extra worktrees (beyond primary) | ≤ 1 | WARN (= 2) / BLOCKED (> 2) |
+| Stash entries | ≤ 2 | WARN (≤ 4) / BLOCKED (> 4) |
+| DECISION NEEDED items in queue | ≤ 3 | WARN (≤ 5) / BLOCKED (> 5) |
+
+### Safe Cleanup Policy
+
+At session close, the end-session tool or operator may clean up items that are **high-confidence junk only**:
+
+**Safe to auto-clean (report-first, opt-in):**
+- Local branches already merged into default and deleted on remote
+- Worktrees pointing to branches that no longer exist
+
+**Never auto-delete:**
+- Stashes (always require operator review)
+- Branches with unmerged commits
+- Branches classified DECISION NEEDED
+- Anything requiring operator judgment
+
+**Default behavior:** Report candidates only. No deletion without explicit opt-in.
+
+### WIP Storage Preference
+
+Branches are the preferred WIP storage mechanism. Use stash only for short-lived interruption handling (minutes to hours). Multi-day or unique WIP belongs on a named branch with at least one commit.
+
+**Rationale:** Stashes lack names, descriptions, and upstream tracking. Branches are visible to the disposition model, classification, and Remote Reality Gate. Stashed work is invisible to all session-boundary gates except the count cap.
+
+### Workspace Reality and Closure Language
+
+The following closure language is **FORBIDDEN** unless the full contract (Active Lane + Remote Reality + Workspace Reality) qualifies:
+
+- "END OF SESSION: Clean"
+- "Repo is clean"
+- "All good"
+- "Safe to pause"
+- "Ready to continue"
+
+**The ONLY acceptable clean-field declaration is:**
+
+    CLEAN FIELD READY: YES
+
+This requires ALL of:
+- Active Lane: no uncommitted tracked changes
+- Remote Reality: PASS (or BLOCKED with explicit note in PAUSE.md)
+- Workspace Reality: PASS
+
+If any gate is WARN or BLOCKED:
+
+    CLEAN FIELD READY: NO
+    Active Lane: <status>
+    Remote Reality: <PASS | WARN | BLOCKED>
+    Workspace Reality: <PASS | WARN | BLOCKED>
+    Action items: <list>
+
+---
+
+## End-of-Session Full Contract (Canonical Meaning of "RUN END OF SESSION")
+
+**Purpose:** Define what "RUN END OF SESSION" means so it can never be reduced to "tracked files are clean."
+
+### Canonical Definition
+
+"RUN END OF SESSION" means executing the full end-of-session contract, which includes ALL of:
+
+**Tool-automated (surfaced by `tools/end-session.ps1`):**
+
+1. **Normal end-session flow** — run `tools/end-session.ps1` (or `run-vibe -Tool end-session`)
+2. **Remote Reality Gate** — fetch, classify branches, verify PR state
+3. **Workspace Reality Gate** — worktrees, stashes, untracked files, dirty file count, non-merged branch count
+4. **Final clean-field verdict** — `CLEAN FIELD READY: YES` or `NO` with evidence
+
+**Operator obligations (not automated by the tool):**
+
+5. **Disposition table** — classify every leftover non-main item (branch, worktree, stash) using the disposition model above
+6. **Safe auto-cleanup** — review cleanup candidates reported by the tool; delete only high-confidence junk with explicit opt-in
+7. **Record parked leftovers** — document any PARKED or DECISION NEEDED items in PAUSE.md
+8. **Write exact next step** — update PAUSE.md with concrete resumption instructions
+9. **Verify PAUSE.md** — confirm the handoff state is complete before closing the session
+10. **NEXT.md freshness** — if session work changed current priorities or closed planned work, update `NEXT.md` before wrap-up so the next session does not inherit stale "Immediate Next Steps"
+
+The tool surfaces evidence and verdicts; the operator is responsible for classification, cleanup decisions, NEXT.md freshness, and PAUSE.md updates.
+
+### Category Error Prevention
+
+The following category error MUST NOT occur:
+
+    ❌ Active lane looks green → declare "END OF SESSION: Clean"
+    ❌ Local tracked files are clean → declare "safe to pause"
+    ❌ No git status changes → skip Workspace Reality check
+
+**Correct reasoning:**
+
+    ✅ Active lane clean? (necessary but not sufficient)
+    ✅ Remote Reality: PASS | WARN | BLOCKED? (separate check)
+    ✅ Workspace Reality: PASS | WARN | BLOCKED? (separate check)
+    ✅ All three qualify? → CLEAN FIELD READY: YES
+    ✅ Any gap? → CLEAN FIELD READY: NO + action items
+
+### Cleanup Closure Rule
+
+Cleanup is part of done. Deferred cleanup ("I'll clean it up next session") is not a valid closeout strategy. Any workspace residue must be classified, resolved, or explicitly parked with an owner and date before session close.
+
+### Tool Enforcement
+
+The `tools/end-session.ps1` script MUST:
+- Surface all three verdicts (Active Lane, Remote Reality, Workspace Reality) separately
+- Print `CLEAN FIELD READY: YES` only when the full contract qualifies
+- Print `CLEAN FIELD READY: NO` with specific action items when any gate fails
+- Never equate "no tracked changes" with "clean field"
+- Exit nonzero when Workspace Reality is BLOCKED (not just when tracked changes exist)
+
+---
+
+## Consumer-Kit Drift Gate (MANDATORY at Session Start in Consumer Repos)
+
+**Purpose:** Verify that the consumer repo's kit subtree is current, uncontaminated, and correctly wired before starting work. A consumer repo can look green locally while running stale or locally divergent kit content.
+
+**Applicability:** This gate applies only to consumer repos that embed vibe-coding-kit via `git subtree`. It does NOT apply to the kit source repo itself.
+
+### Definitions
+
+**CURRENT consumer:** The consumer's kit subtree version matches the published kit version, sentinel file content matches the kit source, and required consumer-side wiring exists. The consumer is safe to proceed.
+
+**STALE consumer:** The consumer's kit subtree version is behind the published kit version. The subtree has not been locally contaminated — it simply needs a `git subtree pull` to catch up. Session work may proceed with awareness, but kit-dependent gates may enforce outdated rules.
+
+**DIVERGENT consumer:** The consumer's kit subtree contains content that differs from the corresponding kit source version. This means someone committed changes inside the `<DOCS_ROOT>/vibe-coding/` subtree prefix outside of a subtree pull. This is always a problem — the consumer's kit content no longer matches any published kit state.
+
+### Consumer-Kit Drift Status (3-status model)
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | CURRENT — version matches, sentinel files match kit source, required consumer wiring exists |
+| **WARN** | STALE or incomplete — version lag detected, or remote version unavailable, or minor consumer wiring gaps |
+| **BLOCKED** | DIVERGENT — sentinel file content differs from kit source for the matching version, indicating local subtree contamination |
+
+### Required Evidence
+
+At session start, `tools/session-start.ps1` gathers and reports:
+
+    1. Kit version (local)          → from <DOCS_ROOT>/vibe-coding/VIBE-CODING.VERSION.md
+    2. Kit version (remote/published) → from vibe-coding-kit remote ref
+    3. Version comparison            → MATCH / LAG / UNAVAILABLE
+    4. Sentinel file integrity       → compare blob hashes of key files between local subtree and kit source
+    5. Consumer wiring existence     → required consumer-side artifacts present
+
+**Sentinel files checked for integrity:**
+- `VIBE-CODING.VERSION.md` — version source of truth
+- `protocol/protocol-v7.md` — authoritative protocol rules
+- `protocol-lite.md` — quick reference
+
+If version matches but any sentinel file blob differs from the kit source → **DIVERGENT**.
+
+### Consumer Wiring Requirements
+
+Consumer repos are expected to maintain these artifacts outside the kit subtree:
+
+| Artifact | Path | Required |
+|----------|------|----------|
+| Overlay index | `<DOCS_ROOT>/overlays/OVERLAY-INDEX.md` | YES |
+
+Missing required wiring with the kit current → WARN. Doc-audit catches most structural requirements separately (Control Deck, Population Gate, etc.).
+
+### Operator Response
+
+| Status | Action |
+|--------|--------|
+| **PASS** | Proceed normally |
+| **WARN (STALE)** | Run `git subtree pull` to update kit, or document version lag as known debt |
+| **WARN (unavailable)** | Proceed with awareness that currency could not be verified (offline) |
+| **BLOCKED (DIVERGENT)** | STOP. Investigate committed changes inside the kit subtree. Revert local contamination or re-run subtree pull to restore kit integrity |
+
+### Forbidden Language
+
+Do not describe a consumer repo as "current", "up to date", or "properly configured" without Consumer-Kit Drift evidence. The session-start audit block surfaces the drift verdict automatically.
+
+---
+
+## Staleness Expiry Gate (MANDATORY at Session Boundaries)
+
+**Purpose:** Prevent parked work, handoff state, and temporary items from sitting indefinitely without review. Time-sensitive state loses trustworthiness silently — this gate makes aging residue visible and actionable.
+
+**Applicability:** Evaluated at session start (before trusting handoff state) and at session close (before stamping new handoff state). Applies to any repo using the vibe-coding session workflow.
+
+### Definitions
+
+**CURRENT:** The artifact has been reviewed or updated within the freshness window. Safe to trust and act on.
+
+**STALE:** The artifact is past the freshness window but within the expiry horizon. It may still be accurate but MUST be reviewed before being trusted.
+
+**EXPIRED:** The artifact is past the expiry horizon. It MUST NOT be trusted without full re-verification and renewal.
+
+### Staleness Expiry Status (3-status model)
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | All checked artifacts are CURRENT — within freshness windows |
+| **WARN** | At least one artifact is STALE — review and renew before trusting |
+| **BLOCKED** | At least one artifact is EXPIRED — full re-verification required before proceeding |
+
+### Covered Artifact Classes
+
+| Artifact Class | Evidence Source | Why It Can Go Stale |
+|----------------|---------------|---------------------|
+| **PAUSE.md handoff state** | `Date:` header field | External changes (merged PRs, upstream moves, team decisions) silently invalidate assumptions |
+| **Individual PARKED items** | Disposition table last-activity date in Notes column | Parked items intended for short hold quietly become abandoned |
+| **Git stash entries** | `git stash list --format="%ci"` (committer date) | Stashes intended as short-term holds silently become permanent; invisible to disposition model |
+| **Local branches (no upstream, no PR)** | `git for-each-ref --format="%(committerdate:iso)" refs/heads/` | Local-only branches without upstream or PR classification go stale without visibility |
+| **NEXT.md active step** | `git log -1 --format="%ci" -- <DOCS_ROOT>/project/NEXT.md` (last commit date of NEXT.md) | NEXT.md is updated at task completion; a stale NEXT.md means completed work was not closed out, or the active step no longer reflects reality |
+
+**Not covered (no canonical home yet):** Worktree age, temporary waivers, one-off exceptions, ad-hoc overrides. If a waiver mechanism is added, it should integrate with this gate's expiry model.
+
+### Required Evidence
+
+At session boundaries, the following evidence is gathered:
+
+    1. PAUSE.md location         → found / not found / template placeholder
+    2. PAUSE.md Date field       → parsed date or unparseable
+    3. Age in days               → (today − Date)
+    4. Classification            → CURRENT / STALE / EXPIRED
+    5. Individual PARKED items   → operator reviews disposition table dates
+    6. NEXT.md last commit date  → git log -1 --format="%ci" -- <DOCS_ROOT>/project/NEXT.md
+    7. NEXT.md age in days       → (today − last commit date)
+    8. NEXT.md classification    → CURRENT / STALE / EXPIRED
+
+### Threshold Table (Portable Defaults)
+
+These are conservative defaults. Consumer repos may override via overlay.
+
+| Artifact Class | PASS (CURRENT) | WARN (STALE) | BLOCKED (EXPIRED) |
+|----------------|----------------|--------------|-------------------|
+| **PAUSE.md handoff state** | ≤ 7 days | 8–30 days | > 30 days |
+| **Individual PARKED items** | ≤ 14 days since last activity | 15–45 days | > 45 days |
+| **Git stash entries** | ≤ 3 days | 4–14 days | > 14 days |
+| **Local branches (no upstream, no PR, no ACTIVE/PARKED classification)** | ≤ 14 days since last commit | 15–30 days | > 30 days |
+| **NEXT.md active step** | ≤ 7 days since last commit | 8–21 days | > 21 days |
+
+### What the Thresholds Mean
+
+**PAUSE.md ≤ 7 days:** Handoff state was created or verified within the last week. Context is likely still accurate.
+
+**PAUSE.md 8–30 days:** Handoff state is over a week old. External factors may have invalidated assumptions. Review and update Date before relying on the state.
+
+**PAUSE.md > 30 days:** Handoff state is over a month old. Statistically unreliable. Re-verify all items against current repo/remote state, rebuild PAUSE.md, then proceed.
+
+**Individual PARKED items ≤ 14 days:** Recently parked; intended short-term hold.
+
+**Individual PARKED items 15–45 days:** Aging. Re-evaluate: remain PARKED, promote to ACTIVE, or reclassify as OBSOLETE.
+
+**Individual PARKED items > 45 days:** Likely abandoned. Must be reclassified (ACTIVE, OBSOLETE, or DECISION NEEDED) before declaring workspace accounted for.
+
+**Git stash entries ≤ 3 days:** Recent interruption stash; within expected short-lived hold window.
+
+**Git stash entries 4–14 days:** Stale. Should be promoted to a named branch or applied and discarded.
+
+**Git stash entries > 14 days:** Expired. Almost certainly abandoned or forgotten. Must be reviewed: apply to a branch, or drop after confirming no unique work.
+
+**Local branches (no upstream) ≤ 14 days:** Recent local work; within expected active-development window.
+
+**Local branches (no upstream) 15–30 days:** Stale. Re-evaluate: push to remote, classify as PARKED, or delete if obsolete.
+
+**Local branches (no upstream) > 30 days:** Expired. Likely abandoned. Must be classified (ACTIVE with upstream, PARKED, OBSOLETE) or deleted before declaring workspace accounted for.
+
+### Operator Actions
+
+| Status | At Session Start | At Session Close |
+|--------|-----------------|------------------|
+| **PASS** | Proceed normally | Update PAUSE.md Date to today |
+| **WARN** | Review PAUSE.md; confirm or update state; update Date; then proceed | Re-verify all STALE items; update dates and classifications |
+| **BLOCKED** | STOP. Re-verify all handoff state against current reality. Rebuild PAUSE.md if necessary | Escalate: EXPIRED items must be reclassified before writing new PAUSE.md |
+
+### Tool Enforcement
+
+- `tools/session-start.ps1` parses PAUSE.md `Date:` field and surfaces the freshness verdict automatically
+- Individual PARKED item review is an operator responsibility surfaced by WARN/BLOCKED status
+- At session close, the operator MUST update the PAUSE.md Date field as part of the End-of-Session Full Contract
+
+### Boundary Note — Adjacent Gates
+
+**Tool/Auth Fragility Gate** (degraded tools, auth, remote access): Separate concern from handoff-state staleness. See [Tool/Auth Fragility Gate](#toolauth-fragility-gate-mandatory-at-session-boundaries).
+
+---
+
+## Decision-Queue Gate (MANDATORY at Session Boundaries)
+
+**Purpose:** Ensure that items classified as DECISION NEEDED are explicit, well-formed, bounded in count, and reviewed at every session boundary. The Workspace Reality Gate already caps the number of DECISION NEEDED items, but does not enforce structure or lifecycle. This gate fills that gap.
+
+### Distinction from Workspace Reality Gate
+
+| Concern | Workspace Reality Gate | Decision-Queue Gate |
+|---------|----------------------|---------------------|
+| What it checks | Count of DECISION NEEDED items among all leftover workspace items | Structure, ownership, and lifecycle of each decision item |
+| When it fires | Session close (disposition table) | Session start (PAUSE.md review) and session close (PAUSE.md population) |
+| Failure mode | Too many undifferentiated leftovers | Decision items are missing required fields, have no owner, or have accumulated without resolution |
+
+### Well-Formed Decision Item (Required Fields)
+
+Every item classified as DECISION NEEDED in the disposition table MUST also appear in the PAUSE.md Decision Queue section with:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Item | Yes | Short label (e.g., branch name, feature name, or topic) |
+| Decision Owner | Yes | Who must decide — `Stephen` or `Agent` or specific name |
+| Why Needed | Yes | One-sentence statement of what must be decided |
+| Date Added | Yes | Date the item entered DECISION NEEDED status (YYYY-MM-DD) |
+| Recorded In | No | Link to PAUSE.md, NEXT.md, or R-### where context lives |
+
+An item in the disposition table classified DECISION NEEDED without a matching entry in the Decision Queue section is **malformed** — it counts toward the BLOCKED threshold.
+
+### Decision-Queue Status (3-status model)
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | All DECISION NEEDED items are well-formed; count within cap (≤ 3) |
+| **WARN** | Items are well-formed but count is elevated (4–5), OR 1 item is missing a required field |
+| **BLOCKED** | Count exceeds 5, OR 2+ items are malformed (missing required fields), OR any item has been in DECISION NEEDED for > 30 days without review |
+
+### Thresholds
+
+| Condition | PASS | WARN | BLOCKED |
+|-----------|------|------|---------|
+| Well-formed DECISION NEEDED items | ≤ 3 | 4–5 | > 5 |
+| Malformed items (missing required fields) | 0 | 1 | ≥ 2 |
+| Age of oldest unreviewed item | ≤ 14 days | 15–30 days | > 30 days |
+
+### Decision-Queue Lifecycle
+
+1. **At session close:** Operator classifies items as DECISION NEEDED in the disposition table AND populates the Decision Queue section in PAUSE.md with all required fields.
+2. **At session start:** Review the Decision Queue section. For each item, confirm it is still unresolved or reclassify (RESOLVED, ACTIVE, OBSOLETE). Update the Date field if the item was reviewed and kept.
+3. **Resolution:** When a decision is made, remove the item from the Decision Queue section and reclassify the corresponding disposition entry (typically to ACTIVE, PARKED, or OBSOLETE).
+
+### Tool Enforcement
+
+- `tools/session-start.ps1` parses the PAUSE.md Decision Queue section and surfaces the count and verdict automatically
+- Malformed-item detection is an operator responsibility surfaced by WARN/BLOCKED status
+- Age-based checks are automated when Date Added fields are parseable
+
+### Boundary Note — Alignment with Workspace Reality Gate
+
+The Workspace Reality Gate's default cap of `DECISION NEEDED items in queue ≤ 3 / WARN ≤ 5 / BLOCKED > 5` remains authoritative for count-based enforcement at session close. This gate adds structure and lifecycle requirements that the count-based cap alone cannot enforce. Both gates must PASS for `CLEAN FIELD READY: YES` — the WRG at close, the DQG at start.
+
+---
+
+## Tool/Auth Fragility Gate (MANDATORY at Session Boundaries)
+
+**Purpose:** Ensure the system cannot claim truthful verification when parts of its toolchain are unavailable, unauthenticated, or degraded. A gate verdict of PASS is meaningless if the tool that produces the evidence could not run.
+
+### Problem This Gate Solves
+
+Session-boundary gates depend on external tools (`gh`, `git fetch`, remote refs). When these tools fail:
+- Some scripts fall back silently to partial results
+- Audit output may still appear normal
+- Gate verdicts like "Remote Reality: PASS" or "OpenPRs=0" can be **false reassurance** if the tool that would have surfaced problems was unavailable
+
+This gate exists to make the verification chain's health explicit rather than implied.
+
+### Dependency Classification (3-status model)
+
+Each tool/auth dependency in the verification chain is classified:
+
+| Classification | Meaning |
+|----------------|---------|
+| **AVAILABLE** | Tool is present, authenticated (if applicable), and returned a usable result |
+| **DEGRADED** | Tool is present but returned an error, or auth failed, or result was partial — fallback used |
+| **UNAVAILABLE** | Tool is not installed, not found on PATH, or produced no usable output at all |
+
+### Covered Dependencies
+
+The gate covers only dependencies that the kit's session-boundary scripts actually use. Do not add speculative entries.
+
+| Dependency | Used By | Truth Claim Affected | Fallback Exists | Fallback Preserves Truth |
+|------------|---------|---------------------|-----------------|--------------------------|
+| `gh` CLI (installed + authenticated) | session-start (§6 Open PRs), end-session (§8b Remote Reality) | PR count, Remote Reality verdict | Yes — `UNKNOWN` / `BLOCKED` | **No** — PR state is unknown; Remote Reality cannot be PASS |
+| `git fetch` (remote connectivity) | session-start (§3 kit fetch, §3c version lag), end-session (§4 fetch, §8b ahead/behind) | Consumer-Kit Drift currency, Remote Reality ahead/behind, non-merged branch accuracy | Partial — stale local refs used | **No** — remote-dependent verdicts are based on stale data |
+
+**Not covered** (out of scope):
+- `git` itself — already enforced by hard-stop at script entry; no degraded mode possible
+- Network connectivity generally — covered implicitly by `git fetch` failure
+- CI/CD integrations, external APIs — kit does not use these
+
+### Tool/Auth Fragility Status (3-status model)
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | All dependencies AVAILABLE; all gate verdicts are fully trustworthy |
+| **WARN** | At least one dependency DEGRADED or UNAVAILABLE, but the affected truth claims are already downgraded (e.g., Remote Reality: BLOCKED reflects the degradation) |
+| **BLOCKED** | A dependency is UNAVAILABLE or DEGRADED and the affected gate verdict does NOT already reflect the degradation — the system is making a claim it cannot support |
+
+### Classification Rules
+
+| Condition | Verdict |
+|-----------|---------|
+| `gh` AVAILABLE + `git fetch` succeeded | **PASS** |
+| `gh` UNAVAILABLE but Remote Reality already WARN or BLOCKED | **WARN** — degradation is honestly surfaced |
+| `gh` UNAVAILABLE and Remote Reality claims PASS | **BLOCKED** — false reassurance |
+| `git fetch` failed but all remote-dependent verdicts already WARN or BLOCKED | **WARN** — degradation is honestly surfaced |
+| `git fetch` failed and any remote-dependent verdict claims PASS | **BLOCKED** — stale refs masquerading as truth |
+| Both `gh` UNAVAILABLE and `git fetch` failed | **WARN** if all affected verdicts are already downgraded; **BLOCKED** otherwise |
+
+### Required Evidence
+
+At each session boundary where Tool/Auth Fragility is assessed, produce:
+
+1. **Dependency inventory** — for each covered dependency: AVAILABLE / DEGRADED / UNAVAILABLE
+2. **Affected verdicts** — which other gate verdicts depend on the degraded tool
+3. **Honest disclosure** — whether the affected verdicts already reflect the degradation or are falsely reassuring
+
+### What Action Is Required
+
+| Status | Action |
+|--------|--------|
+| **PASS** | Proceed normally |
+| **WARN** | Record which dependencies are degraded in the session audit block or PAUSE.md. Other gate verdicts are already honest — no additional action required |
+| **BLOCKED** | STOP. Fix the toolchain issue (install `gh`, authenticate, restore network) or explicitly downgrade the affected gate verdicts to WARN/BLOCKED before proceeding. Do not claim PASS for a gate whose evidence tool was unavailable |
+
+### Tool Enforcement
+
+- `tools/session-start.ps1` tracks `gh` availability and `git fetch` outcome, then surfaces a combined `ToolAuth` verdict in the audit block
+- `tools/end-session.ps1` tracks `gh` availability and `git fetch` outcome, then surfaces a `ToolAuth` verdict in the footer
+- Both scripts already downgrade Remote Reality to BLOCKED or WARN when `gh` fails — the gate makes this explicit and adds a single aggregated signal
+
+### Boundary Note — Relationship to Other Gates
+
+This gate does not replace or override other gate verdicts. It is a **meta-gate** that assesses whether the evidence behind other gates is trustworthy. When Tool/Auth Fragility is WARN or BLOCKED, the affected gate verdicts should be interpreted with the stated caveats, not treated as fully verified.
 
 ---
 
@@ -989,9 +1666,8 @@ If a report would exceed ~200 lines, split into:
 
 Hot files include any of the following:
 - Files over ~300 LOC that coordinate routing, state, or persistence
-- Known churn magnets (question.component.ts, session.store.ts, app.routes.ts, content.service.ts, scripts/content-build.js, or anything the operator flags as "hot")
+- Known churn magnets (list yours in a consumer overlay; see [hot-files-overlay.example.md](../templates/hot-files-overlay.example.md))
 - Files touched in the last three prompts (detect via: git log --oneline --follow -3 -- <file>)
-- SignalR / Multiplayer hot files listed above (always hot)
 
 When a prompt touches a hot file, you MUST pick one of two paths:
 1. **Analysis-first prompt**: map the file’s responsibilities, enumerate entry points, and list all impacted tests before any edits.
@@ -1041,7 +1717,7 @@ If you cannot merge immediately, add a **PARKED** row to `<DOCS_ROOT>/status/bra
 ## Coverage Checklist for cross-cutting work (MANDATORY)
 
 **Objective definition (a change is cross-cutting if ANY of):**
-- Touches 2+ routes (count distinct route definitions in app.routes.ts; parameterized variants like q1/:id, q2/:id count separately if separate route configs), OR
+- Touches 2+ routes (count distinct route definitions in your routing config; parameterized variants count separately if separate route configs), OR
 - Changes a shared file imported by 3+ components, OR
 - Modifies global CSS variables/shared copy dictionaries/typography standards
 
@@ -1053,16 +1729,15 @@ If you cannot merge immediately, add a **PARKED** row to `<DOCS_ROOT>/status/bra
 - Shared UI components (headers, footers, navigation)
 - Monospace rendering or typography standards
 
-For ANY cross-cutting change, your completion report MUST include a route coverage table using the actual project routes from `src/app/app.routes.ts`:
+For ANY cross-cutting change, your completion report MUST include a route coverage table using the actual project routes from your consumer overlay
+(see [project-routes-overlay.example.md](../templates/project-routes-overlay.example.md)):
 
    Route        | Status
    -------------|-------------------------------
-   /            | UPDATED or NO CHANGE REQUIRED (reason)
-   /select      | UPDATED or NO CHANGE REQUIRED (reason)
-   /q/:id*      | UPDATED or NO CHANGE REQUIRED (reason; mention q1/:id + q2/:id if touched)
-   /review      | UPDATED or NO CHANGE REQUIRED (reason)
-   /result      | UPDATED or NO CHANGE REQUIRED (reason)
-   /store       | UPDATED or NO CHANGE REQUIRED (reason)
+   /<route-1>   | UPDATED or NO CHANGE REQUIRED (reason)
+   /<route-2>   | UPDATED or NO CHANGE REQUIRED (reason)
+   /<feature>/:id | UPDATED or NO CHANGE REQUIRED (reason)
+   …            | (one row per route in your app)
 
 Status values must be exactly **UPDATED** or **NO CHANGE REQUIRED** with a short justification. Do not invent alternate labels. If you cannot complete this table, STOP and clarify scope.
 
@@ -1080,7 +1755,7 @@ Your completion report MUST include:
 **Proof-of-Experience Block (Before / After / Where):**
 - What the user sees now: quote the current copy or describe the DOM
 - What changed: show Before → After for the exact element(s)
-- Routes displaying this change: map to the same coverage list (/ , /select, /q/:id, /review, /result, /store)
+- Routes displaying this change: map to the same consumer overlay coverage list
 - Visual verification: screenshot description or DOM snippet confirming the new state
 
 Without proof-of-experience, UX work is incomplete and prone to regression.

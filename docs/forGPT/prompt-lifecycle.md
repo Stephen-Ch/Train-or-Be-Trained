@@ -41,6 +41,7 @@ Define explicit states for prompts to prevent stale execution, duplicate work, a
 ### Before Starting Work
 If the prompt's required start state doesn't match current repo state, STOP immediately and report the mismatch:
 
+- Prompt targets a different project/repo than the current workspace → STOP and report the mismatch
 - Prompt says "start on feature branch" but you're on main → STOP
 - Prompt says "merge to main" but work not yet committed on feature → STOP
 - Prompt says "implement feature X" but feature X already exists → mark OBSOLETE and STOP

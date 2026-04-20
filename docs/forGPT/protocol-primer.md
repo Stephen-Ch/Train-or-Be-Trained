@@ -54,7 +54,7 @@ When Copilot produces research findings:
 The first message in every Copilot session MUST be:
 > **RUN START OF SESSION DOCS AUDIT**
 
-This invokes `tools/session-start.ps1` (if present in the vibe-coding subtree), which chains: kit update → forGPT sync → 5-line audit print. No separate "update kit" or "sync forGPT" steps are needed.
+This invokes `tools/session-start.ps1` (if present in the vibe-coding subtree), which chains: kit update → forGPT sync → session audit block. No separate "update kit" or "sync forGPT" steps are needed.
 
 ---
 

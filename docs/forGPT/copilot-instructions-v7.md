@@ -1,6 +1,6 @@
 # Copilot Instructions v7 -- Vibe-Coding Protocol
 
-> **File Version:** 2026-02-10
+> **File Version:** 2026-03-16
 >
 > **Portable.** This file contains Copilot-specific execution guidance only.
 > All canonical rules live in [protocol-v7.md](protocol-v7.md).
@@ -31,7 +31,7 @@ Before any work in a fresh session, run the session-start chain:
 
     powershell -NoProfile -ExecutionPolicy Bypass -File <SUBTREE>/tools/run-vibe.ps1 -Tool session-start
 
-This chains kit update → forGPT sync → doc-audit -StartSession → prints the 5-line gate. If any other command is requested first, reply: **Hard Stop. Run RUN START OF SESSION DOCS AUDIT first.**
+This chains kit update → forGPT sync → doc-audit -StartSession → prints the session audit block. If any other command is requested first, reply: **Hard Stop. Run RUN START OF SESSION DOCS AUDIT first.**
 
 Fallback (if run-vibe unavailable): `<DOCS_ROOT>/vibe-coding/tools/session-start.ps1`
 
@@ -182,9 +182,33 @@ Every completion report must include:
 Consumer repos may add stack-specific required fields (e.g., spec @human
 lines, test catalog updates) in their overlay.
 
+### Backend/Runtime Completion Reports — Additional Required Fields
+
+**Applies when:** the PR contains any runtime files (controllers, services/helpers,
+models/entities, repositories, migrations, middleware, routing, or API handlers).
+
+Every such completion report must answer all three with YES or NO:
+
+    Anything surprise you? YES/NO
+    Anything deserves a second look before merge? YES/NO
+    Is merge confidence below 95% anywhere in the changed runtime path? YES/NO
+
+**If ANY answer is YES:** the PR is NOT merge-ready. STOP and flag the concern
+before requesting review. See [protocol-v7.md § PR / Branch Hygiene Gate §D](protocol-v7.md#d-runtime-weighted-merge-review).
+
 ---
 
 ## S2C Closeout -- Artifact Verification
 
 Every S2C completion report must include the verification table from:
 [closeout-artifact-verification-template.md](../templates/closeout-artifact-verification-template.md)
+
+---
+
+## Friction Log — End-of-Session (v1.0 Pilot)
+
+Before closing any session, check whether qualifying kit/process friction occurred (see [standards/friction-log-standard.md](../standards/friction-log-standard.md) for triggers and exclusions).
+
+- If yes: append **one** MEDIUM/HIGH entry to `.kit-feedback/FRICTION-LOG.local.md` using the schema in the standard. Create the directory and file if they do not exist.
+- If no qualifying friction occurred: write nothing. Silence is the expected default.
+- Do **not** log normal coding retries, flaky tests, or repo-specific learning here.

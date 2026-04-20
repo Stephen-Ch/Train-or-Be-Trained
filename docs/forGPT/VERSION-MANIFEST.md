@@ -6,10 +6,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Generated** | 2026-03-04 08:01:02 |
+| **Generated** | 2026-04-20 07:21:39 |
 | **DOCS_ROOT** | `docs` |
 | **Git Branch** | `main` |
-| **Git Commit** | `f21f4b6` |
+| **Git Commit** | `4e65f5b` |
 | **CORE Files** | 14 |
 | **EXTRA Files** | 8 |
 | **TOTAL Files** | 22 |
@@ -27,20 +27,20 @@
 | CORE | VISION.md | docs/project/VISION.md | `BB2D0C744D77529F` |
 | CORE | EPICS.md | docs/project/EPICS.md | `8F940544C5EBA09B` |
 | CORE | NEXT.md | docs/project/NEXT.md | `F850BB97D97221F3` |
-| CORE | protocol-v7.md | docs/vibe-coding/protocol/protocol-v7.md | `F75D45CDC86CBBF5` |
-| CORE | working-agreement-v1.md | docs/vibe-coding/protocol/working-agreement-v1.md | `A832FC77998B75EC` |
-| CORE | copilot-instructions-v7.md | docs/vibe-coding/protocol/copilot-instructions-v7.md | `2802180ADFD35AC7` |
-| CORE | prompt-lifecycle.md | docs/vibe-coding/protocol/prompt-lifecycle.md | `01C917E87CA72BA7` |
-| CORE | session-start-checklist.md | docs/vibe-coding/session-start-checklist.md | `7957D9199D58F2F4` |
-| CORE | PAUSE.md | docs/vibe-coding/PAUSE.md | `E0A6E2B4DD92AF74` |
+| CORE | protocol-v7.md | docs/vibe-coding/protocol/protocol-v7.md | `D89FC80E18996B8D` |
+| CORE | working-agreement-v1.md | docs/vibe-coding/protocol/working-agreement-v1.md | `FA999E53F5FB43BD` |
+| CORE | copilot-instructions-v7.md | docs/vibe-coding/protocol/copilot-instructions-v7.md | `0B8916852E0BF9EA` |
+| CORE | prompt-lifecycle.md | docs/vibe-coding/protocol/prompt-lifecycle.md | `6C795E22B9421821` |
+| CORE | session-start-checklist.md | docs/vibe-coding/session-start-checklist.md | `ED0168390CEDDB1A` |
+| CORE | PAUSE.md | docs/vibe-coding/PAUSE.md | `12772677C17ED09A` |
 | CORE | ResearchIndex.md | docs/research/ResearchIndex.md | `FA9912494504C943` |
-| CORE | protocol-primer.md | docs/vibe-coding/protocol-primer.md | `C623AFC182786976` |
-| CORE | protocol-lite.md | docs/vibe-coding/protocol-lite.md | `DA65CB0EBFBC598E` |
+| CORE | protocol-primer.md | docs/vibe-coding/protocol-primer.md | `ABA335A059DD0A01` |
+| CORE | protocol-lite.md | docs/vibe-coding/protocol-lite.md | `884933C50C860679` |
 | CORE | branches.md | docs/status/branches.md | `37501F7223313EA2` |
-| extra | stay-on-track.md | docs/vibe-coding/protocol/stay-on-track.md | `D7A1A38617D61F02` |
+| extra | stay-on-track.md | docs/vibe-coding/protocol/stay-on-track.md | `811E4109D55C5357` |
 | extra | alignment-mode.md | docs/vibe-coding/protocol/alignment-mode.md | `F470A5FC37EF2812` |
-| extra | required-artifacts.md | docs/vibe-coding/protocol/required-artifacts.md | `B0AF38993B467C74` |
-| extra | verification-mode.md | docs/vibe-coding/protocol/verification-mode.md | `F8ADBE35B551EE8F` |
+| extra | required-artifacts.md | docs/vibe-coding/protocol/required-artifacts.md | `1B15FCD1AAE4D9F2` |
+| extra | verification-mode.md | docs/vibe-coding/protocol/verification-mode.md | `8C2C9CE6429CB604` |
 | extra | CONTENT-RULES.md | docs/project/CONTENT-RULES.md | `85624151629B2690` |
 | extra | test-catalog.md | docs/testing/test-catalog.md | `27221E6E6952C6EB` |
 | extra | tech-debt-and-future-work.md | docs/status/tech-debt-and-future-work.md | `8EF1105805602A8F` |

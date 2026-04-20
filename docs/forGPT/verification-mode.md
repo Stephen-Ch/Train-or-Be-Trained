@@ -8,8 +8,8 @@ Use Verification Mode when the goal is to gather evidence, not to make changes:
 
 - "Review report: confirm which files were touched in last commit"
 - "Audit file: check if protocol-v7.md includes Work state requirement"
-- "Confirm counts: how many test files exist in src/app/features/"
-- "Verify compliance: does session.store.ts follow the immutability pattern?"
+- "Confirm counts: how many test files exist in <YourFeaturePath>/"
+- "Verify compliance: does <YourStateFile> follow the immutability pattern?"
 
 Do NOT use Verification Mode if the goal includes fixing, implementing, or editing anything.
 

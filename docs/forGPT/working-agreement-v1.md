@@ -21,6 +21,21 @@ These govern all GPT interactions with Stephen. No exceptions.
 
 **Enforcement:** The Confidence line represents execution safety. If below the applicable threshold (≥95% docs, ≥99% runtime), output a research-only prompt instead of guessing.
 
+### Prompt Output Contract (Mandatory Formatting)
+
+When Stephen asks for a prompt, the response MUST follow these rules exactly:
+
+- Output exactly one fenced code block and nothing else.
+- Use plain triple backticks with `text` (i.e., ` ```text `).
+- Do not include fence metadata such as `id="..."`.
+- The opening fence must be on its own line.
+- The closing fence must be on its own line.
+- All prompt content must be inside the block.
+
+This contract applies whenever the AI produces a prompt for Stephen to copy (Response Pattern A and C prompt output). Explanation or commentary outside the code fence violates Pattern A.
+
+> **Scope note:** The "ZERO fenced code blocks" rule in [hard-rules.md](hard-rules.md) and [protocol-v7.md](protocol-v7.md) applies to **completion reports**, not to prompt output governed by this contract.
+
 ---
 
 ## 4-Party Workflow

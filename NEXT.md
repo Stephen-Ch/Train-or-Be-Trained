@@ -1,61 +1,52 @@
 # Working With Me — Current State
-*Last updated: April 2026*
+*Last updated: April 2026 — post validation pivot*
 
 ---
 
-## Status: Built. Not yet deployed.
+## North Star: Prove the document changes real outcomes.
 
-TypeScript compiles clean. Full flow implemented. Needs `npm install` and a Netlify deploy.
+If users don't notice improvement in AI behavior with the document vs. without it, everything else is decoration.
+The only work that matters right now is running the 5-stage validation plan.
+
+**Killed (do not build):**
+- Course
+- Phase 2 (teachers), Phase 3 (parents/kids)
+- ProductHunt launch prep
+- Enterprise / Capgemini angle
+- Consistency flagging
+- First/second-person toggle
+- Guardrail wording debates
+- Open-source credibility positioning
+
+**Frozen until evidence exists:**
+- Branding refinements beyond basic sanity check
+- Stack debates (Angular stays)
+- Email capture / ConvertKit
 
 ---
 
-## What Was Built (complete)
+## Status
 
 | Component | Status |
 |---|---|
-| Intro screen — full marketing landing page | ✅ |
+| Intro screen — marketing landing page | ✅ |
 | Lens selection (Practical / Creative / Life) | ✅ |
 | Depth selection (Quick / Full) | ✅ |
 | Question flow — Likert scale, back/forward, progress bar | ✅ |
 | Scoring engine — maps answers → low/moderate/high per dimension | ✅ |
 | Document generator — lens-aware prose blocks for all 7 dimensions | ✅ |
-| Universal guardrails section in every generated document | ✅ |
-| Life lens guardrails (spiral, confirmation bias, stakes, depth-scaling) | ✅ |
-| Result screen — document preview, copy to clipboard, download .md | ✅ |
-| Session persistence — survives page refresh via sessionStorage | ✅ |
-| App shell — header with "Train or be trained." tagline | ✅ |
-| Planning docs — VISION.md, EPICS.md, Start-Here-For-AI.md | ✅ |
+| Universal guardrails section in every document | ✅ |
+| Result screen — copy to clipboard, download .md | ✅ |
+| Session persistence — sessionStorage | ✅ |
+| Netlify deploy + trainorbetrained.com | ⬜ |
+| Plausible Analytics (event tracking) | ⬜ |
+| Age gate (13+ checkbox) | ⬜ |
 
 ---
 
-## Immediate Next Steps
+## Immediate Next Steps (in order)
 
-### 1. Run locally and verify
-
-```bash
-cd C:\Users\schur\workspaces\WorkingWithMe
-npm install
-npm start
-# → http://localhost:4200
-```
-
-Walk the full flow:
-- [ ] Intro → click "Build My AI Trainer"
-- [ ] Lens screen → select one → Continue
-- [ ] Depth screen → select Quick → Start Assessment
-- [ ] Questions → answer all 14 → Next through to end
-- [ ] Result screen → document looks right → Copy works → Download works
-- [ ] Test on mobile (resize browser)
-
-### 2. Add email capture to result screen
-
-After the user sees their document, add one optional email field:
-*"Want course updates and new features? Drop your email."*
-
-Hooks into ConvertKit (free tier). Implementation: one `<input>` + fetch POST to ConvertKit's API.
-ConvertKit API docs: https://developers.convertkit.com/
-
-### 3. Deploy to Netlify
+### 1. Deploy to Netlify
 
 ```
 Build command:     npm run build
@@ -63,65 +54,102 @@ Publish directory: dist/working-with-me/browser
 ```
 
 1. Push to GitHub repo (Stephen-Ch/Train-or-Be-Trained)
-2. Connect repo to Netlify
-3. Set build settings above
-4. Deploy → get URL
-5. Point trainorbetrained.com to Netlify (Domain management settings)
+2. netlify.com → Add new site → Import from Git → GitHub → select repo
+3. Set build settings above → Deploy
+4. Domain settings → Add trainorbetrained.com
 
-### 4. Beta (10–15 people)
+### 2. Add Plausible Analytics
 
-Personal message only. One question: "Does the document feel accurate to you?"
-See `C:\Users\schur\OneDrive\Documents\_Projects\WorkWithMe\05_Promotion_Plan.md` for who to ask.
+Sign up at plausible.io (free tier). Add your domain. They give you one script tag:
+
+```html
+<script defer data-domain="trainorbetrained.com"
+  src="https://plausible.io/js/script.js"></script>
+```
+
+Add to `src/index.html` in the `<head>`. That gives you page-level tracking immediately.
+
+Then add custom events in the components for the four things that matter:
+
+| Event | Where | Why |
+|---|---|---|
+| `assessment_started` | Lens screen on continue | Did they begin? |
+| `assessment_completed` | Result screen on load | Did they finish? |
+| `document_copied` | Copy button click | Did they take the output? |
+| `document_downloaded` | Download button click | Did they save it? |
+
+Plausible custom event syntax:
+```javascript
+window.plausible('assessment_completed');
+```
+
+### 3. Add age gate (13+)
+
+One checkbox on the intro screen before the CTA button activates:
+`[ ] I confirm I am 13 or older`
+
+CTA disabled until checked. Five lines of code. COPPA compliance.
+
+### 4. Recruit 8–12 validation users
+
+Knowledge workers only. Not teachers, not parents. People who already use AI regularly for real work.
+
+Personal message. Do not blast. Ask them to:
+- Come with 3 real tasks they do with AI
+- Run each task without the document first
+- Paste the document into custom instructions
+- Run the same task again
+- Tell you honestly: better, same, or worse?
+
+Success bar: 70% say "with document" is clearly better on at least 2 of 3 tasks.
 
 ---
 
-## Still Pending (pre-beta)
+## Validation Stage Tracker
 
-| Item | Notes |
-|---|---|
-| Age gate (13+) on intro screen | One checkbox, legally meaningful |
-| Email capture on result screen | ConvertKit, one field |
-| Consistency flagging in scoring engine | Flag conflicting answers before generating document |
+| Stage | Goal | Status |
+|---|---|---|
+| 1 | Document produces noticeably better AI behavior | ⬜ |
+| 2 | Output feels personal, not generic | ⬜ |
+| 3 | Completion + copy + paste rates are acceptable | ⬜ |
+| 4 | Some paid interest exists (waitlist, not course) | ⬜ |
+| 5 | Stephen can run this without drowning | ⬜ |
+
+Do not proceed to Stage 4 without passing Stage 1 and 2.
 
 ---
 
-## After Beta — What to Fix
+## Decision Rules (after validation)
 
-These are the areas most likely to need work based on what the prototype produces:
+**Continue** if: users clearly prefer AI outputs with the document, output feels personal, completion is decent, some paid interest shows up.
 
-- **Prose blocks** — some will feel generic. Rewrite the ones that miss.
-- **Session resume** — users will drop off mid-assessment. Add a "resume" flow to the intro screen for partially-answered sessions.
-- **Mobile layout** — check lens, depth, and question screens at 375px width.
+**Revise** if: output helps somewhat but feels generic, users need heavy editing, form friction causes drop-off.
+
+**Kill** if: users don't notice improvement, most don't paste or keep the document, paid interest near zero.
 
 ---
 
 ## Known Loose Ends (non-blocking)
 
-- Old Rawls files still present: `review.component.ts`, `store.component.ts`, `admin/`, `persona/`, `result.guard.ts` — not wired to routes, safe to ignore for now, clean up later
-- Rawls-era tests will fail — left for a future pass
-- `content-adapter.ts` and scripts from Rawls are unused — ignore for now
+- Old Rawls files: `review.component.ts`, `store.component.ts`, `admin/`, `persona/`, `result.guard.ts` — safe to ignore, clean up later
+- Rawls-era tests will fail — future pass
+- `content-adapter.ts` and unused Rawls scripts — ignore for now
 
 ---
 
 ## Architecture Reminder
 
 ```
-Intro (/）→ Lens (/lens) → Depth (/select) → Questions (/q/:dimensionId) → Result (/result)
+Intro (/) → Lens (/lens) → Depth (/select) → Questions (/q/:dimensionId) → Result (/result)
 ```
 
-State lives in `SessionStore`: lens (string), depth ('quick'|'full'), answers (Record<questionId, 0–4>)
-
-Scoring: `core/engine/scoring.engine.ts` → averages reversed/non-reversed scores per dimension → low/moderate/high
-
-Document: `core/engine/document.generator.ts` → 21 prose block combinations (7 dimensions × 3 lenses), selected by score level
-
-Content: `src/assets/content/working-with-me.json` → 7 dimensions, 5 questions each, `quick: true` on 2 per dimension
+State: `SessionStore` — lens, depth, answers (Record<questionId, 0–4>)
+Scoring: `core/engine/scoring.engine.ts` → low / moderate / high per dimension
+Document: `core/engine/document.generator.ts` → 63 prose block combinations + guardrails
+Content: `src/assets/content/working-with-me.json` → 7 dimensions, 5 questions each
 
 ---
 
 ## Marketing / Planning Docs
 
-Everything else lives in:
 `C:\Users\schur\OneDrive\Documents\_Projects\WorkWithMe\START-HERE.md`
-
-Read that file first when returning to the project from the marketing/planning side.

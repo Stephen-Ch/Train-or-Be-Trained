@@ -40,13 +40,12 @@ If you went off track:
 
 When changing shared patterns (palette CSS variables, voice/tone, layout grids, CTA buttons, disclaimers, UI copy dictionaries, monospace rendering), you MUST verify coverage across the real project routes/screens:
 
-Mandatory route coverage list (match `src/app/app.routes.ts`):
-- / (IntroComponent)
-- /select (SelectComponent)
-- /q/:id (QuestionV2Component; include q1/:id + q2/:id legacy paths if touched)
-- /review (ReviewComponent)
-- /result (ResultComponent)
-- /store (StoreComponent)
+Mandatory route coverage list — use the routes declared in your consumer overlay
+(see [project-routes-overlay.example.md](../templates/project-routes-overlay.example.md)):
+- /<route-1> (<ComponentName>)
+- /<route-2> (<ComponentName>)
+- /<feature>/:id (<ComponentName>; include parameterized variants if touched)
+- …(one row per route in your app)
 
 For each route, report status exactly as **UPDATED** (specify the change) or **NO CHANGE REQUIRED** (explain why untouched). Mix-and-match language is not allowed; stick to those two values so reviewers can diff coverage quickly.
 
@@ -64,7 +63,7 @@ For any user-visible change (copy, layout, tone, CTA labels, disclaimers), inclu
 **Proof-of-Experience Block (Before / After / Where):**
 - What the user sees now (quote or DOM snippet)
 - What changed (Before → After, tied to the same element)
-- Where it appears (list every affected route from the coverage list)
+- Where it appears (list every affected route from your consumer overlay coverage list)
 - Visual verification (screenshot description or DOM snippet for layout/visual shifts)
 
 Without proof-of-experience, UX work is incomplete.
