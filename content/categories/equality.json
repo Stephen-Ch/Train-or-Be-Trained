@@ -1,0 +1,44 @@
+{
+  "id": "equality",
+  "title": "Equality",
+  "order": 1,
+  "description": "All men are created equal (Declaration of Independence, paragraph 2)",
+  "questions": [
+    {
+      "id": "equality-q0",
+      "title": "How important is ensuring everyone has an equal opportunity to succeed?",
+      "body": "How important is ensuring everyone has an equal opportunity to succeed?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "equality-q0-fu0",
+          "title": "Providing extra support to disadvantaged groups is worth the added investment",
+          "body": "Consider whether offering additional tutoring, grants, or mentorship keeps opportunity truly equal.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "equality-q1",
+      "title": "How important is reducing significant differences in wealth and income?",
+      "body": "How important is reducing significant differences in wealth and income?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "equality-q2",
+      "title": "How important is having a legal system that treats everyone fairly and equally?",
+      "body": "How important is having a legal system that treats everyone fairly and equally?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "equality-q3",
+      "title": "How important is providing additional support to disadvantaged groups?",
+      "body": "How important is providing additional support to disadvantaged groups?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
+import { SessionStore } from '../../core/session/session.store';
+
+@Component({
+  selector: 'app-intro',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div data-testid="view-intro">
+
+      <!-- Hero -->
+      <section class="bg-white border-b border-gray-100 py-16 px-6">
+        <div class="max-w-2xl mx-auto text-center space-y-6">
+          <h1 class="text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
+            Train or Be Trained.
+          </h1>
+          <p class="text-xl text-gray-600 leading-relaxed">
+            AI is like a dog — either you're training it, or it's training you.
+            Most people never teach their AI anything about themselves.
+            So it treats them like everyone else.
+          </p>
+          <p class="text-lg text-gray-700 font-medium">
+            <em>Working With Me</em> fixes that.
+          </p>
+
+          <div class="pt-2 space-y-3">
+            @if (hasProgress()) {
+              <button
+                data-testid="resume-btn"
+                (click)="resume()"
+                class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                Resume Where I Left Off
+              </button>
+              <div>
+                <button
+                  data-testid="start-fresh-btn"
+                  (click)="startFresh()"
+                  class="text-sm text-gray-500 hover:text-gray-700 underline">
+                  Start over instead
+                </button>
+              </div>
+            } @else {
+              <button
+                data-testid="start-btn"
+                (click)="start()"
+                class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                Build My AI Trainer — Free
+              </button>
+              <p class="text-sm text-gray-400">5 minutes. Nothing stored. Works with any AI.</p>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- The problem -->
+      <section class="py-14 px-6 bg-gray-50">
+        <div class="max-w-2xl mx-auto space-y-5">
+          <h2 class="text-2xl font-bold text-gray-900">Your AI doesn't know you.</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Every conversation starts from zero. It doesn't know that long responses overwhelm you.
+            It doesn't know you need one recommendation, not six options. It doesn't know that
+            after an interruption you've lost the thread and need to be caught up.
+          </p>
+          <p class="text-gray-700 leading-relaxed">
+            You can tell it these things — once, by hand, imprecisely. Or you can
+            <strong>generate a document that does it right.</strong>
+          </p>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="py-14 px-6 bg-white border-t border-gray-100">
+        <div class="max-w-2xl mx-auto space-y-8">
+          <h2 class="text-2xl font-bold text-gray-900">How it works</h2>
+          <div class="space-y-6">
+            <div class="flex gap-5">
+              <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">1</span>
+              <div>
+                <p class="font-semibold text-gray-900">Answer honest questions about how you work</p>
+                <p class="text-sm text-gray-600 mt-1">Not personality labels. Behavioral patterns — how you make decisions, what overwhelms you, how you like to receive information.</p>
+              </div>
+            </div>
+            <div class="flex gap-5">
+              <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">2</span>
+              <div>
+                <p class="font-semibold text-gray-900">Get your personal AI training document</p>
+                <p class="text-sm text-gray-600 mt-1">Plain text, ready to use. Written in the second person — addressed to the AI — so you can paste it without editing.</p>
+              </div>
+            </div>
+            <div class="flex gap-5">
+              <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">3</span>
+              <div>
+                <p class="font-semibold text-gray-900">Paste it once. Every conversation starts differently.</p>
+                <p class="text-sm text-gray-600 mt-1">Add it to Claude's custom instructions, ChatGPT's profile, Gemini's settings — or paste it at the top of any new chat.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What it covers -->
+      <section class="py-14 px-6 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-2xl mx-auto space-y-6">
+          <h2 class="text-2xl font-bold text-gray-900">What your document covers</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            @for (item of dimensions; track item.label) {
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="font-semibold text-gray-900 text-sm">{{ item.label }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ item.description }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Works with -->
+      <section class="py-12 px-6 bg-white border-t border-gray-100">
+        <div class="max-w-2xl mx-auto text-center space-y-4">
+          <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Works with</p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-700 font-medium">
+            <span class="px-4 py-2 border border-gray-200 rounded-lg">Claude</span>
+            <span class="px-4 py-2 border border-gray-200 rounded-lg">ChatGPT</span>
+            <span class="px-4 py-2 border border-gray-200 rounded-lg">Gemini</span>
+            <span class="px-4 py-2 border border-gray-200 rounded-lg">Copilot</span>
+            <span class="px-4 py-2 border border-gray-200 rounded-lg">Any AI</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Privacy + CTA -->
+      <section class="py-14 px-6 bg-blue-600">
+        <div class="max-w-2xl mx-auto text-center space-y-5">
+          <h2 class="text-2xl font-bold text-white">Ready to train your AI?</h2>
+          <p class="text-blue-100 text-sm">
+            5 minutes. Free. Nothing stored — the whole thing runs in your browser.
+            No account. No email required.
+          </p>
+          <button
+            (click)="start()"
+            class="inline-block bg-white text-blue-700 hover:bg-blue-50 font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+            Build My AI Trainer
+          </button>
+        </div>
+      </section>
+
+    </div>
+  `
+})
+export class IntroComponent {
+  private sessionStore = inject(SessionStore);
+  private router = inject(Router);
+
+  hasProgress = computed(() => this.sessionStore.hasSavedProgress());
+
+  dimensions = [
+    { label: 'How to start a session', description: 'What the AI should do when you return after a break.' },
+    { label: 'How you like to receive information', description: 'Length, format, bullet points vs prose, directness.' },
+    { label: 'Patterns to watch for', description: 'Tangents, scope creep, decision loops — and what to do.' },
+    { label: 'When you\'re overwhelmed', description: 'Signals and a specific reset protocol.' },
+    { label: 'How you make decisions', description: 'Recommendations vs options, speed vs deliberation.' },
+    { label: 'What done looks like for you', description: 'Perfectionism, good-enough thinking, closure.' },
+    { label: 'Where you misjudge yourself', description: 'Calibration notes so the AI can factor in your blind spots.' },
+  ];
+
+  start(): void {
+    this.sessionStore.startFresh();
+    this.router.navigate(['/lens']);
+  }
+
+  startFresh(): void {
+    this.sessionStore.startFresh();
+    this.router.navigate(['/lens']);
+  }
+
+  resume(): void {
+    this.router.navigate(['/select']);
+  }
+}

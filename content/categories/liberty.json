@@ -1,0 +1,90 @@
+{
+  "id": "liberty",
+  "title": "Liberty",
+  "order": 0,
+  "description": "Secure the Blessings of Liberty (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "liberty-q0",
+      "title": "How important is individual freedom to you?",
+      "body": "How important is individual freedom to you?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "liberty-q0-fu0",
+          "title": "Hate speech should be protected as free expression",
+          "body": "Consider where you draw the line between protecting speech and preventing harm.",
+          "order": 0
+        },
+        {
+          "id": "liberty-q0-fu1",
+          "title": "Deliberate lies for personal gain should be protected as speech",
+          "body": "Consider whether potential harms might justify limits on this freedom.",
+          "order": 1
+        },
+        {
+          "id": "liberty-q0-fu2",
+          "title": "Political lies should receive special protection during elections",
+          "body": "Consider whether rules should differ for politicians, campaigns, and ordinary citizens.",
+          "order": 2
+        },
+        {
+          "id": "liberty-q0-fu3",
+          "title": "Government regulation is the best approach to combat online misinformation",
+          "body": "Consider alternative approaches: platform rules, media literacy programs, or minimal intervention.",
+          "order": 3
+        },
+        {
+          "id": "liberty-q0-fu4",
+          "title": "Preventing harm justifies restricting some forms of speech",
+          "body": "Consider what types of speech might cross the line and require restriction.",
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "liberty-q1",
+      "title": "How important is the right to personal choice without government interference?",
+      "body": "How important is the right to personal choice without government interference?",
+      "order": 1,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "liberty-q1-fu0",
+          "title": "Personal choice should be absolute regardless of potential harm to self",
+          "body": "Consider whether individuals should be free to make choices that may harm themselves.",
+          "order": 0,
+          "triggerRule": {
+            "parentAnswerMin": 3,
+            "tags": ["pro-liberty", "personal-autonomy"]
+          }
+        },
+        {
+          "id": "liberty-q1-fu1",
+          "title": "Government should protect individuals from their own harmful choices",
+          "body": "Consider whether the state has a duty to prevent people from making self-destructive decisions.",
+          "order": 1,
+          "triggerRule": {
+            "parentAnswerMax": 2,
+            "tags": ["paternalism", "state-protection"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "liberty-q2",
+      "title": "How important is economic freedom and independence for individuals?",
+      "body": "How important is economic freedom and independence for individuals?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "liberty-q3",
+      "title": "How important is the protection of personal rights and privacy?",
+      "body": "How important is the protection of personal rights and privacy?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

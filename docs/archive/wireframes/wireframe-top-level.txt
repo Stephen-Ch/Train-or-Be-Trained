@@ -1,0 +1,51 @@
+RAWLS GAME — WIREFRAME — TOP-LEVEL MULTI-QUESTION VIEW (ASCII)
+File: wireframe-top-level.txt
+Purpose: Copilot-facing layout spec for /q/:id top-level screen
+Test IDs: consistent with existing suite
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ [Header]                                                                   │
+│   ■ data-testid="category-title"   → e.g., Rights & Freedoms               │
+│   ■ data-testid="category-progress"→ e.g., 2/5 (top-level completed)       │
+│   Breadcrumb (optional): Category only (breadcrumbs reserved for deeper)   │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [Top-Level Likert Questions]  (ALL items for the category appear at once)  │
+│   For each top-level question TLQ with id "<cat><n>" (e.g., A1, A2, A3...):│
+│                                                                            │
+│   ┌──────────────────────────────────────────────────────────────────────┐ │
+│   │  data-testid="tlq-card-<id>"                                         │ │
+│   │  Statement (Likert-formatted):                                       │ │
+│   │    data-testid="tlq-statement-<id>"                                  │ │
+│   │                                                                      │ │
+│   │  Radio group (1..5):                                                 │ │
+│   │    name="tlq-<id>"                                                   │ │
+│   │    ( ) 1. Strongly Disagree  data-testid="likert-<id>-value-1"       │ │
+│   │    ( ) 2. Disagree           data-testid="likert-<id>-value-2"       │ │
+│   │    ( ) 3. Neutral            data-testid="likert-<id>-value-3"       │ │
+│   │    ( ) 4. Agree              data-testid="likert-<id>-value-4"       │ │
+│   │    ( ) 5. Strongly Agree     data-testid="likert-<id>-value-5"       │ │
+│   └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│   … repeat for all TLQs in the category …                                  │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [Actions]                                                                  │
+│   [ Back ] (optional)                                                      │
+│   [ Continue ▷ ]   data-testid="continue"   (ENABLED only when all TLQs    │
+│                    have a selected value 1..5)                             │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Behavior & Rules
+1) Render ALL top-level questions for the active category in one scrollable view.
+2) Gating: Continue is disabled until every top-level question has a selected value.
+3) On Continue: navigate to the Deeper-Dive flow for the FIRST top-level (e.g., A1).
+4) Persistence: Answers save immediately to SessionStore; refresh resumes with selected values.
+5) Re-entry (from Review/Edit): land on this view for the chosen category.
+6) A11y: All radio groups use <fieldset><legend> or aria-labelledby linked to statement.
+7) Performance: If >10 TLQs, use lightweight virtual scroll or lazy rendering.
+
+Selectors (stable)
+- Header:         data-testid="category-title", "category-progress"
+- TLQ card:       data-testid="tlq-card-<id>"
+- TLQ statement:  data-testid="tlq-statement-<id>"
+- Likert radios:  data-testid="likert-<id>-value-1..5"
+- Continue:       data-testid="continue"

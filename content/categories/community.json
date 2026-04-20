@@ -1,0 +1,44 @@
+{
+  "id": "community",
+  "title": "Community",
+  "order": 2,
+  "description": "Form a more perfect Union (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "community-q0",
+      "title": "How important is a strong sense of shared identity in a group?",
+      "body": "How important is a strong sense of shared identity in a group?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "community-q0-fu0",
+          "title": "Strong communities should fund shared spaces even when personal costs rise",
+          "body": "Consider whether investing in public gathering places is worth modest tax increases.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "community-q1",
+      "title": "How important is the belief that people should help each other in times of need?",
+      "body": "How important is the belief that people should help each other in times of need?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "community-q2",
+      "title": "How important are shared traditions and common values to you?",
+      "body": "How important are shared traditions and common values to you?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "community-q3",
+      "title": "How important is social cohesion and a sense of belonging?",
+      "body": "How important is social cohesion and a sense of belonging?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

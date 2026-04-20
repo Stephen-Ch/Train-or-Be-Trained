@@ -1,0 +1,88 @@
+=== chromium ===
+2025-12-22T14:42:14.962Z pw:api => browserType.launch started
+2025-12-22T14:42:15.150Z pw:api <= browserType.launch succeeded
+RESULT chromium launch PASS
+2025-12-22T14:42:15.151Z pw:api => browser.newPage started
+2025-12-22T14:42:15.390Z pw:api   "commit" event fired
+2025-12-22T14:42:15.461Z pw:api   "commit" event fired
+2025-12-22T14:42:15.461Z pw:api   navigated to "data:text/html,"
+2025-12-22T14:42:15.466Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:42:15.468Z pw:api   "load" event fired
+2025-12-22T14:42:15.757Z pw:api   "commit" event fired
+2025-12-22T14:42:15.757Z pw:api   navigated to "https://playwright/index.html"
+2025-12-22T14:42:15.799Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:42:15.800Z pw:api   "load" event fired
+2025-12-22T14:42:15.921Z pw:api <= browser.newPage succeeded
+RESULT chromium newPage PASS
+2025-12-22T14:42:15.923Z pw:api => page.setContent started
+2025-12-22T14:42:16.348Z pw:api   "networkidle" event fired
+RESULT chromium setContent FAIL TIMEOUT_15000ms
+2025-12-22T14:42:30.935Z pw:api => page.evaluate started
+RESULT chromium evaluate FAIL TIMEOUT_15000ms
+2025-12-22T14:42:45.936Z pw:api => page.goto started
+RESULT chromium goto about:blank FAIL TIMEOUT_15000ms
+2025-12-22T14:43:00.946Z pw:api => browser.close started
+2025-12-22T14:43:00.988Z pw:api <= page.setContent failed
+2025-12-22T14:43:00.988Z pw:api <= page.evaluate failed
+2025-12-22T14:43:00.988Z pw:api <= page.goto failed
+2025-12-22T14:43:01.340Z pw:api <= browser.close succeeded
+=== firefox ===
+2025-12-22T14:43:01.340Z pw:api => browserType.launch started
+2025-12-22T14:43:02.045Z pw:api <= browserType.launch succeeded
+RESULT firefox launch PASS
+2025-12-22T14:43:02.045Z pw:api => browser.newPage started
+2025-12-22T14:43:02.515Z pw:api   "commit" event fired
+2025-12-22T14:43:02.523Z pw:api   "commit" event fired
+2025-12-22T14:43:02.523Z pw:api   navigated to "data:text/html,"
+2025-12-22T14:43:02.529Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:43:02.529Z pw:api   "load" event fired
+2025-12-22T14:43:02.601Z pw:api   "commit" event fired
+2025-12-22T14:43:02.601Z pw:api   navigated to "https://playwright/index.html"
+2025-12-22T14:43:02.641Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:43:02.641Z pw:api   "load" event fired
+2025-12-22T14:43:03.196Z pw:api   "networkidle" event fired
+2025-12-22T14:43:03.196Z pw:api   navigated to "about:blank"
+2025-12-22T14:43:03.196Z pw:api   navigated to "about:blank"
+2025-12-22T14:43:03.199Z pw:api <= browser.newPage succeeded
+RESULT firefox newPage PASS
+2025-12-22T14:43:03.200Z pw:api => page.setContent started
+RESULT firefox setContent FAIL TIMEOUT_15000ms
+2025-12-22T14:43:18.215Z pw:api => page.evaluate started
+RESULT firefox evaluate FAIL TIMEOUT_15000ms
+2025-12-22T14:43:33.217Z pw:api => page.goto started
+RESULT firefox goto about:blank FAIL TIMEOUT_15000ms
+2025-12-22T14:43:48.217Z pw:api => browser.close started
+2025-12-22T14:43:48.689Z pw:api <= page.setContent failed
+2025-12-22T14:43:48.689Z pw:api <= page.evaluate failed
+2025-12-22T14:43:48.689Z pw:api <= page.goto failed
+2025-12-22T14:43:48.716Z pw:api <= browser.close succeeded
+=== webkit ===
+2025-12-22T14:43:48.717Z pw:api => browserType.launch started
+2025-12-22T14:43:48.775Z pw:api <= browserType.launch succeeded
+RESULT webkit launch PASS
+2025-12-22T14:43:48.776Z pw:api => browser.newPage started
+2025-12-22T14:43:49.005Z pw:api   "commit" event fired
+2025-12-22T14:43:49.008Z pw:api   "commit" event fired
+2025-12-22T14:43:49.008Z pw:api   navigated to "data:text/html,"
+2025-12-22T14:43:49.011Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:43:49.011Z pw:api   "load" event fired
+2025-12-22T14:43:49.066Z pw:api   "commit" event fired
+2025-12-22T14:43:49.066Z pw:api   navigated to "https://playwright/index.html"
+2025-12-22T14:43:49.113Z pw:api   "domcontentloaded" event fired
+2025-12-22T14:43:49.114Z pw:api   "load" event fired
+2025-12-22T14:43:49.365Z pw:api <= browser.newPage succeeded
+RESULT webkit newPage PASS
+2025-12-22T14:43:49.365Z pw:api => page.setContent started
+2025-12-22T14:43:49.658Z pw:api   "networkidle" event fired
+RESULT webkit setContent FAIL TIMEOUT_15000ms
+2025-12-22T14:44:04.367Z pw:api => page.evaluate started
+RESULT webkit evaluate FAIL TIMEOUT_15000ms
+2025-12-22T14:44:19.373Z pw:api => page.goto started
+RESULT webkit goto about:blank FAIL TIMEOUT_15000ms
+2025-12-22T14:44:34.382Z pw:api => browser.close started
+2025-12-22T14:44:34.420Z pw:api <= browser.close succeeded
+DONE
+SUMMARY_JSON [{"name":"chromium launch","ok":true,"err":""},{"name":"chromium newPage","ok":true,"err":""},{"name":"chromium setContent","ok":false,"err":"TIMEOUT_15000ms"},{"name":"chromium evaluate","ok":false,"err":"TIMEOUT_15000ms"},{"name":"chromium goto about:blank","ok":false,"err":"TIMEOUT_15000ms"},{"name":"firefox launch","ok":true,"err":""},{"name":"firefox newPage","ok":true,"err":""},{"name":"firefox setContent","ok":false,"err":"TIMEOUT_15000ms"},{"name":"firefox evaluate","ok":false,"err":"TIMEOUT_15000ms"},{"name":"firefox goto about:blank","ok":false,"err":"TIMEOUT_15000ms"},{"name":"webkit launch","ok":true,"err":""},{"name":"webkit newPage","ok":true,"err":""},{"name":"webkit setContent","ok":false,"err":"TIMEOUT_15000ms"},{"name":"webkit evaluate","ok":false,"err":"TIMEOUT_15000ms"},{"name":"webkit goto about:blank","ok":false,"err":"TIMEOUT_15000ms"}]
+2025-12-22T14:44:34.428Z pw:api <= page.setContent failed
+2025-12-22T14:44:34.428Z pw:api <= page.evaluate failed
+2025-12-22T14:44:34.429Z pw:api <= page.goto failed

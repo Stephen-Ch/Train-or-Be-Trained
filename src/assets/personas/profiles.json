@@ -1,0 +1,108 @@
+{
+  "profiles": {
+    "principled-entrepreneur": {
+      "label": "The Principled Entrepreneur",
+      "summary": "This individual's ideal world is one driven by a belief in individual freedom and the power of growth. They value the ability to create, build, and innovate with minimal constraints—while keeping markets open and rules fair.",
+      "insight": "They hope to be born into a world that rewards self-starters and is motivated by challenges.",
+      "idealVector": [5,1,1,5,1,1,1],
+      "iconSet": ["Liberty","Prosperity"],
+      "image": "images/The Principled Entrepreneur.jpg"
+    },
+    "merchant-builder": {
+      "label": "Merchant-Builder",
+      "summary": "Builds value through open, rules-based markets and personal initiative. Champions low barriers to entry, fair competition, and responsible growth that expands opportunity—not just margins.",
+      "insight": "A maker mentality with a civic streak: grow the pie and keep the entry ramps open.",
+      "idealVector": [5,1,1,5,1,1,1],
+      "iconSet": ["Liberty","Prosperity"],
+      "image": "images/The Merchant-Builder.jpg"
+    },
+    "individualist-for-justice": {
+      "label": "The Individualist for Justice",
+      "summary": "Champions basic liberties for everyone while dismantling bias and gatekeeping. True liberty needs equal opportunity and strong due-process protections.",
+      "insight": "A bridge between camps, they blend rights-forward thinking with fair-start reforms.",
+      "idealVector": [5,5,1,1,1,1,1],
+      "iconSet": ["Liberty","Equality"],
+      "image": "images/The Individualist for Justice.jpg"
+    },
+    "principled-caretaker": {
+      "label": "The Principled Caretaker",
+      "summary": "Fosters strong community bonds and fair process. A healthy society is built on mutual support where no one is left behind.",
+      "insight": "Finds fulfillment in creating spaces where people feel safe, heard, and respected.",
+      "idealVector": [1,1,5,1,1,5,1],
+      "iconSet": ["Community","Fairness"],
+      "image": "images/The Principled Caretaker.jpg"
+    },
+    "prudent-guardian": {
+      "label": "The Prudent Guardian",
+      "summary": "Prioritizes long-term stability and resilience—prevention, continuity, and reliable infrastructure.",
+      "insight": "A dependable planner who reduces risk and protects what is valuable.",
+      "idealVector": [1,1,1,1,5,1,5],
+      "iconSet": ["Security","Sustainability"],
+      "image": "images/The Prudent Guardian.jpg"
+    },
+    "ethical-visionary": {
+      "label": "The Ethical Visionary",
+      "summary": "Balances human flourishing with planetary limits. Sets thresholds for a dignified life first, then makes benefits durable across generations.",
+      "insight": "Sees the interconnectedness of social and environmental goals—ethics at scale.",
+      "idealVector": [1,5,1,1,1,1,5],
+      "iconSet": ["Equality","Sustainability"],
+      "image": "images/The Ethical Visionary.jpg"
+    },
+    "principled-collaborator": {
+      "label": "The Principled Collaborator",
+      "summary": "Balances individual agency with coalition-building. Free association + strong, healthy groups.",
+      "insight": "Natural bridge-builder who convenes diverse teams without coercion.",
+      "idealVector": [5,1,5,1,1,1,1],
+      "iconSet": ["Liberty","Community"],
+      "image": "images/The Principled Collaborator.jpg"
+    },
+    "socially-conscious-achiever": {
+      "label": "The Socially Conscious Achiever",
+      "summary": "Pursues growth while correcting unfair advantages—measurement, fair pay, mobility, and anti-monopoly norms.",
+      "insight": "Creates systems that are both highly efficient and widely equitable.",
+      "idealVector": [1,5,1,5,1,5,1],
+      "iconSet": ["Equality","Prosperity","Fairness"],
+      "image": "images/The Socially Conscious Achiever.jpg"
+    },
+    "balanced-innovator": {
+      "label": "The Balanced Innovator",
+      "summary": "Optimizes for efficiency and long-term viability—circular design, smart incentives, durable public benefit.",
+      "insight": "Strategic thinker who solves today's problems without making tomorrow's.",
+      "idealVector": [1,1,1,5,1,1,5],
+      "iconSet": ["Prosperity","Sustainability"],
+      "image": "images/The Balanced Innovator.jpg"
+    },
+    "vigilant-guardian": {
+      "label": "The Vigilant Guardian",
+      "summary": "Protects civil liberties while managing real risks. Prefers proportionate safeguards, transparency, and oversight.",
+      "insight": "Keeps power accountable and harms contained—rights with readiness.",
+      "idealVector": [5,1,1,1,5,1,1],
+      "iconSet": ["Liberty","Security"],
+      "image": "images/The Vigilant Guardian.jpg"
+    },
+    "altruistic-humanist": {
+      "label": "The Altruistic Humanist",
+      "summary": "Centers people first: reducing suffering, expanding care, and ensuring services treat everyone with respect.",
+      "insight": "Measures success by lived outcomes, not just metrics.",
+      "idealVector": [1,5,5,1,1,5,1],
+      "iconSet": ["Equality","Community","Fairness"],
+      "image": "images/The Altruistic Humanist.jpg"
+    },
+    "visionary-realist": {
+      "label": "The Visionary Realist",
+      "summary": "Gets things built—safely. Pragmatic delivery, safety margins, and reliability so big ideas work for ordinary people.",
+      "insight": "Bridges the gap between ideals and reality at scale.",
+      "idealVector": [1,1,1,5,5,1,5],
+      "iconSet": ["Prosperity","Security","Sustainability"],
+      "image": "images/The Visionary Realist.jpg"
+    },
+    "social-innovator": {
+      "label": "The Social Innovator",
+      "summary": "Invents for the public good—scalable solutions, far rollout, evidence-based iteration for inclusive growth.",
+      "insight": "Builds new systems that are profitable and just.",
+      "idealVector": [1,5,1,5,1,5,1],
+      "iconSet": ["Equality","Prosperity","Fairness"],
+      "image": "images/The Social Innovator.jpg"
+    }
+  }
+}

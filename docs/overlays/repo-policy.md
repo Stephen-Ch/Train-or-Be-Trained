@@ -1,0 +1,55 @@
+# Repo Policy — Consumer Overlay Template
+
+> **File Version:** 2026-02-26
+
+## Purpose
+
+Declares the consumer repo's branch policy, PR rules, merge method, and naming conventions. Protocol gates reference this overlay for repo-specific workflow decisions.
+
+## Overlay Review Gate
+
+Before accepting this overlay into the consumer repo:
+
+- Best next step? YES
+- Confidence: 95
+
+## Instructions
+
+Copy into consumer repo at `<DOCS_ROOT>/overlays/repo-policy.md` and edit there.  
+Do NOT edit this template inside the kit head — it will be overwritten on subtree pull.
+
+---
+
+## Branch Policy
+
+| Setting | Value |
+|---------|-------|
+| Default branch | `main` (confirmed: `origin/HEAD -> origin/main`) |
+| Feature branch pattern | `feature/<STORY-ID>-<short-description>` |
+| Chore branch pattern | `chore/<short-description>` |
+| Merge method | Fast-forward only (`--ff-only`), fall back to `--no-ff` if diverged |
+| Delete branch after merge | Yes (local + remote) |
+
+## PR Rules
+
+| Rule | Value |
+|------|-------|
+| Required reviewers | 0 (solo dev, no PR policy) |
+| Required checks | None (no CI; local `npm run test` + `npm run build` before push) |
+| Auto-merge allowed | N/A (direct push to main after local Green Gate) |
+
+## Return Packet Naming Convention
+
+```
+return-packet-YYYY-MM-DD-<topic-slug>.md
+```
+
+Stored in: `<DOCS_ROOT>/status/`
+
+## Commit Message Convention
+
+```
+<type>: <short description> (<scope>)
+```
+
+Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`

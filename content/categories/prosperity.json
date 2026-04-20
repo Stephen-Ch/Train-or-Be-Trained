@@ -1,0 +1,44 @@
+{
+  "id": "prosperity",
+  "title": "Prosperity",
+  "order": 3,
+  "description": "Promote the general Welfare (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "prosperity-q0",
+      "title": "How important is continuous economic growth and development?",
+      "body": "How important is continuous economic growth and development?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "prosperity-q0-fu0",
+          "title": "Prioritizing economic growth is worth short-term inequality if it raises overall prosperity",
+          "body": "Consider whether accepting temporary gaps in outcomes is acceptable to keep the economy expanding.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "prosperity-q1",
+      "title": "How important is personal financial success and wealth accumulation?",
+      "body": "How important is personal financial success and wealth accumulation?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "prosperity-q2",
+      "title": "How important is a society's overall efficiency and productivity?",
+      "body": "How important is a society's overall efficiency and productivity?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "prosperity-q3",
+      "title": "How important is a strong economy to your sense of well-being?",
+      "body": "How important is a strong economy to your sense of well-being?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

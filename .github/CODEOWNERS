@@ -1,0 +1,4 @@
+# Content pipeline ownership
+content/** @Stephen-Ch
+scripts/content-*.js @Stephen-Ch
+src/content/** @Stephen-Ch

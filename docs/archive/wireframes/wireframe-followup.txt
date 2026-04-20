@@ -1,0 +1,58 @@
+RAWLS GAME — WIREFRAME — DEEPER-DIVE FOLLOW-UP VIEW (ASCII)
+File: wireframe-followup.txt
+Purpose: Copilot-facing layout spec for follow-up flow (EVERY TLQ gets deeper dives)
+Route: either /q/:id?deep=<TLQ_ID> or /q/:id/followups/<TLQ_ID>
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ [Breadcrumb Header]                                                        │
+│   data-testid="breadcrumb"                                                 │
+│   <Category Label>  >  <TLQ Abbrev>  >  Deeper Dives                       │
+│   Examples:                                                                │
+│     Rights & Freedoms > Freedom of Speech > Deeper Dives                   │
+│     Education > Vouchers > Deeper Dives                                    │
+│                                                                            │
+│   Optional right-aligned mini-progress for this TLQ’s follow-ups:          │
+│     data-testid="followup-progress" → e.g., 1/3                            │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [Follow-Up Card — ONE at a time]                                           │
+│   For TLQ "<id>" with follow-up list FU1..FUk:                             │
+│                                                                            │
+│   ┌──────────────────────────────────────────────────────────────────────┐ │
+│   │  data-testid="fu-card-<id>-<k>"                                      │ │
+│   │  Statement (Likert): data-testid="fu-statement-<id>-<k>"             │ │
+│   │                                                                      │ │
+│   │  Radio group (1..5):                                                 │ │
+│   │    name="fu-<id>-<k>"                                                │ │
+│   │    ( ) 1. Strongly Disagree  data-testid="likert-<id>-<k>-value-1"   │ │
+│   │    ( ) 2. Disagree           data-testid="likert-<id>-<k>-value-2"   │ │
+│   │    ( ) 3. Neutral            data-testid="likert-<id>-<k>-value-3"   │ │
+│   │    ( ) 4. Agree              data-testid="likert-<id>-<k>-value-4"   │ │
+│   │    ( ) 5. Strongly Agree     data-testid="likert-<id>-<k>-value-5"   │ │
+│   └──────────────────────────────────────────────────────────────────────┘ │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [Actions]                                                                  │
+│   [ Skip ]    data-testid="skip"                                           │
+│   [ Continue ▷ ]  data-testid="continue"  (ENABLED when a value selected)  │
+│                                                                            │
+│   After last FU for TLQ: automatically move to next TLQ’s deeper dives.    │
+│   After finishing last TLQ’s FUs in category: return to Top-Level view.    │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Behavior & Rules
+1) Exactly ONE follow-up card visible at a time.
+2) Continue advances index; Skip records skipped and advances.
+3) Persistence: answers save immediately. Refresh resumes current FU.
+4) Breadcrumb uses category label and a shortened TLQ label (first 6–8 words).
+5) A11y: fieldset/legend for radio groups; focus management moves to next card on advance.
+6) Navigation outcome:
+   - if more FUs for current TLQ → next FU;
+   - elif more TLQs in category → first FU of next TLQ;
+   - else → return to /q/:id top-level screen (all TLQs answered).
+
+Selectors (stable)
+- Breadcrumb:       data-testid="breadcrumb"
+- FU progress:      data-testid="followup-progress"
+- FU card:          data-testid="fu-card-<tlqId>-<k>"
+- FU statement:     data-testid="fu-statement-<tlqId>-<k>"
+- Likert radios:    data-testid="likert-<tlqId>-<k>-value-1..5"
+- Buttons:          data-testid="skip", data-testid="continue"

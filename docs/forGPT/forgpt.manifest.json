@@ -1,0 +1,116 @@
+{
+  "description": "forGPT packet manifest for Rawls Game (JustSprites). Paths are DOCS_ROOT-relative (DOCS_ROOT=docs).",
+  "lastUpdated": "2026-02-07",
+  "files": [
+    {
+      "src": "project/RAWLS-START-HERE.md",
+      "dest": "RAWLS-START-HERE.md",
+      "tier": "core"
+    },
+    {
+      "src": "project/VISION.md",
+      "dest": "VISION.md",
+      "tier": "core"
+    },
+    {
+      "src": "project/EPICS.md",
+      "dest": "EPICS.md",
+      "tier": "core"
+    },
+    {
+      "src": "project/NEXT.md",
+      "dest": "NEXT.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol/protocol-v7.md",
+      "dest": "protocol-v7.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol/working-agreement-v1.md",
+      "dest": "working-agreement-v1.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol/copilot-instructions-v7.md",
+      "dest": "copilot-instructions-v7.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol/prompt-lifecycle.md",
+      "dest": "prompt-lifecycle.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/session-start-checklist.md",
+      "dest": "session-start-checklist.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/PAUSE.md",
+      "dest": "PAUSE.md",
+      "tier": "core"
+    },
+    {
+      "src": "research/ResearchIndex.md",
+      "dest": "ResearchIndex.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol-primer.md",
+      "dest": "protocol-primer.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol-lite.md",
+      "dest": "protocol-lite.md",
+      "tier": "core"
+    },
+    {
+      "src": "status/branches.md",
+      "dest": "branches.md",
+      "tier": "core"
+    },
+    {
+      "src": "vibe-coding/protocol/stay-on-track.md",
+      "dest": "stay-on-track.md",
+      "tier": "extra"
+    },
+    {
+      "src": "vibe-coding/protocol/alignment-mode.md",
+      "dest": "alignment-mode.md",
+      "tier": "extra"
+    },
+    {
+      "src": "vibe-coding/protocol/required-artifacts.md",
+      "dest": "required-artifacts.md",
+      "tier": "extra"
+    },
+    {
+      "src": "vibe-coding/protocol/verification-mode.md",
+      "dest": "verification-mode.md",
+      "tier": "extra"
+    },
+    {
+      "src": "project/CONTENT-RULES.md",
+      "dest": "CONTENT-RULES.md",
+      "tier": "extra"
+    },
+    {
+      "src": "testing/test-catalog.md",
+      "dest": "test-catalog.md",
+      "tier": "extra"
+    },
+    {
+      "src": "status/tech-debt-and-future-work.md",
+      "dest": "tech-debt-and-future-work.md",
+      "tier": "extra"
+    },
+    {
+      "src": "status/solution-report.md",
+      "dest": "solution-report.md",
+      "tier": "extra"
+    }
+  ]
+}

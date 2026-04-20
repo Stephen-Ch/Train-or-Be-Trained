@@ -1,0 +1,30 @@
+{
+  "metaLineTemplate": "You chose {idealTitle} as a societal value you want no matter the circumstances you will be born into.",
+  "idealNarrationMap": {
+    "liberty": "We're clarifying where you draw the line on personal freedom.",
+    "equality": "We're clarifying what equal treatment means in practice.",
+    "fairness": "We're clarifying what fair outcomes look like.",
+    "prosperity": "We're clarifying what economic well-being means.",
+    "security": "We're clarifying what safety and stability require.",
+    "sustainability": "We're clarifying what protecting future generations means.",
+    "community": "We're clarifying what belonging and connection require."
+  },
+  "reflectionBucketsGeneric": {
+    "low": "That suggests you're cautious about prioritizing this.",
+    "mid": "That suggests you're weighing tradeoffs.",
+    "high": "That suggests you prioritize this strongly."
+  },
+  "reflectionBucketsLiberty": {
+    "low": "That suggests you're comfortable with more limits on freedom when needed.",
+    "mid": "That suggests you want freedom with some guardrails.",
+    "high": "That suggests you lean toward wide personal freedom, even when it's messy."
+  },
+  "unansweredGeneric": {
+    "sentenceA": "We're clarifying what this means in real situations.",
+    "sentenceB": "Choose what feels true for you — we'll follow up based on your choice."
+  },
+  "unansweredLiberty": {
+    "sentenceA": "We're clarifying where you draw the line on personal freedom.",
+    "sentenceB": "Choose what feels true for you — we'll follow up based on your choice."
+  }
+}

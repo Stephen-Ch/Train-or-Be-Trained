@@ -1,0 +1,28 @@
+{
+  "id": "bad-example",
+  "title": "Bad Example Category",
+  "order": 99,
+  "questions": [
+    {
+      "id": "liberty-q0",
+      "title": "",
+      "body": "Question with duplicate ID and empty title",
+      "order": 5,
+      "tlq": false
+    },
+    {
+      "id": "bad-q2",
+      "title": "Non-TLQ Question",
+      "body": "This is a non-TLQ question",
+      "order": 0,
+      "tlq": false
+    },
+    {
+      "id": "bad-q1",
+      "title": "TLQ After Non-TLQ",
+      "body": "This TLQ comes after a non-TLQ (bad!)",
+      "order": 1,
+      "tlq": true
+    }
+  ]
+}

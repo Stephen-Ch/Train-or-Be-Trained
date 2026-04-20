@@ -1,0 +1,43 @@
+name: Content Validation
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'src/content/**'
+      - 'scripts/content-*.js'
+      - '.github/workflows/content.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeCheck (if present)
+        run: npm run typecheck || echo "No typecheck script found, skipping"
+        continue-on-error: true
+
+      - name: Lint content
+        run: npm run content:lint
+
+      - name: Upload diff report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-diff-report
+          path: artifacts/content-diff.md
+          if-no-files-found: warn

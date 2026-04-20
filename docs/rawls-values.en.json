@@ -1,0 +1,276 @@
+{
+  "version": "v2025.10.13-rawls-7cat-likert",
+  "locale": "en",
+  "likert5": [
+    "Strongly Disagree",
+    "Disagree",
+    "Neutral",
+    "Agree",
+    "Strongly Agree"
+  ],
+  "categories": [
+    {
+      "id": "A",
+      "key": "rights-freedoms",
+      "label": "Rights & Freedoms",
+      "quote": "\"...that all men are created equal...\" — Declaration of Independence",
+      "options": [
+        {
+          "id": "A1",
+          "label": "Freedom of speech",
+          "followUps": [
+            { "id": "A1-f1", "statement": "Even hateful or deeply offensive speech should remain legal.", "reverse": false, "dimension": "free_speech" },
+            { "id": "A1-f2", "statement": "Political falsehoods should still be protected as free speech.", "reverse": false, "dimension": "free_speech" },
+            { "id": "A1-f3", "statement": "Authorities should restrict misinformation on media platforms.", "reverse": false, "dimension": "misinfo_regulation" }
+          ]
+        },
+        {
+          "id": "A2",
+          "label": "Right to education",
+          "followUps": [
+            { "id": "A2-f1", "statement": "Tuition-free access should extend through college and vocational training.", "reverse": false, "dimension": "education_access" },
+            { "id": "A2-f2", "statement": "Standardized testing is necessary for accountability and fairness.", "reverse": false, "dimension": "testing_accountability" },
+            { "id": "A2-f3", "statement": "A common civic curriculum should be required nationwide.", "reverse": false, "dimension": "civics_common_core" }
+          ]
+        },
+        {
+          "id": "A3",
+          "label": "Right to privacy",
+          "followUps": [
+            { "id": "A3-f1", "statement": "Individuals should have strong digital privacy from companies.", "reverse": false, "dimension": "privacy_corporate" },
+            { "id": "A3-f2", "statement": "Government surveillance of citizens is acceptable to improve security.", "reverse": false, "dimension": "privacy_government" },
+            { "id": "A3-f3", "statement": "Strict data-privacy rules should bind all large technology firms.", "reverse": false, "dimension": "privacy_regulation" }
+          ]
+        },
+        {
+          "id": "A4",
+          "label": "Right to healthcare",
+          "followUps": [
+            { "id": "A4-f1", "statement": "Universal coverage should include elective procedures like joint replacements.", "reverse": false, "dimension": "uhc_scope" },
+            { "id": "A4-f2", "statement": "Cosmetic procedures should sometimes be publicly covered (e.g., after trauma).", "reverse": false, "dimension": "uhc_cosmetic" },
+            { "id": "A4-f3", "statement": "Coverage decisions should be made primarily by medical professionals.", "reverse": false, "dimension": "uhc_governance" }
+          ]
+        },
+        {
+          "id": "A5",
+          "label": "Freedom of religion",
+          "followUps": [
+            { "id": "A5-f1", "statement": "Religious beliefs should influence public policy when held by a majority.", "reverse": false, "dimension": "religion_policy" },
+            { "id": "A5-f2", "statement": "Civil rights should prevail when they conflict with religious doctrine.", "reverse": false, "dimension": "religion_vs_civil_rights" },
+            { "id": "A5-f3", "statement": "Separation of church and state should be strictly maintained.", "reverse": false, "dimension": "establishment_clause" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "key": "economic-justice",
+      "label": "Economic Justice (Wealth & Welfare)",
+      "quote": "\"Social and economic inequalities are to be arranged to the greatest benefit of the least advantaged.\" — Rawls",
+      "options": [
+        {
+          "id": "B1",
+          "label": "Equal distribution",
+          "followUps": [
+            { "id": "B1-f1", "statement": "Redistributive policies like higher taxes and UBI are necessary for justice.", "reverse": false, "dimension": "redistribution_support" },
+            { "id": "B1-f2", "statement": "Reducing inequality is worth some loss in overall productivity.", "reverse": false, "dimension": "equality_tradeoff" },
+            { "id": "B1-f3", "statement": "Making exceptions for high achievers undermines fairness.", "reverse": false, "dimension": "high_achiever_exceptions" }
+          ]
+        },
+        {
+          "id": "B2",
+          "label": "Merit-based distribution",
+          "followUps": [
+            { "id": "B2-f1", "statement": "Market rewards based on effort, skill, or innovation are fundamentally fair.", "reverse": false, "dimension": "merit_fairness" },
+            { "id": "B2-f2", "statement": "Wealth and inheritance should be capped to prevent excessive inequality.", "reverse": false, "dimension": "wealth_cap" },
+            { "id": "B2-f3", "statement": "A minimal safety net is still necessary to protect the vulnerable.", "reverse": false, "dimension": "safety_net_minimum" }
+          ]
+        },
+        {
+          "id": "B3",
+          "label": "Mixed approach",
+          "followUps": [
+            { "id": "B3-f1", "statement": "Society should balance incentives with redistribution to ensure basic dignity.", "reverse": false, "dimension": "balanced_model" },
+            { "id": "B3-f2", "statement": "Healthcare, unemployment insurance, and disability support are essential programs.", "reverse": false, "dimension": "welfare_programs" },
+            { "id": "B3-f3", "statement": "Policy should actively correct systemic inequities even if markets are disrupted.", "reverse": false, "dimension": "anti_systemic_inequity" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "key": "governance-regulation",
+      "label": "Governance & Regulation",
+      "quote": "\"A just system is efficient; an efficient system is not necessarily just.\"",
+      "options": [
+        {
+          "id": "C1",
+          "label": "Minimal regulation",
+          "followUps": [
+            { "id": "C1-f1", "statement": "The economy functions best with minimal government regulation.", "reverse": true, "dimension": "reg_minimalism" },
+            { "id": "C1-f2", "statement": "Strong worker protections are essential even if they raise costs.", "reverse": false, "dimension": "labor_protection" },
+            { "id": "C1-f3", "statement": "Industries should be trusted to self-regulate environmental impact.", "reverse": true, "dimension": "self_regulation_env" }
+          ]
+        },
+        {
+          "id": "C2",
+          "label": "Moderate regulation",
+          "followUps": [
+            { "id": "C2-f1", "statement": "Finance, environment, and labor require targeted, enforceable rules.", "reverse": false, "dimension": "targeted_rules" },
+            { "id": "C2-f2", "statement": "Individuals must have enforceable data-privacy rights.", "reverse": false, "dimension": "privacy_rights" },
+            { "id": "C2-f3", "statement": "Independent oversight is preferable to industry self-regulation alone.", "reverse": false, "dimension": "oversight_preference" }
+          ]
+        },
+        {
+          "id": "C3",
+          "label": "Heavy regulation",
+          "followUps": [
+            { "id": "C3-f1", "statement": "Public-health impacting industries should face strict structural limits.", "reverse": false, "dimension": "public_health_limits" },
+            { "id": "C3-f2", "statement": "Small-business burdens are acceptable to prevent large-scale harms.", "reverse": false, "dimension": "sb_tradeoffs" },
+            { "id": "C3-f3", "statement": "Heavy regulation is justified where market failures are severe.", "reverse": false, "dimension": "market_failure_heavy" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "key": "equality-diversity",
+      "label": "Equality & Diversity",
+      "quote": "\"Justice is the first virtue of social institutions.\" — Rawls",
+      "options": [
+        {
+          "id": "D1",
+          "label": "Very important",
+          "followUps": [
+            { "id": "D1-f1", "statement": "Affirmative action is necessary to address historical injustices.", "reverse": false, "dimension": "affirmative_action" },
+            { "id": "D1-f2", "statement": "Reparations or targeted investments should remedy past harms.", "reverse": false, "dimension": "reparations_targeted" },
+            { "id": "D1-f3", "statement": "Diversity benchmarks or quotas are justified in some sectors.", "reverse": false, "dimension": "diversity_quotas" }
+          ]
+        },
+        {
+          "id": "D2",
+          "label": "Somewhat important",
+          "followUps": [
+            { "id": "D2-f1", "statement": "Practical measures should promote equal opportunity without rigid quotas.", "reverse": false, "dimension": "measures_no_quotas" },
+            { "id": "D2-f2", "statement": "Merit and diversity goals can be balanced in hiring and admissions.", "reverse": false, "dimension": "merit_balance" },
+            { "id": "D2-f3", "statement": "Education should play a leading role in advancing inclusion.", "reverse": false, "dimension": "education_inclusion" }
+          ]
+        },
+        {
+          "id": "D3",
+          "label": "Not important",
+          "followUps": [
+            { "id": "D3-f1", "statement": "Equality initiatives are less important than personal responsibility.", "reverse": true, "dimension": "personal_responsibility" },
+            { "id": "D3-f2", "statement": "Current levels of inequality do not warrant special policies.", "reverse": true, "dimension": "status_quo_ok" },
+            { "id": "D3-f3", "statement": "Focusing on group identity harms social cohesion.", "reverse": true, "dimension": "group_identity_cost" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "key": "justice-rehabilitation",
+      "label": "Justice & Rehabilitation",
+      "quote": "\"Justice must be seen to be done.\"",
+      "options": [
+        {
+          "id": "E1",
+          "label": "Rehabilitation",
+          "followUps": [
+            { "id": "E1-f1", "statement": "Non-violent offenders should be diverted to rehabilitation instead of prison.", "reverse": false, "dimension": "rehab_diversion" },
+            { "id": "E1-f2", "statement": "Rehab should include education, therapy, and employment pathways.", "reverse": false, "dimension": "rehab_services" },
+            { "id": "E1-f3", "statement": "Communities should fund reintegration support after sentences end.", "reverse": false, "dimension": "reentry_support" }
+          ]
+        },
+        {
+          "id": "E2",
+          "label": "Punishment",
+          "followUps": [
+            { "id": "E2-f1", "statement": "The death penalty is justified for the most serious crimes.", "reverse": false, "dimension": "death_penalty" },
+            { "id": "E2-f2", "statement": "Mandatory minimum sentences deter crime and should be retained.", "reverse": false, "dimension": "mandatory_minimums" },
+            { "id": "E2-f3", "statement": "Punishment severity should closely match the harm caused.", "reverse": false, "dimension": "proportionality" }
+          ]
+        },
+        {
+          "id": "E3",
+          "label": "Restorative justice",
+          "followUps": [
+            { "id": "E3-f1", "statement": "Victims should have a formal role in restorative processes.", "reverse": false, "dimension": "victim_role" },
+            { "id": "E3-f2", "statement": "Restorative justice should be available for a wide range of crimes.", "reverse": false, "dimension": "restorative_scope" },
+            { "id": "E3-f3", "statement": "Restorative outcomes must balance safety, fairness, and reform.", "reverse": false, "dimension": "restorative_balance" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "key": "education",
+      "label": "Education",
+      "quote": "\"An educated citizenry is essential to the functioning of a democracy.\"",
+      "options": [
+        {
+          "id": "F1",
+          "label": "Full public funding",
+          "followUps": [
+            { "id": "F1-f1", "statement": "Public funding should make higher education tuition-free.", "reverse": false, "dimension": "tuition_free" },
+            { "id": "F1-f2", "statement": "Public schools should meet strong accountability and quality standards.", "reverse": false, "dimension": "public_accountability" },
+            { "id": "F1-f3", "statement": "Standardized tests help ensure fairness and comparability.", "reverse": false, "dimension": "testing_fairness" }
+          ]
+        },
+        {
+          "id": "F2",
+          "label": "Vouchers",
+          "followUps": [
+            { "id": "F2-f1", "statement": "Universal vouchers improve educational outcomes overall.", "reverse": false, "dimension": "vouchers_effect" },
+            { "id": "F2-f2", "statement": "Voucher access should not be limited by family income.", "reverse": false, "dimension": "vouchers_universal" },
+            { "id": "F2-f3", "statement": "Vouchers create healthy competition that benefits public schools.", "reverse": false, "dimension": "vouchers_competition" }
+          ]
+        },
+        {
+          "id": "F3",
+          "label": "Support both systems",
+          "followUps": [
+            { "id": "F3-f1", "statement": "Funding should be balanced fairly between public and private schools.", "reverse": false, "dimension": "funding_balance" },
+            { "id": "F3-f2", "statement": "Eligibility for public funds should depend on clear performance criteria.", "reverse": false, "dimension": "funding_criteria" },
+            { "id": "F3-f3", "statement": "Private schools receiving public funds must meet public accountability rules.", "reverse": false, "dimension": "private_accountability" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "key": "global-responsibilities",
+      "label": "Global Responsibilities",
+      "quote": "\"Justice is global in scope in a deeply interconnected world.\"",
+      "options": [
+        {
+          "id": "G1",
+          "label": "Humanitarian aid",
+          "followUps": [
+            { "id": "G1-f1", "statement": "Nations have a duty to accept refugees under defined conditions.", "reverse": false, "dimension": "refugee_duty" },
+            { "id": "G1-f2", "statement": "Aid should be allocated primarily on the basis of need.", "reverse": false, "dimension": "aid_need" },
+            { "id": "G1-f3", "statement": "NGOs should play a major role alongside governments in delivering aid.", "reverse": false, "dimension": "ngo_role" }
+          ]
+        },
+        {
+          "id": "G2",
+          "label": "Trade partnerships",
+          "followUps": [
+            { "id": "G2-f1", "statement": "Trade should favor partners that uphold human rights and rule of law.", "reverse": false, "dimension": "values_based_trade" },
+            { "id": "G2-f2", "statement": "Trade deals must enforce labor and environmental standards.", "reverse": false, "dimension": "trade_standards" },
+            { "id": "G2-f3", "statement": "Global trade can reduce inequality if agreements are designed fairly.", "reverse": false, "dimension": "trade_inequality" }
+          ]
+        },
+        {
+          "id": "G3",
+          "label": "Military intervention",
+          "followUps": [
+            { "id": "G3-f1", "statement": "Military intervention is justified to prevent mass atrocities.", "reverse": false, "dimension": "r2p_thresholds" },
+            { "id": "G3-f2", "statement": "Using force to promote democracy can sometimes be appropriate.", "reverse": false, "dimension": "force_democracy" },
+            { "id": "G3-f3", "statement": "International oversight should guide decisions to intervene.", "reverse": false, "dimension": "intl_oversight" }
+          ]
+        }
+      ]
+    }
+  ]
+}

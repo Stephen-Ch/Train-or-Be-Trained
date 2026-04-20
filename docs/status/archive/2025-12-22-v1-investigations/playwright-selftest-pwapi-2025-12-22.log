@@ -1,0 +1,17 @@
+2025-12-22T13:49:10.483Z pw:api => browserType.launch started
+2025-12-22T13:49:10.652Z pw:api <= browserType.launch succeeded
+2025-12-22T13:49:10.653Z pw:api => browser.newPage started
+2025-12-22T13:49:10.910Z pw:api   "commit" event fired
+2025-12-22T13:49:10.912Z pw:api   "domcontentloaded" event fired
+2025-12-22T13:49:10.912Z pw:api   "load" event fired
+2025-12-22T13:49:11.004Z pw:api   "commit" event fired
+2025-12-22T13:49:11.004Z pw:api   navigated to "https://playwright/index.html"
+2025-12-22T13:49:11.042Z pw:api   "domcontentloaded" event fired
+2025-12-22T13:49:11.042Z pw:api   "load" event fired
+2025-12-22T13:49:11.170Z pw:api <= browser.newPage succeeded
+2025-12-22T13:49:11.170Z pw:api => page.goto started
+2025-12-22T13:49:11.585Z pw:api   "networkidle" event fired
+Error: SELFTEST_TIMEOUT_15s
+    at Timeout._onTimeout ([eval]:1:281)
+    at listOnTimeout (node:internal/timers:581:17)
+    at process.processTimers (node:internal/timers:519:7)

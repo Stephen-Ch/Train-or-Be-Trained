@@ -1,0 +1,44 @@
+{
+  "id": "sustainability",
+  "title": "Sustainability",
+  "order": 6,
+  "description": "To ourselves and our Posterity (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "sustainability-q0",
+      "title": "How important is protecting the natural environment for future generations?",
+      "body": "How important is protecting the natural environment for future generations?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "sustainability-q0-fu0",
+          "title": "Limiting certain conveniences today is worth it to protect future generations",
+          "body": "Consider whether reducing some consumption now feels justified to preserve long-term resources.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "sustainability-q1",
+      "title": "How important is ensuring long-term economic resilience?",
+      "body": "How important is ensuring long-term economic resilience?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "sustainability-q2",
+      "title": "How important is it to be mindful of how our actions affect those who come after us?",
+      "body": "How important is it to be mindful of how our actions affect those who come after us?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "sustainability-q3",
+      "title": "How important is the conservation of resources?",
+      "body": "How important is the conservation of resources?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

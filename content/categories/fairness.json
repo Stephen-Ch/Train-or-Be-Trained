@@ -1,0 +1,44 @@
+{
+  "id": "fairness",
+  "title": "Fairness",
+  "order": 5,
+  "description": "Establish Justice (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "fairness-q0",
+      "title": "How important is a fair and transparent decision-making process?",
+      "body": "How important is a fair and transparent decision-making process?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "fairness-q0-fu0",
+          "title": "It is better to slow decisions down if that keeps the process transparent for everyone",
+          "body": "Consider whether full transparency is worth delays when outcomes feel urgent.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "fairness-q1",
+      "title": "How important is ensuring that rewards and resources are distributed justly?",
+      "body": "How important is ensuring that rewards and resources are distributed justly?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "fairness-q2",
+      "title": "How important is it that the legal system focuses on rehabilitation rather than just punishment?",
+      "body": "How important is it that the legal system focuses on rehabilitation rather than just punishment?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "fairness-q3",
+      "title": "How important is it that all people are treated without bias?",
+      "body": "How important is it that all people are treated without bias?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}

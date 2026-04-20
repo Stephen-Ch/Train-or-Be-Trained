@@ -1,0 +1,189 @@
+Scope Proof: OC-DOCS-STANDARDIZE-RAWLS-001
+==========================================
+
+Base SHA: 97655e4
+HEAD SHA: 691c470
+Date: 2026-02-27
+
+=== git diff --name-status ===
+M	.gitignore
+A	docs/REPORT-docs-ignored-files.txt
+A	docs/REPORT-docs-tracked-files.txt
+A	docs/REPORT-docs-tree-files.txt
+M	docs/forGPT/EPICS.md
+M	docs/forGPT/NEXT.md
+M	docs/forGPT/PAUSE.md
+A	docs/forGPT/RAWLS-START-HERE.md
+M	docs/forGPT/ResearchIndex.md
+M	docs/forGPT/VERSION-MANIFEST.md
+M	docs/forGPT/VISION.md
+M	docs/forGPT/alignment-mode.md
+A	docs/forGPT/copilot-instructions-v7.md
+M	docs/forGPT/prompt-lifecycle.md
+M	docs/forGPT/protocol-lite.md
+M	docs/forGPT/protocol-primer.md
+A	docs/forGPT/protocol-v7.md
+M	docs/forGPT/required-artifacts.md
+M	docs/forGPT/session-start-checklist.md
+M	docs/forGPT/stay-on-track.md
+M	docs/forGPT/verification-mode.md
+A	docs/forGPT/working-agreement-v1.md
+R100	docs/vibe-coding/overlays/OVERLAY-INDEX.md	docs/overlays/OVERLAY-INDEX.md
+A	docs/overlays/hot-files.md
+A	docs/overlays/merge-commands.md
+R100	docs/vibe-coding/overlays/rawls.md	docs/overlays/rawls.md
+A	docs/overlays/repo-policy.md
+A	docs/overlays/stack-profile.md
+M	docs/project/EPICS.md
+M	docs/project/NEXT.md
+M	docs/project/VISION.md
+A	docs/status/protocol-reassessment-post-sweep-2026-01-05.md
+A	docs/vibe-coding/DOCS-HEALTH-CONTRACT.md
+M	docs/vibe-coding/FILE-VERSIONING.md
+M	docs/vibe-coding/MIGRATION-INSTRUCTIONS.md
+A	docs/vibe-coding/OCTOPUS-INVARIANTS.md
+M	docs/vibe-coding/PAUSE.md
+M	docs/vibe-coding/README.md
+D	docs/vibe-coding/VIBE-CODING-KIT-VERSION-2025-12-27.txt
+A	docs/vibe-coding/VIBE-CODING-KIT-VERSION-2026-02-11.txt
+M	docs/vibe-coding/VIBE-CODING.VERSION.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-DECONTAMINATION-FORBIDDEN-LITERALS-PR5-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-DEDUPE-VERSION-LINKS-AUDIT-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-LINKS-MODE-AWARE-AUDIT-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-LOCK-OVERLAYS-OUTSIDE-HEAD-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-OCTOPUS-COMPREHENSION-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-PROTOCOL-INDEX-IMPLEMENTED-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-PROTOCOL-INDEX-MERGE-CLOSEOUT-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-PROTOCOL-V7-INDEX-RESEARCH-001.md
+A	docs/vibe-coding/docs/status/REPORT-KIT-RULE-DEDUPE-CONFIDENCE-CMDLOCK-001.md
+M	docs/vibe-coding/portability/subtree-playbook.md
+M	docs/vibe-coding/portability/user-story-stephen-vibe-coding.md
+M	docs/vibe-coding/protocol-lite.md
+M	docs/vibe-coding/protocol-primer.md
+A	docs/vibe-coding/protocol/PROTOCOL-INDEX.md
+M	docs/vibe-coding/protocol/alignment-mode.md
+M	docs/vibe-coding/protocol/canonical-commands.md
+M	docs/vibe-coding/protocol/copilot-instructions-v7.md
+M	docs/vibe-coding/protocol/merge-prompt-template.md
+M	docs/vibe-coding/protocol/prompt-lifecycle.md
+M	docs/vibe-coding/protocol/protocol-v7.md
+M	docs/vibe-coding/protocol/required-artifacts.md
+M	docs/vibe-coding/protocol/return-packet-gate.md
+M	docs/vibe-coding/protocol/stay-on-track.md
+M	docs/vibe-coding/protocol/verification-mode.md
+M	docs/vibe-coding/protocol/working-agreement-v1.md
+M	docs/vibe-coding/session-start-checklist.md
+M	docs/vibe-coding/standards/research-standard.md
+M	docs/vibe-coding/standards/stack-profile-standard.md
+M	docs/vibe-coding/templates/EVIDENCE-PACK-TEMPLATE.md
+A	docs/vibe-coding/templates/copilot-instructions-overlay.example.md
+M	docs/vibe-coding/templates/github-agent-return-packets-prompt-template.md
+A	docs/vibe-coding/templates/hot-files-overlay.example.md
+A	docs/vibe-coding/templates/merge-commands-overlay.example.md
+A	docs/vibe-coding/templates/overlay-index.example.md
+A	docs/vibe-coding/templates/prompt-template.md
+A	docs/vibe-coding/templates/repo-policy-overlay.example.md
+A	docs/vibe-coding/templates/stack-profile-overlay.example.md
+M	docs/vibe-coding/templates/test-touch-block-template.md
+M	docs/vibe-coding/terminology/terminology-dictionary.md
+M	docs/vibe-coding/terminology/terminology-template.md
+A	docs/vibe-coding/tools/check-prior-research.ps1
+A	docs/vibe-coding/tools/check-protocol-v7-budget.ps1
+M	docs/vibe-coding/tools/doc-audit.ps1
+A	docs/vibe-coding/tools/session-start.ps1
+M	docs/vibe-coding/tools/sync-forgpt.ps1
+A	docs/vibe-coding/tools/verify-protocol-index.ps1
+
+=== git diff --stat ===
+ .gitignore                                         |    1 +
+ docs/REPORT-docs-ignored-files.txt                 |    1 +
+ docs/REPORT-docs-tracked-files.txt                 |  243 ++++
+ docs/REPORT-docs-tree-files.txt                    |  243 ++++
+ docs/forGPT/EPICS.md                               |    3 -
+ docs/forGPT/NEXT.md                                |    8 +-
+ docs/forGPT/PAUSE.md                               |   86 +-
+ docs/forGPT/RAWLS-START-HERE.md                    |  161 +++
+ docs/forGPT/ResearchIndex.md                       |   43 +-
+ docs/forGPT/VERSION-MANIFEST.md                    |   38 +-
+ docs/forGPT/VISION.md                              |    3 -
+ docs/forGPT/alignment-mode.md                      |   76 +-
+ docs/forGPT/copilot-instructions-v7.md             |  189 ++++
+ docs/forGPT/prompt-lifecycle.md                    |    8 +-
+ docs/forGPT/protocol-lite.md                       |   32 +-
+ docs/forGPT/protocol-primer.md                     |   13 +-
+ docs/forGPT/protocol-v7.md                         | 1192 ++++++++++++++++++++
+ docs/forGPT/required-artifacts.md                  |   59 +-
+ docs/forGPT/session-start-checklist.md             |    4 +-
+ docs/forGPT/stay-on-track.md                       |    6 +-
+ docs/forGPT/verification-mode.md                   |    6 +-
+ docs/forGPT/working-agreement-v1.md                |   94 ++
+ docs/{vibe-coding => }/overlays/OVERLAY-INDEX.md   |    0
+ docs/overlays/hot-files.md                         |   55 +
+ docs/overlays/merge-commands.md                    |   49 +
+ docs/{vibe-coding => }/overlays/rawls.md           |    0
+ docs/overlays/repo-policy.md                       |   55 +
+ docs/overlays/stack-profile.md                     |   52 +
+ docs/project/EPICS.md                              |    3 -
+ docs/project/NEXT.md                               |    8 +-
+ docs/project/VISION.md                             |    3 -
+ .../protocol-reassessment-post-sweep-2026-01-05.md |    0
+ docs/vibe-coding/DOCS-HEALTH-CONTRACT.md           |   73 ++
+ docs/vibe-coding/FILE-VERSIONING.md                |   57 +-
+ docs/vibe-coding/MIGRATION-INSTRUCTIONS.md         |  128 ++-
+ docs/vibe-coding/OCTOPUS-INVARIANTS.md             |   63 ++
+ docs/vibe-coding/PAUSE.md                          |   86 +-
+ docs/vibe-coding/README.md                         |   79 +-
+ .../VIBE-CODING-KIT-VERSION-2025-12-27.txt         |   15 -
+ .../VIBE-CODING-KIT-VERSION-2026-02-11.txt         |   14 +
+ docs/vibe-coding/VIBE-CODING.VERSION.md            |   73 +-
+ ...T-DECONTAMINATION-FORBIDDEN-LITERALS-PR5-001.md |  116 ++
+ .../REPORT-KIT-DEDUPE-VERSION-LINKS-AUDIT-001.md   |  276 +++++
+ .../REPORT-KIT-LINKS-MODE-AWARE-AUDIT-001.md       |  218 ++++
+ .../REPORT-KIT-LOCK-OVERLAYS-OUTSIDE-HEAD-001.md   |   59 +
+ .../status/REPORT-KIT-OCTOPUS-COMPREHENSION-001.md |  262 +++++
+ .../REPORT-KIT-PROTOCOL-INDEX-IMPLEMENTED-001.md   |   46 +
+ ...REPORT-KIT-PROTOCOL-INDEX-MERGE-CLOSEOUT-001.md |   43 +
+ .../REPORT-KIT-PROTOCOL-V7-INDEX-RESEARCH-001.md   |  326 ++++++
+ ...EPORT-KIT-RULE-DEDUPE-CONFIDENCE-CMDLOCK-001.md |   60 +
+ docs/vibe-coding/portability/subtree-playbook.md   |  116 +-
+ .../portability/user-story-stephen-vibe-coding.md  |   12 +-
+ docs/vibe-coding/protocol-lite.md                  |   32 +-
+ docs/vibe-coding/protocol-primer.md                |   13 +-
+ docs/vibe-coding/protocol/PROTOCOL-INDEX.md        |   87 ++
+ docs/vibe-coding/protocol/alignment-mode.md        |   76 +-
+ docs/vibe-coding/protocol/canonical-commands.md    |   38 +-
+ .../protocol/copilot-instructions-v7.md            |  344 +++---
+ docs/vibe-coding/protocol/merge-prompt-template.md |   20 +-
+ docs/vibe-coding/protocol/prompt-lifecycle.md      |    8 +-
+ docs/vibe-coding/protocol/protocol-v7.md           |  243 ++--
+ docs/vibe-coding/protocol/required-artifacts.md    |   59 +-
+ docs/vibe-coding/protocol/return-packet-gate.md    |   33 +-
+ docs/vibe-coding/protocol/stay-on-track.md         |    6 +-
+ docs/vibe-coding/protocol/verification-mode.md     |    6 +-
+ docs/vibe-coding/protocol/working-agreement-v1.md  |   53 +-
+ docs/vibe-coding/session-start-checklist.md        |    4 +-
+ docs/vibe-coding/standards/research-standard.md    |  233 ++--
+ .../standards/stack-profile-standard.md            |    6 +-
+ .../templates/EVIDENCE-PACK-TEMPLATE.md            |    4 +-
+ .../copilot-instructions-overlay.example.md        |  115 ++
+ .../github-agent-return-packets-prompt-template.md |   30 +-
+ .../templates/hot-files-overlay.example.md         |   45 +
+ .../templates/merge-commands-overlay.example.md    |   49 +
+ .../vibe-coding/templates/overlay-index.example.md |   31 +
+ docs/vibe-coding/templates/prompt-template.md      |   76 ++
+ .../templates/repo-policy-overlay.example.md       |   54 +
+ .../templates/stack-profile-overlay.example.md     |   48 +
+ .../templates/test-touch-block-template.md         |    8 +-
+ .../terminology/terminology-dictionary.md          |    2 +-
+ .../terminology/terminology-template.md            |    4 +-
+ docs/vibe-coding/tools/check-prior-research.ps1    |  165 +++
+ .../vibe-coding/tools/check-protocol-v7-budget.ps1 |  102 ++
+ docs/vibe-coding/tools/doc-audit.ps1               |  307 ++++-
+ docs/vibe-coding/tools/session-start.ps1           |  312 +++++
+ docs/vibe-coding/tools/sync-forgpt.ps1             |    2 +-
+ docs/vibe-coding/tools/verify-protocol-index.ps1   |  175 +++
+ 87 files changed, 6610 insertions(+), 1036 deletions(-)
+
+=== Scope Validation ===
+All 87 changed files are under docs/ or equal .gitignore.
+Scope rule: PASS

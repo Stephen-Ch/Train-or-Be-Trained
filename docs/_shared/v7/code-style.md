@@ -1,0 +1,24 @@
+# Code Style — Rawls Game
+
+## TypeScript / Angular
+- Strict mode enabled
+- Prefer signals for state
+- Prefer standalone components + OnPush
+- Prefer `@if` / `@for` over `*ngIf` / `*ngFor`
+
+## Naming
+- Files: kebab-case (e.g., `question.component.ts`)
+- Test IDs: `data-testid="kebab-case"`
+- Keep pure functions in core engine/services
+
+## Module Boundaries (Rawls)
+- core/ (content, engine, session, update)
+- features/ (intro, question, review, result, select, store)
+- shared/ (share)
+
+## Testing
+- Prefer data-testid selectors over CSS
+- Keep tests deterministic and focused
+
+## Tailwind
+- Tailwind-first layout; SCSS only for scoped complexity

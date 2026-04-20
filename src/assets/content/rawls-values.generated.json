@@ -1,0 +1,345 @@
+{
+  "version": "generated-from-pipeline",
+  "locale": "en",
+  "likert5": [
+    "Strongly Disagree",
+    "Disagree",
+    "Neutral",
+    "Agree",
+    "Strongly Agree"
+  ],
+  "categories": [
+    {
+      "id": "liberty",
+      "name": "Liberty",
+      "description": "Secure the Blessings of Liberty (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "liberty-q0",
+          "statement": "How important is individual freedom to you?",
+          "reverse": false,
+          "dimension": "liberty-q0",
+          "challenges": [
+            {
+              "id": "liberty-q0-fu0",
+              "title": "Hate speech should be protected as free expression",
+              "body": "Consider where you draw the line between protecting speech and preventing harm.",
+              "order": 0
+            },
+            {
+              "id": "liberty-q0-fu1",
+              "title": "Deliberate lies for personal gain should be protected as speech",
+              "body": "Consider whether potential harms might justify limits on this freedom.",
+              "order": 1
+            },
+            {
+              "id": "liberty-q0-fu2",
+              "title": "Political lies should receive special protection during elections",
+              "body": "Consider whether rules should differ for politicians, campaigns, and ordinary citizens.",
+              "order": 2
+            },
+            {
+              "id": "liberty-q0-fu3",
+              "title": "Government regulation is the best approach to combat online misinformation",
+              "body": "Consider alternative approaches: platform rules, media literacy programs, or minimal intervention.",
+              "order": 3
+            },
+            {
+              "id": "liberty-q0-fu4",
+              "title": "Preventing harm justifies restricting some forms of speech",
+              "body": "Consider what types of speech might cross the line and require restriction.",
+              "order": 4
+            }
+          ]
+        },
+        {
+          "id": "liberty-q1",
+          "statement": "How important is the right to personal choice without government interference?",
+          "reverse": false,
+          "dimension": "liberty-q1",
+          "challenges": [
+            {
+              "id": "liberty-q1-fu0",
+              "title": "Personal choice should be absolute regardless of potential harm to self",
+              "body": "Consider whether individuals should be free to make choices that may harm themselves.",
+              "order": 0,
+              "triggerRule": {
+                "parentAnswerMin": 3,
+                "tags": [
+                  "pro-liberty",
+                  "personal-autonomy"
+                ]
+              }
+            },
+            {
+              "id": "liberty-q1-fu1",
+              "title": "Government should protect individuals from their own harmful choices",
+              "body": "Consider whether the state has a duty to prevent people from making self-destructive decisions.",
+              "order": 1,
+              "triggerRule": {
+                "parentAnswerMax": 2,
+                "tags": [
+                  "paternalism",
+                  "state-protection"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "liberty-q2",
+          "statement": "How important is economic freedom and independence for individuals?",
+          "reverse": false,
+          "dimension": "liberty-q2"
+        },
+        {
+          "id": "liberty-q3",
+          "statement": "How important is the protection of personal rights and privacy?",
+          "reverse": false,
+          "dimension": "liberty-q3"
+        }
+      ]
+    },
+    {
+      "id": "equality",
+      "name": "Equality",
+      "description": "All men are created equal (Declaration of Independence, paragraph 2)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "equality-q0",
+          "statement": "How important is ensuring everyone has an equal opportunity to succeed?",
+          "reverse": false,
+          "dimension": "equality-q0",
+          "challenges": [
+            {
+              "id": "equality-q0-fu0",
+              "title": "Providing extra support to disadvantaged groups is worth the added investment",
+              "body": "Consider whether offering additional tutoring, grants, or mentorship keeps opportunity truly equal.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "equality-q1",
+          "statement": "How important is reducing significant differences in wealth and income?",
+          "reverse": false,
+          "dimension": "equality-q1"
+        },
+        {
+          "id": "equality-q2",
+          "statement": "How important is having a legal system that treats everyone fairly and equally?",
+          "reverse": false,
+          "dimension": "equality-q2"
+        },
+        {
+          "id": "equality-q3",
+          "statement": "How important is providing additional support to disadvantaged groups?",
+          "reverse": false,
+          "dimension": "equality-q3"
+        }
+      ]
+    },
+    {
+      "id": "community",
+      "name": "Community",
+      "description": "Form a more perfect Union (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "community-q0",
+          "statement": "How important is a strong sense of shared identity in a group?",
+          "reverse": false,
+          "dimension": "community-q0",
+          "challenges": [
+            {
+              "id": "community-q0-fu0",
+              "title": "Strong communities should fund shared spaces even when personal costs rise",
+              "body": "Consider whether investing in public gathering places is worth modest tax increases.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "community-q1",
+          "statement": "How important is the belief that people should help each other in times of need?",
+          "reverse": false,
+          "dimension": "community-q1"
+        },
+        {
+          "id": "community-q2",
+          "statement": "How important are shared traditions and common values to you?",
+          "reverse": false,
+          "dimension": "community-q2"
+        },
+        {
+          "id": "community-q3",
+          "statement": "How important is social cohesion and a sense of belonging?",
+          "reverse": false,
+          "dimension": "community-q3"
+        }
+      ]
+    },
+    {
+      "id": "prosperity",
+      "name": "Prosperity",
+      "description": "Promote the general Welfare (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "prosperity-q0",
+          "statement": "How important is continuous economic growth and development?",
+          "reverse": false,
+          "dimension": "prosperity-q0",
+          "challenges": [
+            {
+              "id": "prosperity-q0-fu0",
+              "title": "Prioritizing economic growth is worth short-term inequality if it raises overall prosperity",
+              "body": "Consider whether accepting temporary gaps in outcomes is acceptable to keep the economy expanding.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "prosperity-q1",
+          "statement": "How important is personal financial success and wealth accumulation?",
+          "reverse": false,
+          "dimension": "prosperity-q1"
+        },
+        {
+          "id": "prosperity-q2",
+          "statement": "How important is a society's overall efficiency and productivity?",
+          "reverse": false,
+          "dimension": "prosperity-q2"
+        },
+        {
+          "id": "prosperity-q3",
+          "statement": "How important is a strong economy to your sense of well-being?",
+          "reverse": false,
+          "dimension": "prosperity-q3"
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Provide for the common defence (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "security-q0",
+          "statement": "How important is personal safety and freedom from crime?",
+          "reverse": false,
+          "dimension": "security-q0",
+          "challenges": [
+            {
+              "id": "security-q0-fu0",
+              "title": "Expanding surveillance is acceptable when it clearly prevents serious harm",
+              "body": "Consider whether trading some privacy for stronger protection feels worthwhile to you.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "security-q1",
+          "statement": "How important is economic stability and predictability?",
+          "reverse": false,
+          "dimension": "security-q1"
+        },
+        {
+          "id": "security-q2",
+          "statement": "How important is a strong national defense and protection from external threats?",
+          "reverse": false,
+          "dimension": "security-q2"
+        },
+        {
+          "id": "security-q3",
+          "statement": "How important is having a stable and predictable social environment?",
+          "reverse": false,
+          "dimension": "security-q3"
+        }
+      ]
+    },
+    {
+      "id": "fairness",
+      "name": "Fairness",
+      "description": "Establish Justice (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "fairness-q0",
+          "statement": "How important is a fair and transparent decision-making process?",
+          "reverse": false,
+          "dimension": "fairness-q0",
+          "challenges": [
+            {
+              "id": "fairness-q0-fu0",
+              "title": "It is better to slow decisions down if that keeps the process transparent for everyone",
+              "body": "Consider whether full transparency is worth delays when outcomes feel urgent.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "fairness-q1",
+          "statement": "How important is ensuring that rewards and resources are distributed justly?",
+          "reverse": false,
+          "dimension": "fairness-q1"
+        },
+        {
+          "id": "fairness-q2",
+          "statement": "How important is it that the legal system focuses on rehabilitation rather than just punishment?",
+          "reverse": false,
+          "dimension": "fairness-q2"
+        },
+        {
+          "id": "fairness-q3",
+          "statement": "How important is it that all people are treated without bias?",
+          "reverse": false,
+          "dimension": "fairness-q3"
+        }
+      ]
+    },
+    {
+      "id": "sustainability",
+      "name": "Sustainability",
+      "description": "To ourselves and our Posterity (U.S. Constitution, Preamble)",
+      "quote": "",
+      "followUps": [
+        {
+          "id": "sustainability-q0",
+          "statement": "How important is protecting the natural environment for future generations?",
+          "reverse": false,
+          "dimension": "sustainability-q0",
+          "challenges": [
+            {
+              "id": "sustainability-q0-fu0",
+              "title": "Limiting certain conveniences today is worth it to protect future generations",
+              "body": "Consider whether reducing some consumption now feels justified to preserve long-term resources.",
+              "order": 0
+            }
+          ]
+        },
+        {
+          "id": "sustainability-q1",
+          "statement": "How important is ensuring long-term economic resilience?",
+          "reverse": false,
+          "dimension": "sustainability-q1"
+        },
+        {
+          "id": "sustainability-q2",
+          "statement": "How important is it to be mindful of how our actions affect those who come after us?",
+          "reverse": false,
+          "dimension": "sustainability-q2"
+        },
+        {
+          "id": "sustainability-q3",
+          "statement": "How important is the conservation of resources?",
+          "reverse": false,
+          "dimension": "sustainability-q3"
+        }
+      ]
+    }
+  ]
+}

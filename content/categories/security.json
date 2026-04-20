@@ -1,0 +1,44 @@
+{
+  "id": "security",
+  "title": "Security",
+  "order": 4,
+  "description": "Provide for the common defence (U.S. Constitution, Preamble)",
+  "questions": [
+    {
+      "id": "security-q0",
+      "title": "How important is personal safety and freedom from crime?",
+      "body": "How important is personal safety and freedom from crime?",
+      "order": 0,
+      "tlq": false,
+      "deeperDives": [
+        {
+          "id": "security-q0-fu0",
+          "title": "Expanding surveillance is acceptable when it clearly prevents serious harm",
+          "body": "Consider whether trading some privacy for stronger protection feels worthwhile to you.",
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "security-q1",
+      "title": "How important is economic stability and predictability?",
+      "body": "How important is economic stability and predictability?",
+      "order": 1,
+      "tlq": false
+    },
+    {
+      "id": "security-q2",
+      "title": "How important is a strong national defense and protection from external threats?",
+      "body": "How important is a strong national defense and protection from external threats?",
+      "order": 2,
+      "tlq": false
+    },
+    {
+      "id": "security-q3",
+      "title": "How important is having a stable and predictable social environment?",
+      "body": "How important is having a stable and predictable social environment?",
+      "order": 3,
+      "tlq": false
+    }
+  ]
+}
