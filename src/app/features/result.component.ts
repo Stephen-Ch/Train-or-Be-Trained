@@ -88,6 +88,19 @@ function track(event: string): void {
           class="p-4 text-sm text-gray-800 whitespace-pre-wrap font-mono overflow-x-auto leading-relaxed">{{ document() }}</pre>
       </div>
 
+      <!-- Feedback link -->
+      <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-4 text-sm text-center space-y-1">
+        <p class="font-semibold text-blue-900">Used your document? Tell us what happened.</p>
+        <p class="text-blue-700 text-xs">Anonymous · Takes 3 minutes · Helps us improve</p>
+        <a
+          href="FEEDBACK_FORM_URL"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block mt-2 px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm">
+          Share feedback
+        </a>
+      </div>
+
     </div>
   `
 })
