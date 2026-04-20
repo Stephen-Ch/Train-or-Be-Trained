@@ -10,7 +10,7 @@ import { buildSequence, findNextUnanswered, SequencedQuestion } from '../core/fl
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
-    <div class="max-w-2xl mx-auto p-6 space-y-6" data-testid="view-question">
+    <div class="max-w-2xl mx-auto p-6 flex flex-col gap-6" data-testid="view-question">
 
       @if (currentQuestion(); as q) {
 
@@ -36,23 +36,17 @@ import { buildSequence, findNextUnanswered, SequencedQuestion } from '../core/fl
             {{ q.statement }}
           </p>
 
-          <!-- Likert scale -->
-          <div class="space-y-2">
-            <div class="flex justify-between text-xs text-gray-400 px-1">
-              @for (label of likert5(); track label) {
-                <span class="text-center w-1/5">{{ label }}</span>
-              }
-            </div>
-            <div class="flex gap-2 justify-between">
-              @for (val of [0, 1, 2, 3, 4]; track val) {
-                <button
-                  [attr.data-testid]="'option-' + val"
-                  [class]="optionClass(val, q.questionId)"
-                  (click)="selectAnswer(q.questionId, val)">
-                  {{ val + 1 }}
-                </button>
-              }
-            </div>
+          <!-- Likert scale — labels embedded in each button -->
+          <div class="flex gap-2 justify-between">
+            @for (val of [0, 1, 2, 3, 4]; track val) {
+              <button
+                [attr.data-testid]="'option-' + val"
+                [class]="optionClass(val, q.questionId)"
+                (click)="selectAnswer(q.questionId, val)">
+                <span class="block text-base font-bold leading-none">{{ val + 1 }}</span>
+                <span class="block text-[10px] leading-tight mt-1 font-normal opacity-80">{{ likert5()[val] }}</span>
+              </button>
+            }
           </div>
         </div>
 
@@ -110,7 +104,6 @@ export class QuestionV2Component implements OnInit {
   ngOnInit(): void {
     this.contentService.loadContent();
 
-    // Route param is the dimension id — find first question for that dimension
     this.route.params.subscribe((params) => {
       const dimensionId = params['id'];
       const seq = this.sequence();
@@ -118,7 +111,6 @@ export class QuestionV2Component implements OnInit {
       if (firstIdx >= 0) {
         this._overallIndex.set(firstIdx);
       } else {
-        // Fallback: find next unanswered
         const nextIdx = findNextUnanswered(seq, this.sessionStore.answers());
         this._overallIndex.set(nextIdx >= 0 ? nextIdx : 0);
       }
@@ -140,7 +132,7 @@ export class QuestionV2Component implements OnInit {
   optionClass(val: number, questionId: string): string {
     const current = this.answers()[questionId];
     const selected = current === val;
-    const base = 'flex-1 h-11 rounded-lg font-semibold text-sm transition-colors border-2';
+    const base = 'flex-1 py-3 px-1 rounded-lg font-semibold text-sm transition-colors border-2 flex flex-col items-center';
     return selected
       ? `${base} bg-blue-600 text-white border-blue-600`
       : `${base} bg-white text-gray-700 border-gray-200 hover:border-blue-400 hover:bg-blue-50`;
@@ -155,7 +147,6 @@ export class QuestionV2Component implements OnInit {
     if (!q) return;
 
     if (q.overallIndex >= q.overallTotal - 1) {
-      // All done
       this.router.navigate(['/result']);
       return;
     }

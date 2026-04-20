@@ -6,6 +6,12 @@ import { SessionStore } from '../core/session/session.store';
 import { buildAssessmentResult } from '../core/engine/scoring.engine';
 import { generateDocument } from '../core/engine/document.generator';
 
+function track(event: string): void {
+  if (typeof window !== 'undefined' && (window as any).plausible) {
+    (window as any).plausible(event);
+  }
+}
+
 @Component({
   selector: 'app-result',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,9 +92,15 @@ export class ResultComponent {
     return generateDocument(result);
   });
 
+  constructor() {
+    // Fire once when the result screen loads with a valid document
+    track('assessment_completed');
+  }
+
   copyToClipboard(): void {
     const text = this.document();
     navigator.clipboard.writeText(text).then(() => {
+      track('document_copied');
       this.copyLabel.set('Copied!');
       setTimeout(() => this.copyLabel.set('Copy to Clipboard'), 2500);
     }).catch(() => {
@@ -97,6 +109,7 @@ export class ResultComponent {
   }
 
   downloadMarkdown(): void {
+    track('document_downloaded');
     const text = this.document();
     const blob = new Blob([text], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);

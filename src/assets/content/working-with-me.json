@@ -1,5 +1,5 @@
 {
-  "likert5": ["Not at all", "Slightly", "Moderately", "Very", "Extremely"],
+  "likert5": ["Not like me", "A little like me", "Somewhat like me", "Mostly like me", "Exactly like me"],
   "lenses": [
     { "id": "practical", "label": "Practical Work", "description": "Projects, tasks, problem-solving, getting things done" },
     { "id": "creative", "label": "Creative Work", "description": "Writing, design, art, open-ended exploration" },
@@ -35,7 +35,7 @@
         },
         {
           "id": "memory-q4",
-          "statement": "I often have to re-read old notes or retrace steps before I can continue working.",
+          "statement": "I re-read old notes or retrace steps before I can continue working.",
           "reverse": false,
           "quick": false,
           "dimension": "memory"
@@ -57,7 +57,7 @@
       "followUps": [
         {
           "id": "focus-q1",
-          "statement": "When I'm working on something, I often find myself exploring a related idea that wasn't in my original plan.",
+          "statement": "When I'm working on something, I find myself exploring ideas that weren't in my original plan.",
           "reverse": false,
           "quick": true,
           "dimension": "focus"
@@ -121,7 +121,7 @@
         },
         {
           "id": "overwhelm-q4",
-          "statement": "I handle complexity well and rarely feel overwhelmed by too much information.",
+          "statement": "I handle complexity well and don't feel overwhelmed by too much information.",
           "reverse": true,
           "quick": false,
           "dimension": "overwhelm"
@@ -193,7 +193,7 @@
         },
         {
           "id": "decisions-q2",
-          "statement": "I often make a decision and then second-guess it shortly after.",
+          "statement": "After making a decision, I second-guess it.",
           "reverse": false,
           "quick": true,
           "dimension": "decisions"
@@ -272,7 +272,7 @@
       "followUps": [
         {
           "id": "calibration-q1",
-          "statement": "I often start things believing they'll take less time than they do.",
+          "statement": "I start things believing they'll take less time than they do.",
           "reverse": false,
           "quick": true,
           "dimension": "calibration"
@@ -293,14 +293,14 @@
         },
         {
           "id": "calibration-q4",
-          "statement": "When I plan a project, my estimates of time and effort are usually accurate.",
+          "statement": "My estimates of time and effort for a project are accurate.",
           "reverse": true,
           "quick": false,
           "dimension": "calibration"
         },
         {
           "id": "calibration-q5",
-          "statement": "I'm good at knowing when I'm out of my depth and need to ask for help.",
+          "statement": "I recognize when I'm out of my depth before it causes a problem.",
           "reverse": true,
           "quick": false,
           "dimension": "calibration"

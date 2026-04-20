@@ -1,6 +1,12 @@
-import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionStore } from '../../core/session/session.store';
+
+function track(event: string): void {
+  if (typeof window !== 'undefined' && (window as any).plausible) {
+    (window as any).plausible(event);
+  }
+}
 
 @Component({
   selector: 'app-intro',
@@ -23,30 +29,49 @@ import { SessionStore } from '../../core/session/session.store';
             <em>Working With Me</em> fixes that.
           </p>
 
-          <div class="pt-2 space-y-3">
+          <div class="pt-2 space-y-4">
+
+            <!-- Age gate -->
+            @if (!hasProgress()) {
+              <label class="inline-flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  data-testid="age-gate"
+                  [checked]="ageConfirmed()"
+                  (change)="ageConfirmed.set(!ageConfirmed())"
+                  class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                I confirm I am 13 or older
+              </label>
+            }
+
             @if (hasProgress()) {
-              <button
-                data-testid="resume-btn"
-                (click)="resume()"
-                class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
-                Resume Where I Left Off
-              </button>
-              <div>
+              <div class="space-y-2">
                 <button
-                  data-testid="start-fresh-btn"
-                  (click)="startFresh()"
-                  class="text-sm text-gray-500 hover:text-gray-700 underline">
-                  Start over instead
+                  data-testid="resume-btn"
+                  (click)="resume()"
+                  class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                  Resume Where I Left Off
                 </button>
+                <div>
+                  <button
+                    data-testid="start-fresh-btn"
+                    (click)="startFresh()"
+                    class="text-sm text-gray-500 hover:text-gray-700 underline">
+                    Start over instead
+                  </button>
+                </div>
               </div>
             } @else {
-              <button
-                data-testid="start-btn"
-                (click)="start()"
-                class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
-                Build My AI Trainer — Free
-              </button>
-              <p class="text-sm text-gray-400">5 minutes. Nothing stored. Works with any AI.</p>
+              <div>
+                <button
+                  data-testid="start-btn"
+                  [disabled]="!ageConfirmed()"
+                  (click)="start()"
+                  class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                  Build My AI Trainer — Free
+                </button>
+                <p class="text-sm text-gray-400 mt-2">5 minutes. Nothing stored. Works with any AI.</p>
+              </div>
             }
           </div>
         </div>
@@ -127,7 +152,7 @@ import { SessionStore } from '../../core/session/session.store';
         </div>
       </section>
 
-      <!-- Privacy + CTA -->
+      <!-- Bottom CTA -->
       <section class="py-14 px-6 bg-blue-600">
         <div class="max-w-2xl mx-auto text-center space-y-5">
           <h2 class="text-2xl font-bold text-white">Ready to train your AI?</h2>
@@ -136,10 +161,14 @@ import { SessionStore } from '../../core/session/session.store';
             No account. No email required.
           </p>
           <button
+            [disabled]="!ageConfirmed() && !hasProgress()"
             (click)="start()"
-            class="inline-block bg-white text-blue-700 hover:bg-blue-50 font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+            class="inline-block bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
             Build My AI Trainer
           </button>
+          @if (!ageConfirmed() && !hasProgress()) {
+            <p class="text-blue-200 text-xs">Confirm you are 13 or older above to continue.</p>
+          }
         </div>
       </section>
 
@@ -151,6 +180,7 @@ export class IntroComponent {
   private router = inject(Router);
 
   hasProgress = computed(() => this.sessionStore.hasSavedProgress());
+  ageConfirmed = signal(false);
 
   dimensions = [
     { label: 'How to start a session', description: 'What the AI should do when you return after a break.' },
@@ -163,16 +193,17 @@ export class IntroComponent {
   ];
 
   start(): void {
-    this.sessionStore.startFresh();
-    this.router.navigate(['/lens']);
-  }
-
-  startFresh(): void {
+    track('assessment_started');
     this.sessionStore.startFresh();
     this.router.navigate(['/lens']);
   }
 
   resume(): void {
-    this.router.navigate(['/select']);
+    this.router.navigate(['/lens']);
+  }
+
+  startFresh(): void {
+    this.ageConfirmed.set(false);
+    this.sessionStore.startFresh();
   }
 }

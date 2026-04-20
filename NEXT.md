@@ -119,6 +119,17 @@ Do not proceed to Stage 4 without passing Stage 1 and 2.
 
 ---
 
+## Stage 2 — Open Questions to Ask Users
+
+In addition to the 4 trust/accuracy questions, ask:
+
+- Did the questions feel natural to answer?
+- Was there anything about the phrasing that made it harder to be honest?
+
+**Context:** Current questions use "I..." statements with "...like me" scale labels, which creates a mild grammatical loop. "Some people..." framing (used in Big Five and other validated instruments) may feel more natural and reduce defensiveness. Do not rewrite before hearing from users — this is a phrasing question, not an accuracy question. If multiple users flag it unprompted, rewrite. If not, current framing is fine enough.
+
+---
+
 ## Decision Rules (after validation)
 
 **Continue** if: users clearly prefer AI outputs with the document, output feels personal, completion is decent, some paid interest shows up.
