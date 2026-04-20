@@ -196,27 +196,39 @@ I can process the same concern repeatedly without landing. If we've been returni
 const CALIBRATION_BLOCKS: LensBlocks = {
   practical: {
     low: `## Self-assessment
-My estimates and self-assessments are generally reliable. Take them at face value.`,
+My estimates and self-assessments are generally reliable. Take them at face value. If I say something will take an hour, it probably will.`,
     moderate: `## Calibration notes
-I sometimes underestimate how long things take or how much a context switch costs. If I'm planning something ambitious in a short time, ask: "Have you accounted for the re-entry cost?" Don't override my judgment — just prompt me to check it.`,
+Watch for two phrases: "this should be straightforward" and "I just need to sit down and do it." Both are signals I may be underestimating the real cost — usually re-entry, context switching, or hidden complexity. When you hear them, ask once: "Have you built in buffer for that?" Then let me answer. Don't override my plan — just make sure I've checked it.`,
     high: `## Calibration notes
-I consistently underestimate time and difficulty. When I say "this should be quick," treat that as aspirational. If I'm making a plan, ask: "What's your buffer if this takes twice as long?" When I say I understand something, it's worth asking: "What's your confidence level?" — I sometimes assume I've grasped something before I fully have.`
+Two phrases are reliable warning signs:
+- "This should be quick" — treat as aspirational, not factual
+- "I already understand this" — worth verifying; I sometimes think I've grasped something before I fully have
+
+When I make a plan, ask: "What's your buffer if this takes twice as long?" When I say I understand something well enough to act on it, ask: "What's your confidence level — are there gaps?" I need these checks. I won't always think to do them myself.`
   },
   creative: {
     low: `## Self-assessment
-I have good instincts about my own work and process. Trust my self-reports.`,
+I have solid instincts about my own creative work and capacity. Trust my self-reports. If I say I'm ready to work, I am.`,
     moderate: `## Calibration notes
-I sometimes overestimate how much creative work I can sustain in a session. If I'm planning to produce a lot, it's worth checking: "Is that realistic for the energy you have?" I appreciate the reality check.`,
+Watch for "I just need a few hours" and "I'll get it done this weekend." These often reflect intention, not realistic scope. When I'm planning a creative session, ask: "What's the one thing you'd be satisfied finishing?" Help me commit to something achievable rather than leaving with another incomplete draft.`,
     high: `## Calibration notes
-I set ambitious creative targets and often don't hit them — not from laziness but from overestimating what a session can hold. If I say "I'm going to write three chapters today," ask: "What would one good chapter look like?" Help me scope to what's actually achievable so I finish something instead of starting everything.`
+Two phrases signal I'm overcommitting:
+- "I'm going to finish this today" — almost always too much
+- "It's almost done, I just need to polish it" — polishing often takes as long as writing
+
+When I say either, ask: "What would done look like for just this session?" Don't let me plan three things when finishing one is the win. I will feel better completing something small than abandoning something large.`
   },
   life: {
     low: `## Self-knowledge
-I have reasonably clear insight into my own patterns. You can trust my self-reports.`,
+I have reasonably clear insight into my own patterns and limits. You can take my self-reports at face value.`,
     moderate: `## Calibration notes
-I sometimes frame my situation more optimistically than it is — not intentionally, but habits of thought. If I describe a plan that depends heavily on best-case outcomes, it's fair to ask: "What does this look like if it goes sideways?"`,
+Watch for "it'll be fine" and "I can handle it." Sometimes true — but when I say these about something that's been a recurring source of difficulty, it's worth a gentle check: "Is that based on how it's gone before, or how you'd like it to go?" Not to challenge me — just to make sure I'm working with an accurate picture.`,
     high: `## Calibration notes
-I have blind spots in my self-assessment — I tend to underestimate how much cognitive and emotional weight I'm carrying, and I often assume things will be easier or faster than they are. When I describe what I'm dealing with, ask: "Is that the full picture, or are you minimizing something?" Not to challenge me — just to help me see clearly.`
+Two phrases are signals I may be minimizing:
+- "It's not a big deal" — often said about things that are, in fact, a big deal
+- "I'm fine" — sometimes true, sometimes a way of closing a topic I haven't fully faced
+
+When you hear these about something significant — health, a relationship, a decision that's been dragging — ask: "Is that actually true, or are you managing how you're presenting this?" Ask it gently. I'm not looking to be challenged; I need help seeing clearly when I'm not.`
   }
 };
 
@@ -252,29 +264,23 @@ function getBlock(dimensionId: string, lens: LensId, level: DimensionLevel): str
 // ── Universal guardrails — appear in every document ─────────────────────
 
 const UNIVERSAL_GUARDRAILS = `## Before we begin
-Before our first conversation using these instructions, summarize in three sentences what you understand about how I work. I'll confirm or correct before we proceed.
+Before our first conversation using these instructions, summarize in two sentences what you understand about how I work. I'll confirm or correct before we proceed.
 
 ## Things I need you to know
 
-**On uncertainty:** When you're not confident in something, say so before you answer — not as a footnote. Prefix uncertain statements with "I think," "I'm not sure, but," or "I'm inferring" rather than stating them as fact. Don't fill gaps with plausible-sounding information. Prefer accurate over comprehensive.
+**On uncertainty:** When you're not confident, say so before you answer — not as a footnote. Use "I think," "I'm not sure, but," or "I'm inferring" rather than stating uncertain things as fact. Prefer accurate over comprehensive.
 
-**On your own assumptions:** Periodically tell me what you're assuming about my situation — not just what I've told you, but what you've inferred or concluded. If you've framed my problem in a particular way, surface that framing so I can confirm or correct it. The deeper we go into something, the more important it is to verify the foundation is solid.
+**On your own assumptions:** Tell me what you're assuming — not just what I've said, but what you've inferred. If you've framed my problem in a particular way, surface that framing so I can confirm or correct it. The deeper we go, the more important it is to check the foundation.
 
-**On building on a premise:** If we've been working through something for a while, pause and ask: "Are we sure we have the right problem here?" Don't wait for me to notice if we've drifted from solid ground.
-
-**On professional decisions:** For anything involving health, legal, financial decisions, or personal safety, remind me to verify with a qualified professional before I act on your advice. This is a real instruction, not a disclaimer.`;
+**On professional decisions:** For health, legal, or financial matters, remind me to verify with a qualified professional before acting. This is a real instruction, not a disclaimer.`;
 
 // ── Life lens guardrails — added when lens is 'life' ─────────────────────
 
 const LIFE_LENS_GUARDRAILS = `## Additional guardrails for life decisions
 
-**On spiraling:** If we've been returning to the same concern across multiple exchanges without landing anywhere new, ask me: "Do you need to process this, or do you need to decide something?" Those call for different responses from me.
+**On spiraling:** If we've been returning to the same concern without landing anywhere new, ask: "Do you need to process this, or do you need to decide something?" Those call for different responses.
 
-**On confirmation bias:** If my message sounds like I'm looking for validation rather than honest input, you're allowed to ask: "Are you looking for agreement, or do you want my honest take?" Use this sparingly — only when it seems to matter.
-
-**On high-stakes decisions:** For decisions that affect my health, relationships, finances, or career, flag it as significant before responding. Ask: "Have you thought about what happens if this goes wrong?" Not to slow me down — to make sure I've considered it.
-
-**On depth:** The further we go into any plan or situation, the more important it is to check what we're building on. If we're several exchanges in, it's worth asking: "Is the assumption we started with still the right one?"`;
+**On confirmation bias:** If I seem to be looking for validation rather than honest input, ask: "Are you looking for agreement, or do you want my honest take?" Use sparingly — only when it matters.`;
 
 /** Generate the full markdown document from assessment results */
 export function generateDocument(result: AssessmentResult): string {
@@ -310,15 +316,4 @@ export function generateDocument(result: AssessmentResult): string {
     const score = scores.find((s) => s.dimensionId === dimId);
     if (!score) continue;
 
-    // Skip low-signal sections in quick mode (level 'low' = no strong pattern)
-    // Always include 'moderate' and 'high'; include 'low' only in full mode
-    if (assessmentDepth === 'quick' && score.level === 'low') continue;
-
-    const block = getBlock(dimId, lensId, score.level);
-    if (block) {
-      sections.push(block);
-    }
-  }
-
-  return sections.join('\n\n');
-}
+    // Skip low-signal sections in quick mode (level 'low' = no 
