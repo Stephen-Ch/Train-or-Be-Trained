@@ -1,12 +1,11 @@
 /**
- * @human ContentService tests: JSON loading, runtime/raw category splits, and error handling
- * @proves ContentService loads generated JSON, surfaces runtime vs raw categories, enforces contract counts, and reports load failures
- * @lastTouched 2025-12-23
+ * @human ContentService V2 tests: JSON loading, state shape, and error handling
+ * @proves ContentService loads V2 content, exposes V2ContentState, and reports load failures
+ * @lastTouched V2 rewrite
  */
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ContentService } from './content.service';
-import { ContentState } from './types';
 
 describe('ContentService', () => {
   let service: ContentService;
@@ -26,111 +25,62 @@ describe('ContentService', () => {
   });
 
   it('should have initial state with loading true', () => {
-    const initialState: ContentState = {
-      categories: [],
-      rawCategories: [],
-      likert5: [],
-      loading: true,
-      error: null
-    };
-    expect(service.state()).toEqual(initialState);
+    const state = service.state();
+    expect(state.loading).toBe(true);
+    expect(state.content).toBeNull();
+    expect(state.error).toBeNull();
   });
 
-  it('should load categories from JSON successfully', async () => {
+  it('should load V2 content from JSON successfully', async () => {
     await service.loadContent();
     const state = service.state();
-    const rawCategories = state.rawCategories ?? [];
-    
+
     expect(state.loading).toBe(false);
     expect(state.error).toBeNull();
-    expect(state.categories.length).toBeGreaterThan(0);
-    expect(rawCategories.length).toBe(state.categories.length);
-    expect(state.likert5.length).toBe(5);
+    expect(state.content).not.toBeNull();
+    expect(state.content!.controls.length).toBeGreaterThan(0);
+    expect(state.content!.version).toBeTruthy();
+    expect(state.content!.universalGuardrails).toBeTruthy();
   });
 
-  it('should handle bad JSON gracefully', async () => {
-    // This test will be implemented when we have the service
-    spyOn(service as any, 'fetchContent').and.returnValue(
-      Promise.resolve('invalid json')
-    );
-    
+  it('should have exactly 5 controls', async () => {
     await service.loadContent();
     const state = service.state();
-    
-    expect(state.loading).toBe(false);
-    expect(state.error).toBeTruthy();
-    expect(state.categories).toEqual([]);
-    expect(state.likert5).toEqual([]);
+    expect(state.content!.controls.length).toBe(5);
+  });
+
+  it('should have A/B/C options on every control', async () => {
+    await service.loadContent();
+    const state = service.state();
+    for (const control of state.content!.controls) {
+      expect(Object.keys(control.output).sort()).toEqual(['A', 'B', 'C']);
+      for (const q of control.questions) {
+        expect(Object.keys(q.options).sort()).toEqual(['A', 'B', 'C']);
+      }
+    }
   });
 
   it('should handle network errors gracefully', async () => {
-    spyOn(service as any, 'fetchContent').and.returnValue(
-      Promise.reject(new Error('Network error'))
-    );
-    
+    spyOn(window, 'fetch').and.returnValue(Promise.reject(new Error('Network error')));
+
     await service.loadContent();
     const state = service.state();
-    
+
     expect(state.loading).toBe(false);
     expect(state.error).toBeTruthy();
-    expect(state.categories).toEqual([]);
-    expect(state.likert5).toEqual([]);
+    expect(state.content).toBeNull();
   });
 
-  it('should keep the content contract at seven structured categories', async () => {
-    await service.loadContent();
-    const state = service.state();
-    const rawCategories = state.rawCategories ?? [];
-
-    expect(state.categories.length).toBe(7);
-    expect(rawCategories.length).toBe(7);
-
-    const structuredCategory = state.categories.find(category =>
-      category.followUps.some(followUp =>
-        typeof followUp.statement === 'string' &&
-        typeof followUp.dimension === 'string' &&
-        typeof followUp.reverse === 'boolean'
-      )
+  it('should handle HTTP error responses gracefully', async () => {
+    spyOn(window, 'fetch').and.returnValue(
+      Promise.resolve(new Response('Not Found', { status: 404, statusText: 'Not Found' }))
     );
-
-    expect(structuredCategory).toBeDefined();
-
-    const structuredFollowUp = structuredCategory?.followUps.find(followUp =>
-      typeof followUp.statement === 'string' &&
-      typeof followUp.dimension === 'string' &&
-      typeof followUp.reverse === 'boolean'
-    );
-
-    expect(structuredFollowUp).toBeDefined();
-  });
-
-  it('should exclude hidden followUps from runtime categories while retaining raw data', async () => {
-    const sampleContent = {
-      likert5: ['one', 'two', 'three', 'four', 'five'],
-      categories: [
-        {
-          id: 'liberty',
-          name: 'Liberty',
-          description: 'Desc',
-          quote: '',
-          followUps: [
-            { id: 'liberty-q0', statement: 'Visible prompt', reverse: false, dimension: 'liberty-q0' },
-            { id: 'liberty-q1', statement: 'Hidden prompt', reverse: false, dimension: 'liberty-q1', hidden: true }
-          ]
-        }
-      ]
-    };
-
-    spyOn<any>(service, 'fetchContent').and.returnValue(Promise.resolve(JSON.stringify(sampleContent)));
 
     await service.loadContent();
     const state = service.state();
-    const rawCategories = state.rawCategories ?? [];
 
-    expect(state.categories[0].followUps.length).toBe(1);
-    expect(state.categories[0].followUps[0].id).toBe('liberty-q0');
-    expect(rawCategories[0].followUps.length).toBe(2);
-    const hiddenFollowUp = rawCategories[0].followUps.find(followUp => followUp.id === 'liberty-q1');
-    expect(hiddenFollowUp?.hidden).toBeTrue();
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeTruthy();
+    expect(state.content).toBeNull();
   });
 });

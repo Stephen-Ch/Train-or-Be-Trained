@@ -1,15 +1,12 @@
 import { Injectable, signal } from '@angular/core';
-import { ContentState, ContentData, Category, Lens } from './types';
+import { V2Content, V2ContentState } from './types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContentService {
-  private _state = signal<ContentState>({
-    categories: [],
-    rawCategories: [],
-    likert5: [],
-    lenses: [],
+  private _state = signal<V2ContentState>({
+    content: null,
     loading: true,
     error: null
   });
@@ -18,62 +15,17 @@ export class ContentService {
 
   async loadContent(): Promise<void> {
     try {
-      this._state.update(state => ({ ...state, loading: true, error: null }));
-
-      const jsonText = await this.fetchContent();
-      const data: ContentData = JSON.parse(jsonText);
-
-      const rawCategories = this.cloneCategories(data.categories);
-
-      this._state.update(state => ({
-        ...state,
-        categories: rawCategories,
-        rawCategories,
-        likert5: data.likert5,
-        lenses: data.lenses ?? [],
-        loading: false,
-        error: null
-      }));
+      this._state.update(s => ({ ...s, loading: true, error: null }));
+      const response = await fetch('/assets/content/working-with-me.json');
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const content: V2Content = await response.json();
+      this._state.set({ content, loading: false, error: null });
     } catch (error) {
-      this._state.update(state => ({
-        ...state,
-        categories: [],
-        rawCategories: [],
-        likert5: [],
-        lenses: [],
+      this._state.set({
+        content: null,
         loading: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }));
+        error: error instanceof Error ? error.message : 'Unknown error loading content'
+      });
     }
-  }
-
-  private async fetchContent(): Promise<string> {
-    const response = await fetch('/assets/content/working-with-me.json');
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    return response.text();
-  }
-
-  private cloneCategories(categories: Category[]): Category[] {
-    return categories.map((category) => ({
-      ...category,
-      followUps: Array.isArray(category.followUps)
-        ? category.followUps.map((q) => ({ ...q }))
-        : []
-    }));
-  }
-
-  /** Filter questions to Quick path only */
-  getQuickCategories(): Category[] {
-    return this._state().categories.map((cat) => ({
-      ...cat,
-      followUps: cat.followUps.filter((q) => q.quick)
-    }));
-  }
-
-  /** Get a lens by id */
-  getLens(id: string): Lens | undefined {
-    return this._state().lenses.find((l) => l.id === id);
   }
 }

@@ -1,311 +1,157 @@
 {
-  "likert5": ["Not like me", "A little like me", "Somewhat like me", "Mostly like me", "Exactly like me"],
-  "lenses": [
-    { "id": "practical", "label": "Practical Work", "description": "Projects, tasks, problem-solving, getting things done" },
-    { "id": "creative", "label": "Creative Work", "description": "Writing, design, art, open-ended exploration" },
-    { "id": "life", "label": "Life & Decisions", "description": "Personal decisions, relationships, goals, day-to-day" }
-  ],
-  "categories": [
+  "version": "2.0",
+  "options": ["A", "B", "C"],
+  "controls": [
     {
-      "id": "memory",
-      "name": "Memory & Continuity",
-      "description": "How well you hold context across sessions and after interruptions",
-      "quote": "Where did I leave off?",
-      "followUps": [
+      "id": "continuity",
+      "name": "Session Continuity",
+      "description": "How much does the AI need to help reconstruct context at the start?",
+      "questions": [
         {
-          "id": "memory-q1",
-          "statement": "When I return to a task after a break, I know immediately where I left off.",
-          "reverse": true,
-          "quick": true,
-          "dimension": "memory"
+          "id": "continuity-q1",
+          "text": "When you return to an ongoing project with an AI, what works best?",
+          "options": {
+            "A": "I need to reconstruct where we are — I don't reliably carry the thread between sessions",
+            "B": "A brief check-in is helpful — just confirm the task and we're good",
+            "C": "I know exactly where I left off — just pick up and go"
+          }
         },
         {
-          "id": "memory-q2",
-          "statement": "I can pick up a conversation or project after days away without needing to reconstruct what happened.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "memory"
-        },
-        {
-          "id": "memory-q3",
-          "statement": "I lose the thread of what I was doing after an interruption.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "memory"
-        },
-        {
-          "id": "memory-q4",
-          "statement": "I re-read old notes or retrace steps before I can continue working.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "memory"
-        },
-        {
-          "id": "memory-q5",
-          "statement": "I keep mental notes about what I was doing and find them reliable.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "memory"
+          "id": "continuity-q2",
+          "text": "After an interruption mid-conversation, what do you prefer?",
+          "options": {
+            "A": "Recap what we've covered before continuing — I lose the thread easily",
+            "B": "A quick summary is useful but not essential",
+            "C": "Just keep going — I don't need to retrace steps"
+          }
         }
-      ]
+      ],
+      "output": {
+        "A": "## Starting a session\nWe'll always reorient before moving forward. When we begin, ask: \"What are we working on today, and where did we leave off?\" Don't assume continuity — I'll confirm it. If I mention a previous decision or plan, ask me to restate it before we build on it. Reconstructing context together is part of how we work.",
+        "B": "## Starting a session\nWe'll confirm the task at the start. Ask: \"What are we working on today?\" If I reference something from before, ask me to recap it briefly. We'll make sure we're working from a current picture before moving forward.",
+        "C": "## Starting a session\nWe'll get into it quickly. Ask once: \"What are we working on?\" and we're underway. I'll bring context when I need to — no lengthy reorientation needed."
+      }
     },
     {
-      "id": "focus",
-      "name": "Focus & Tangent Tendency",
-      "description": "How likely you are to follow interesting threads away from the stated goal",
-      "quote": "Just one quick detour...",
-      "followUps": [
+      "id": "scope",
+      "name": "Scope Management",
+      "description": "Should the AI actively manage tangents and scope, or follow the user's lead?",
+      "questions": [
         {
-          "id": "focus-q1",
-          "statement": "When I'm working on something, I find myself exploring ideas that weren't in my original plan.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "focus"
+          "id": "scope-q1",
+          "text": "When working through something with AI, what fits you best?",
+          "options": {
+            "A": "I benefit from the AI naming when we've drifted and pulling us back — I follow tangents",
+            "B": "An occasional check-in is helpful, but I don't need active scope policing",
+            "C": "I manage my own scope — follow where I lead"
+          }
         },
         {
-          "id": "focus-q2",
-          "statement": "I can name projects or tasks that never got finished because something more interesting arrived.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "focus"
-        },
-        {
-          "id": "focus-q3",
-          "statement": "When I get a new idea, I have a hard time setting it aside to finish what I was doing.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "focus"
-        },
-        {
-          "id": "focus-q4",
-          "statement": "I stay on the original task even when an interesting new direction presents itself.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "focus"
-        },
-        {
-          "id": "focus-q5",
-          "statement": "I notice when I've drifted from my original goal and can bring myself back without help.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "focus"
+          "id": "scope-q2",
+          "text": "When a new idea or direction comes up mid-task, what do you prefer?",
+          "options": {
+            "A": "Flag it: ask if this belongs now or in the parking lot",
+            "B": "Note it, then let me decide whether to continue or shift",
+            "C": "Follow it — I'll come back to the original task when I'm ready"
+          }
         }
-      ]
+      ],
+      "output": {
+        "A": "## Staying on track\nWe'll manage scope actively together. When I raise something unrelated to the current task, ask: \"Is this for now or the parking lot?\" If we've been in a new direction for a couple of exchanges, ask: \"Should we park this and return to [original task]?\" We decide together what belongs now.",
+        "B": "## Staying on track\nWe'll keep a light hand on the thread. If I seem to be moving away from the stated goal, check in once: \"Still on track?\" That's usually enough. I'll redirect if I want to shift.",
+        "C": "## Staying on track\nWe'll follow where I lead. I manage my own scope — if I explore a tangent, assume it's intentional. I'll say when I want to return to the main thread."
+      }
     },
     {
-      "id": "overwhelm",
-      "name": "Overwhelm Threshold",
-      "description": "What triggers cognitive overload and how quickly it arrives",
-      "quote": "Too much at once.",
-      "followUps": [
+      "id": "load",
+      "name": "Information Load",
+      "description": "How much should the AI filter before presenting?",
+      "questions": [
         {
-          "id": "overwhelm-q1",
-          "statement": "When I have too many options in front of me, I find it hard to move forward.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "overwhelm"
+          "id": "load-q1",
+          "text": "When the AI gives you a detailed response with multiple options, what fits you best?",
+          "options": {
+            "A": "Too much at once — I want one thing at a time, not a menu",
+            "B": "A main point plus context works — I can handle some complexity",
+            "C": "Give me the full picture — I'll navigate it myself"
+          }
         },
         {
-          "id": "overwhelm-q2",
-          "statement": "Long, detailed responses make me more confused rather than more informed.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "overwhelm"
-        },
-        {
-          "id": "overwhelm-q3",
-          "statement": "When I'm stressed, I prefer someone to just tell me what to do next rather than explain all the options.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "overwhelm"
-        },
-        {
-          "id": "overwhelm-q4",
-          "statement": "I handle complexity well and don't feel overwhelmed by too much information.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "overwhelm"
-        },
-        {
-          "id": "overwhelm-q5",
-          "statement": "When a conversation gets too complicated, I disengage or stop responding.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "overwhelm"
+          "id": "load-q2",
+          "text": "When you're stuck on a problem, what do you want the AI to do?",
+          "options": {
+            "A": "Simplify hard — give me one next step, not a plan",
+            "B": "Help me narrow it down — a few options is fine",
+            "C": "Show me everything relevant — I'll sort through it"
+          }
         }
-      ]
+      ],
+      "output": {
+        "A": "## How much to show me\nWe'll keep it simple. One recommendation, not a list. One next step, not a plan. If I seem overwhelmed — short replies, repeated questions, scattered thinking — stop adding. Ask: \"What's the one next step?\" and wait for my answer before continuing. Don't give me a menu; give me a door.",
+        "B": "## How much to show me\nWe'll lead with the key point, then add context. Keep responses focused. If something is getting complex, flag it: \"There's more here — do you want it?\" Let me decide whether to go deeper.",
+        "C": "## How much to show me\nWe'll work with the full picture. Give me complete information and all relevant options — I'll navigate them. Don't filter on my behalf unless I ask."
+      }
     },
     {
-      "id": "communication",
-      "name": "Communication Style",
-      "description": "How you prefer to receive information: format, length, directness",
-      "quote": "Say it in a way that works for me.",
-      "followUps": [
+      "id": "challenge",
+      "name": "Challenge Level",
+      "description": "How directly should the AI push back on plans and ideas?",
+      "questions": [
         {
-          "id": "communication-q1",
-          "statement": "I prefer bullet points over paragraphs.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "communication"
+          "id": "challenge-q1",
+          "text": "When the AI spots a problem with your plan, what do you prefer?",
+          "options": {
+            "A": "Tell me directly, even if it's uncomfortable — I'd rather know",
+            "B": "Flag it once, then let me respond before pressing further",
+            "C": "Raise it lightly and follow my lead — unsolicited challenge slows me down"
+          }
         },
         {
-          "id": "communication-q2",
-          "statement": "I want to be told directly when something I'm planning is a bad idea.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "communication"
-        },
-        {
-          "id": "communication-q3",
-          "statement": "I prefer a single recommendation over a list of options.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "communication"
-        },
-        {
-          "id": "communication-q4",
-          "statement": "I read every word of a long response rather than skimming.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "communication"
-        },
-        {
-          "id": "communication-q5",
-          "statement": "I prefer a conversational tone over a formal or structured one.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "communication"
+          "id": "challenge-q2",
+          "text": "If you ask the AI what it thinks, what do you want?",
+          "options": {
+            "A": "A direct, honest opinion — even if it pushes back on me",
+            "B": "A perspective with some room for me to decide",
+            "C": "Support for my thinking — I'll ask for a harder look when I want it"
+          }
         }
-      ]
+      ],
+      "output": {
+        "A": "## When you see a problem\nWe'll be direct. If my plan has a flaw, name it plainly — don't soften it. I'd rather know early than find out later. If I ask what you think, tell me. One clear assessment, then I'll decide what to do with it.",
+        "B": "## When you see a problem\nWe'll be honest but measured. Flag concerns directly, but give me a moment to respond before pressing further. Raise it once — I'll ask for more if I want it.",
+        "C": "## When you see a problem\nWe'll let me drive. Raise significant concerns once, then follow my lead. I'll ask for a harder look when I want one — unsolicited challenge slows the work down."
+      }
     },
     {
-      "id": "decisions",
-      "name": "Decision-Making",
-      "description": "How you make decisions — with options, with time, with pressure",
-      "quote": "Help me decide.",
-      "followUps": [
+      "id": "rigor",
+      "name": "Thinking Rigor",
+      "description": "Should the AI ask before assuming and flag uncertainty, or move fast?",
+      "questions": [
         {
-          "id": "decisions-q1",
-          "statement": "I make better decisions when I'm given time to think rather than asked on the spot.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "decisions"
+          "id": "rigor-q1",
+          "text": "Before the AI starts answering a complex question, what do you prefer?",
+          "options": {
+            "A": "Ask a clarifying question if uncertain — I want rigor over speed",
+            "B": "Start, but flag assumptions and check in on complex points",
+            "C": "Just answer — I'll redirect if needed; stop-and-ask friction slows me down"
+          }
         },
         {
-          "id": "decisions-q2",
-          "statement": "After making a decision, I second-guess it.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "decisions"
-        },
-        {
-          "id": "decisions-q3",
-          "statement": "Having more information generally makes decisions easier for me.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "decisions"
-        },
-        {
-          "id": "decisions-q4",
-          "statement": "I prefer to be pushed toward a decision rather than given more time to think.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "decisions"
-        },
-        {
-          "id": "decisions-q5",
-          "statement": "I find it hard to commit to a plan when I feel like I haven't explored all the options.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "decisions"
+          "id": "rigor-q2",
+          "text": "When the AI is not fully certain about something, what do you prefer?",
+          "options": {
+            "A": "Flag it explicitly before answering — accuracy over confidence",
+            "B": "Mention uncertainty where it matters most, but don't over-hedge",
+            "C": "State it clearly and let me push back — constant hedging is noise"
+          }
         }
-      ]
-    },
-    {
-      "id": "completion",
-      "name": "Completion & Closure",
-      "description": "How you relate to finishing things — perfectionism, good-enough, loose ends",
-      "quote": "Is it done yet?",
-      "followUps": [
-        {
-          "id": "completion-q1",
-          "statement": "I have a hard time calling something finished when I can see ways it could be better.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "completion"
-        },
-        {
-          "id": "completion-q2",
-          "statement": "I have projects that have been 80% done for a long time.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "completion"
-        },
-        {
-          "id": "completion-q3",
-          "statement": "I feel a strong sense of relief when something is fully closed out.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "completion"
-        },
-        {
-          "id": "completion-q4",
-          "statement": "I tend to move on to new things before the current thing is fully done.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "completion"
-        },
-        {
-          "id": "completion-q5",
-          "statement": "I'm comfortable shipping something that's good enough rather than perfect.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "completion"
-        }
-      ]
-    },
-    {
-      "id": "calibration",
-      "name": "Self-Assessment",
-      "description": "How accurately you estimate your own abilities, time, and limits",
-      "quote": "Am I seeing myself clearly?",
-      "followUps": [
-        {
-          "id": "calibration-q1",
-          "statement": "I start things believing they'll take less time than they do.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "calibration"
-        },
-        {
-          "id": "calibration-q2",
-          "statement": "I tend to assume I understand something before I fully do.",
-          "reverse": false,
-          "quick": true,
-          "dimension": "calibration"
-        },
-        {
-          "id": "calibration-q3",
-          "statement": "I'm more likely to underestimate my own ability than overestimate it.",
-          "reverse": false,
-          "quick": false,
-          "dimension": "calibration"
-        },
-        {
-          "id": "calibration-q4",
-          "statement": "My estimates of time and effort for a project are accurate.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "calibration"
-        },
-        {
-          "id": "calibration-q5",
-          "statement": "I recognize when I'm out of my depth before it causes a problem.",
-          "reverse": true,
-          "quick": false,
-          "dimension": "calibration"
-        }
-      ]
+      ],
+      "output": {
+        "A": "## Before you answer\nWe'll slow down on complex questions. If you're not sure what I'm asking, ask a clarifying question before starting. Flag uncertainty before asserting — use \"I think\" or \"I'm not certain\" rather than stating things as fact. Accuracy matters more than speed here.",
+        "B": "## Before you answer\nWe'll balance speed and rigor. For quick tasks, just answer. For anything complex or high-stakes, ask if you're unsure — or flag uncertainty in your response. I'll tell you when I need more rigor.",
+        "C": "## Before you answer\nWe'll move fast. Answer first, verify later if needed. I'll redirect if you're off base — stop-and-ask friction slows the work. Be honest about uncertainty when it really matters, but confidence is fine for most things."
+      }
     }
-  ]
+  ],
+  "universalGuardrails": "## Before we begin\nBefore our first conversation using these instructions, summarize in two sentences what you understand about how I work. I'll confirm or correct before we proceed.\n\n## Things I need you to know\n\n**On uncertainty:** When you're not confident, say so before you answer — not as a footnote. Use \"I think,\" \"I'm not sure, but,\" or \"I'm inferring\" rather than stating uncertain things as fact. Prefer accurate over comprehensive.\n\n**On your own assumptions:** Tell me what you're assuming — not just what I've said, but what you've inferred. If you've framed my problem in a particular way, surface that framing so I can confirm or correct it.\n\n**On professional decisions:** For health, legal, or financial matters, remind me to verify with a qualified professional before acting."
 }

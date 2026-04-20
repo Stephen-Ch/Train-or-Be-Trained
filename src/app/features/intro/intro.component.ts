@@ -210,23 +210,21 @@ export class IntroComponent {
   ageConfirmed = signal(false);
 
   dimensions = [
-    { label: 'How to start a session', description: 'What the AI should do when you return after a break.' },
-    { label: 'How you like to receive information', description: 'Length, format, bullet points vs prose, directness.' },
-    { label: 'Patterns to watch for', description: 'Tangents, scope creep, decision loops — and what to do.' },
-    { label: 'When you\'re overwhelmed', description: 'Signals and a specific reset protocol.' },
-    { label: 'How you make decisions', description: 'Recommendations vs options, speed vs deliberation.' },
-    { label: 'What done looks like for you', description: 'Perfectionism, good-enough thinking, closure.' },
-    { label: 'Where you misjudge yourself', description: 'Calibration notes so the AI can factor in your blind spots.' },
+    { label: 'Session Continuity', description: 'How much context the AI should reconstruct when you return.' },
+    { label: 'Scope Management', description: 'Whether the AI should manage tangents or follow where you lead.' },
+    { label: 'Information Load', description: 'One thing at a time, or the full picture — you decide.' },
+    { label: 'Challenge Level', description: 'How directly the AI should push back on your plans and ideas.' },
+    { label: 'Thinking Rigor', description: 'Ask first and flag uncertainty, or move fast and trust you to redirect.' },
   ];
 
   start(): void {
     track('assessment_started');
     this.sessionStore.startFresh();
-    this.router.navigate(['/lens']);
+    this.router.navigate(['/setup']);
   }
 
   resume(): void {
-    this.router.navigate(['/lens']);
+    this.router.navigate(['/setup']);
   }
 
   startFresh(): void {

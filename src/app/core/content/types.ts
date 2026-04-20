@@ -1,63 +1,41 @@
-// Content types for Working With Me assessment
+// V2 content types for Train or Be Trained
 
-export interface Question {
+export type Setting = 'A' | 'B' | 'C';
+export type ControlId = 'continuity' | 'scope' | 'load' | 'challenge' | 'rigor';
+
+export interface V2Question {
   id: string;
-  statement: string;
-  reverse: boolean;     // When true, score is inverted (high agreement = low dimension score)
-  quick: boolean;       // Included in the Quick (short) assessment path
-  dimension: string;    // Matches parent dimension id
+  text: string;
+  options: Record<Setting, string>;
 }
 
-// Alias for compatibility with shared components that use FollowUp
-export type FollowUp = Question;
-
-export interface Dimension {
-  id: string;
+export interface V2Control {
+  id: ControlId;
   name: string;
   description: string;
-  quote: string;
-  followUps: Question[];
+  questions: V2Question[];
+  output: Record<Setting, string>;
 }
 
-// Alias for compatibility with shared components that use Category
-export type Category = Dimension;
-
-export interface Lens {
-  id: string;
-  label: string;
-  description: string;
+export interface V2Content {
+  version: string;
+  options: Setting[];
+  controls: V2Control[];
+  universalGuardrails: string;
 }
 
-export interface ContentData {
-  likert5: string[];
-  lenses: Lens[];
-  categories: Dimension[];
-}
-
-export interface ContentState {
-  categories: Dimension[];
-  rawCategories?: Dimension[];
-  likert5: string[];
-  lenses: Lens[];
+export interface V2ContentState {
+  content: V2Content | null;
   loading: boolean;
   error: string | null;
 }
 
-/** Dimension score levels used to select output prose blocks */
-export type DimensionLevel = 'low' | 'moderate' | 'high';
-
-/** Scored result for a single dimension */
-export interface DimensionScore {
-  dimensionId: string;
-  level: DimensionLevel;
-  rawScore: number;      // 0–4 average across answered questions
-  answeredCount: number;
+export interface ControlResult {
+  controlId: ControlId;
+  setting: Setting;
 }
 
-/** Full assessment result ready for document generation */
-export interface AssessmentResult {
-  lens: string;
-  assessmentDepth: 'quick' | 'full';
-  scores: DimensionScore[];
+export interface SetupResult {
+  controls: ControlResult[];
   generatedAt: string;
 }

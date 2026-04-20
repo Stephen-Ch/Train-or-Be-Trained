@@ -1,3 +1,7 @@
+/**
+ * V2 IntroComponent tests
+ * @proves Intro renders, age gate controls start button, resume shows when progress exists
+ */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -6,21 +10,20 @@ import { By } from '@angular/platform-browser';
 import { IntroComponent } from './intro.component';
 import { SessionStore } from '../../core/session/session.store';
 
-describe('IntroComponent', () => {
+describe('IntroComponent (V2)', () => {
   let component: IntroComponent;
   let fixture: ComponentFixture<IntroComponent>;
   let router: Router;
   let sessionStore: SessionStore;
 
   beforeEach(async () => {
-    // Clear sessionStorage before store construction (boot-time hydration)
     sessionStorage.clear();
-    
+
     await TestBed.configureTestingModule({
       imports: [IntroComponent],
       providers: [
         provideZonelessChangeDetection(),
-        provideRouter([{ path: 'select', component: class {} }])
+        provideRouter([{ path: 'setup', component: class {} }])
       ]
     }).compileComponents();
 
@@ -36,34 +39,50 @@ describe('IntroComponent', () => {
     sessionStorage.clear();
   });
 
-  it('should render Start and Store buttons', () => {
-    const startButton = fixture.debugElement.query(By.css('[data-testid="start-btn"]'));
-    const storeButton = fixture.debugElement.query(By.css('[data-testid="store-btn"]'));
-    
-    expect(startButton).toBeTruthy();
-    expect(storeButton).toBeTruthy();
-    expect(startButton.nativeElement.getAttribute('aria-label')).toBe('Start the Rawls veil of ignorance survey');
-    expect(storeButton.nativeElement.getAttribute('aria-label')).toBe('View premium features in store');
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should hide Resume button when no session progress', () => {
+  it('should render the start button', () => {
+    const startButton = fixture.debugElement.query(By.css('[data-testid="start-btn"]'));
+    expect(startButton).toBeTruthy();
+  });
+
+  it('should disable start button before age confirmation', () => {
+    const startButton = fixture.debugElement.query(By.css('[data-testid="start-btn"]'));
+    expect(startButton.nativeElement.disabled).toBe(true);
+  });
+
+  it('should enable start button after age confirmation', () => {
+    component.ageConfirmed.set(true);
+    fixture.detectChanges();
+
+    const startButton = fixture.debugElement.query(By.css('[data-testid="start-btn"]'));
+    expect(startButton.nativeElement.disabled).toBe(false);
+  });
+
+  it('should hide resume button when no session progress', () => {
     const resumeButton = fixture.debugElement.query(By.css('[data-testid="resume-btn"]'));
     expect(resumeButton).toBeFalsy();
   });
 
-  it('should show Resume button when session has progress', () => {
-    sessionStore.selectCategories(['A', 'B']);
+  it('should show resume button when session has progress', () => {
+    sessionStore.recordAnswer('continuity-q1', 'A');
     fixture.detectChanges();
-    
+
     const resumeButton = fixture.debugElement.query(By.css('[data-testid="resume-btn"]'));
     expect(resumeButton).toBeTruthy();
-    expect(resumeButton.nativeElement.getAttribute('aria-label')).toBe('Resume your survey progress');
   });
 
-  it('should navigate to /select when Start is clicked', () => {
-    const startButton = fixture.debugElement.query(By.css('[data-testid="start-btn"]'));
-    startButton.nativeElement.click();
-    
-    expect(router.navigate).toHaveBeenCalledWith(['/select']);
+  it('should navigate to /setup on start', () => {
+    component.ageConfirmed.set(true);
+    component.start();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/setup']);
+  });
+
+  it('should navigate to /setup on resume', () => {
+    component.resume();
+    expect(router.navigate).toHaveBeenCalledWith(['/setup']);
   });
 });

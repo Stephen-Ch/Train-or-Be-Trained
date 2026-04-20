@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ContentService } from '../core/content/content.service';
 import { SessionStore } from '../core/session/session.store';
-import { buildAssessmentResult } from '../core/engine/scoring.engine';
+import { scoreSetup } from '../core/engine/scoring.engine';
 import { generateDocument } from '../core/engine/document.generator';
 
 function track(event: string): void {
@@ -175,15 +175,13 @@ export class ResultComponent {
   ];
 
   document = computed(() => {
-    const categories = this.contentService.state().categories;
+    const content = this.contentService.state().content;
     const answers = this.sessionStore.answers();
-    const lens = this.sessionStore.lens() ?? 'practical';
-    const depth = this.sessionStore.depth() ?? 'quick';
 
-    if (categories.length === 0) return 'Loading…';
+    if (!content) return 'Loading…';
 
-    const result = buildAssessmentResult(categories, answers, lens, depth);
-    return generateDocument(result);
+    const result = scoreSetup(answers, content.controls);
+    return generateDocument(result, content);
   });
 
   constructor() {

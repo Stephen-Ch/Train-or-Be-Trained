@@ -1,72 +1,36 @@
-/**
- * Scoring engine for Working With Me.
- * Maps answers to dimension-level scores (low / moderate / high).
- */
-
-import { Dimension, DimensionScore, DimensionLevel, AssessmentResult } from '../content/types';
-import { AssessmentDepth } from '../session/session.store';
+import { Setting, ControlId, V2Control, ControlResult, SetupResult } from '../content/types';
 
 /**
- * Compute a score 0–4 for a question given the raw answer (0–4) and
- * whether the question is reversed.
- * Reversed: high agreement → low dimension concern (score inverted)
- * Non-reversed: high agreement → high dimension concern
+ * V2 scoring engine for Train or Be Trained.
+ * For each control, averages the numeric values of the two answers
+ * (A=0, B=1, C=2) and maps to a setting.
+ * avg <= 0.5 → A | avg >= 1.5 → C | otherwise → B
  */
-function computeQuestionScore(rawAnswer: number, reverse: boolean): number {
-  return reverse ? (4 - rawAnswer) : rawAnswer;
-}
+export function scoreSetup(
+  answers: Record<string, Setting>,
+  controls: V2Control[]
+): SetupResult {
+  const controlResults: ControlResult[] = controls.map(control => {
+    const values: number[] = control.questions
+      .map(q => {
+        const answer = answers[q.id];
+        if (!answer) return null;
+        return answer === 'A' ? 0 : answer === 'C' ? 2 : 1;
+      })
+      .filter((v): v is NonNullable<typeof v> => v !== null) as number[];
 
-/**
- * Classify an average score (0–4) into a DimensionLevel.
- * low:      avg < 1.5
- * moderate: 1.5 ≤ avg < 2.75
- * high:     avg ≥ 2.75
- */
-function classifyScore(avg: number): DimensionLevel {
-  if (avg < 1.5) return 'low';
-  if (avg < 2.75) return 'moderate';
-  return 'high';
-}
+    let setting: Setting = 'B';
+    if (values.length > 0) {
+      const sum = values.reduce((acc, val) => acc + val, 0);
+      const avg = sum / values.length;
+      setting = avg <= 0.5 ? 'A' : avg >= 1.5 ? 'C' : 'B';
+    }
 
-/** Compute dimension scores from raw answers */
-export function scoreDimensions(
-  dimensions: Dimension[],
-  answers: Record<string, number>,
-  depth: AssessmentDepth
-): DimensionScore[] {
-  return dimensions.map((dim) => {
-    const questions = depth === 'quick'
-      ? dim.followUps.filter((q) => q.quick)
-      : dim.followUps;
-
-    const scored = questions
-      .filter((q) => q.id in answers)
-      .map((q) => computeQuestionScore(answers[q.id], q.reverse));
-
-    const avg = scored.length > 0
-      ? scored.reduce((sum, v) => sum + v, 0) / scored.length
-      : 2; // default to moderate if no answers
-
-    return {
-      dimensionId: dim.id,
-      level: classifyScore(avg),
-      rawScore: avg,
-      answeredCount: scored.length
-    };
+    return { controlId: control.id as ControlId, setting };
   });
-}
 
-/** Build a full AssessmentResult ready for document generation */
-export function buildAssessmentResult(
-  dimensions: Dimension[],
-  answers: Record<string, number>,
-  lens: string,
-  depth: AssessmentDepth
-): AssessmentResult {
   return {
-    lens,
-    assessmentDepth: depth,
-    scores: scoreDimensions(dimensions, answers, depth),
+    controls: controlResults,
     generatedAt: new Date().toISOString()
   };
 }
