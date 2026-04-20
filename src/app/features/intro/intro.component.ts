@@ -16,80 +16,107 @@ function track(event: string): void {
 
       <!-- Hero -->
       <section class="bg-white border-b border-gray-100 py-16 px-6">
-        <div class="max-w-2xl mx-auto text-center space-y-6">
-          <h1 class="text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
-            Train or Be Trained.
-          </h1>
-          <p class="text-xl text-gray-600 leading-relaxed">
-            AI is like a dog — either you're training it, or it's training you.
-            Most people never teach their AI anything about themselves.
-            So it treats them like everyone else.
-          </p>
-          <p class="text-lg text-gray-700 font-medium">
-            <em>Working With Me</em> fixes that.
-          </p>
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
 
-          <div class="pt-2 space-y-4">
+          <!-- Text + CTA -->
+          <div class="flex-1 space-y-6 text-center md:text-left">
+            <h1 class="text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
+              Train or Be Trained.
+            </h1>
+            <p class="text-xl text-gray-500 italic leading-snug !mt-2">
+              AI is like a dog — either you're training it, or it's training you.
+            </p>
+            <p class="text-lg text-gray-600 leading-relaxed">
+              Most people never teach their AI anything about themselves.
+              So it treats them like everyone else.
+            </p>
+            <p class="text-lg text-gray-700 font-medium">
+              <em>Working With Me</em> fixes that.
+            </p>
 
-            <!-- Age gate -->
-            @if (!hasProgress()) {
-              <label class="inline-flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  data-testid="age-gate"
-                  [checked]="ageConfirmed()"
-                  (change)="ageConfirmed.set(!ageConfirmed())"
-                  class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                I confirm I am 13 or older
-              </label>
-            }
+            <div class="space-y-4">
 
-            @if (hasProgress()) {
-              <div class="space-y-2">
-                <button
-                  data-testid="resume-btn"
-                  (click)="resume()"
-                  class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
-                  Resume Where I Left Off
-                </button>
+              @if (!hasProgress()) {
+                <label class="inline-flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    data-testid="age-gate"
+                    [checked]="ageConfirmed()"
+                    (change)="ageConfirmed.set(!ageConfirmed())"
+                    class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                  I confirm I am 13 or older
+                </label>
+              }
+
+              @if (hasProgress()) {
+                <div class="space-y-2">
+                  <button
+                    data-testid="resume-btn"
+                    (click)="resume()"
+                    class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                    Resume Where I Left Off
+                  </button>
+                  <div>
+                    <button
+                      data-testid="start-fresh-btn"
+                      (click)="startFresh()"
+                      class="text-sm text-gray-500 hover:text-gray-700 underline">
+                      Start over instead
+                    </button>
+                  </div>
+                </div>
+              } @else {
                 <div>
                   <button
-                    data-testid="start-fresh-btn"
-                    (click)="startFresh()"
-                    class="text-sm text-gray-500 hover:text-gray-700 underline">
-                    Start over instead
+                    data-testid="start-btn"
+                    [disabled]="!ageConfirmed()"
+                    (click)="start()"
+                    class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+                    Build My AI Trainer — Free
                   </button>
+                  <p class="text-sm text-gray-400 mt-2">5 minutes. Nothing stored. Works with any AI.</p>
                 </div>
-              </div>
-            } @else {
-              <div>
-                <button
-                  data-testid="start-btn"
-                  [disabled]="!ageConfirmed()"
-                  (click)="start()"
-                  class="w-full sm:w-auto inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
-                  Build My AI Trainer — Free
-                </button>
-                <p class="text-sm text-gray-400 mt-2">5 minutes. Nothing stored. Works with any AI.</p>
-              </div>
-            }
+              }
+            </div>
           </div>
+
+          <!-- Hero image -->
+          <div class="flex-shrink-0 w-full md:w-80 lg:w-96">
+            <img
+              src="assets/images/hero-focused-professional.jpg"
+              alt="Professional focused at laptop"
+              class="w-full h-72 md:h-80 object-cover rounded-2xl shadow-md">
+          </div>
+
         </div>
       </section>
 
       <!-- The problem -->
       <section class="py-14 px-6 bg-gray-50">
-        <div class="max-w-2xl mx-auto space-y-5">
-          <h2 class="text-2xl font-bold text-gray-900">Your AI doesn't know you.</h2>
-          <p class="text-gray-700 leading-relaxed">
-            Every conversation starts from zero. It doesn't know that long responses overwhelm you.
-            It doesn't know you need one recommendation, not six options. It doesn't know that
-            after an interruption you've lost the thread and need to be caught up.
-          </p>
-          <p class="text-gray-700 leading-relaxed">
-            You can tell it these things — once, by hand, imprecisely. Or you can
-            <strong>generate a document that does it right.</strong>
-          </p>
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
+
+          <!-- Problem image -->
+          <div class="flex-shrink-0 w-full md:w-72">
+            <img
+              src="assets/images/problem-frustrated-professional.jpg"
+              alt="Professional struggling with generic AI responses"
+              class="w-full h-64 object-cover rounded-2xl shadow-sm">
+          </div>
+
+          <!-- Problem text -->
+          <div class="flex-1 space-y-5">
+            <h2 class="text-2xl font-bold text-gray-900">Your AI doesn't know you.</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Every conversation starts from zero. It doesn't know that long responses overwhelm you.
+              It doesn't know you need one recommendation, not six options. It doesn't know that
+              after an interruption you've lost the thread and need to be caught up.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              You can tell it these things — once, by hand, imprecisely. Or you can
+              <strong>generate a document that does it right.</strong>
+            </p>
+          </div>
+
         </div>
       </section>
 
