@@ -1,0 +1,34 @@
+name: kit-gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  kit_gates:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show PowerShell + git versions (diagnostic)
+        shell: pwsh
+        run: |
+          $PSVersionTable
+          git --version
+
+      - name: Run doc-audit (Kit mode)
+        shell: pwsh
+        run: |
+          .\tools\doc-audit.ps1
+
+      - name: Run verify-protocol-index
+        shell: pwsh
+        run: |
+          .\tools\verify-protocol-index.ps1
+
+      - name: Run check-protocol-v7-budget
+        shell: pwsh
+        run: |
+          .\tools\check-protocol-v7-budget.ps1

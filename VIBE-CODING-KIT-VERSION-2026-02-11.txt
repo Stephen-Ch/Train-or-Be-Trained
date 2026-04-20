@@ -1,0 +1,14 @@
+Version: 2026-02-11
+Repo: vibe-coding-kit (Stephen-Ch/vibe-coding-kit)
+Enhancements:
+- Replaced all hardcoded docs-engineering/ paths with portable <DOCS_ROOT>/ variable (233 replacements across 23 files)
+
+Changes in this version:
+- Global find-replace docs-engineering/ → <DOCS_ROOT>/ in all kit markdown files
+- Backslash variant docs-engineering\ also replaced
+- Changelog entry added to VIBE-CODING.VERSION.md
+
+Notes:
+- <DOCS_ROOT> is docs-engineering or docs (whichever contains vibe-coding/)
+- Tooling (session-start.ps1, doc-audit.ps1) already resolves DOCS_ROOT dynamically
+- 5 meta-references (defining the variable) intentionally retained

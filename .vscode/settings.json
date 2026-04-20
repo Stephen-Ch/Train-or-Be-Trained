@@ -1,0 +1,76 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#8b0000",
+    "titleBar.activeForeground": "#ffffff",
+    "titleBar.inactiveBackground": "#5c0000",
+    "titleBar.inactiveForeground": "#cccccc",
+
+    "activityBar.background": "#6b0000",
+    "activityBar.foreground": "#ffffff",
+    "activityBar.activeBorder": "#ff4444",
+    "activityBarBadge.background": "#ff4444",
+    "activityBarBadge.foreground": "#ffffff",
+
+    "sideBar.background": "#181818",
+    "sideBar.foreground": "#cccccc",
+    "sideBarTitle.foreground": "#ff7777",
+    "sideBarSectionHeader.background": "#252525",
+    "sideBarSectionHeader.foreground": "#ff9999",
+
+    "statusBar.background": "#8b0000",
+    "statusBar.foreground": "#ffffff",
+    "statusBar.debuggingBackground": "#cc0000",
+    "statusBar.noFolderBackground": "#5c0000",
+
+    "tab.activeBackground": "#252525",
+    "tab.activeForeground": "#ffffff",
+    "tab.activeBorderTop": "#ff4444",
+    "tab.inactiveBackground": "#181818",
+    "tab.inactiveForeground": "#999999",
+    "tab.border": "#2a2a2a",
+
+    "editor.background": "#1e1e1e",
+    "editor.foreground": "#d4d4d4",
+    "editorGroupHeader.tabsBackground": "#181818",
+
+    "panel.background": "#181818",
+    "panel.border": "#6e1a1a",
+    "panelTitle.activeBorder": "#ff4444",
+    "panelTitle.activeForeground": "#ff9999",
+
+    "terminal.background": "#181818",
+    "terminal.foreground": "#cccccc",
+
+    "input.background": "#252525",
+    "input.border": "#6e1a1a",
+    "input.foreground": "#d4d4d4",
+    "focusBorder": "#dd4444",
+
+    "list.activeSelectionBackground": "#333333",
+    "list.activeSelectionForeground": "#ffffff",
+    "list.hoverBackground": "#2a2a2a",
+    "list.inactiveSelectionBackground": "#252525",
+
+    "button.background": "#8b0000",
+    "button.foreground": "#ffffff",
+    "button.hoverBackground": "#aa0000",
+
+    "badge.background": "#cc0000",
+    "badge.foreground": "#ffffff",
+
+    "progressBar.background": "#cc0000",
+
+    "editorWidget.background": "#1e1e1e",
+    "editorWidget.border": "#6e1a1a",
+
+    "dropdown.background": "#252525",
+    "dropdown.border": "#6e1a1a",
+    "dropdown.foreground": "#d4d4d4",
+
+    "minimap.background": "#1e1e1e",
+
+    "scrollbarSlider.background": "#42424266",
+    "scrollbarSlider.hoverBackground": "#55555588",
+    "scrollbarSlider.activeBackground": "#666666aa"
+  }
+}
