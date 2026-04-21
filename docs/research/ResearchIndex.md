@@ -1,7 +1,9 @@
-# Research Index — Rawls Game
+# Research Index — Train or Be Trained
 
 > **Canonical index.** All research documents must be listed here.
 > See [README.md](README.md) for naming conventions and standards.
+
+> **Note:** R-001 through R-023 are Rawls Game legacy. Archived for history only — not applicable to the current product. New research starts at R-024.
 
 ## Moved Research (docs/research/)
 
