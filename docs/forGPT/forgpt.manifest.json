@@ -3,8 +3,8 @@
   "lastUpdated": "2026-04-20",
   "files": [
     {
-      "src": "project/RAWLS-START-HERE.md",
-      "dest": "RAWLS-START-HERE.md",
+      "src": "project/START-HERE.md",
+      "dest": "START-HERE.md",
       "tier": "core"
     },
     {
@@ -100,11 +100,6 @@
     {
       "src": "testing/test-catalog.md",
       "dest": "test-catalog.md",
-      "tier": "extra"
-    },
-    {
-      "src": "status/tech-debt-and-future-work.md",
-      "dest": "tech-debt-and-future-work.md",
       "tier": "extra"
     },
     {

@@ -6,24 +6,24 @@
 
 | Field | Value |
 |-------|-------|
-| **Generated** | 2026-04-20 21:29:53 |
+| **Generated** | 2026-04-20 21:34:40 |
 | **DOCS_ROOT** | `docs` |
 | **Git Branch** | `main` |
-| **Git Commit** | `ff1c37d` |
+| **Git Commit** | `59c744b` |
 | **CORE Files** | 14 |
-| **EXTRA Files** | 8 |
-| **TOTAL Files** | 22 |
+| **EXTRA Files** | 7 |
+| **TOTAL Files** | 21 |
 
 ## What is CORE vs EXTRA?
 
 - **CORE (14 files):** Session-start essentials. These are the minimum set needed to begin a productive GPT session.
-- **EXTRA (8 files):** Supporting docs that provide additional context but aren't required for session startup.
+- **EXTRA (7 files):** Supporting docs that provide additional context but aren't required for session startup.
 
 ## File Hashes (SHA256 prefix)
 
 | Tier | File | Source | Hash (first 16 chars) |
 |------|------|--------|----------------------|
-| CORE | RAWLS-START-HERE.md | docs/project/RAWLS-START-HERE.md | `7FC245D06BE99AAB` |
+| CORE | START-HERE.md | docs/project/START-HERE.md | `7FC245D06BE99AAB` |
 | CORE | VISION.md | docs/project/VISION.md | `BB2D0C744D77529F` |
 | CORE | EPICS.md | docs/project/EPICS.md | `8F940544C5EBA09B` |
 | CORE | NEXT.md | docs/project/NEXT.md | `F850BB97D97221F3` |
@@ -43,7 +43,6 @@
 | extra | verification-mode.md | docs/vibe-coding/protocol/verification-mode.md | `8C2C9CE6429CB604` |
 | extra | CONTENT-RULES.md | docs/project/CONTENT-RULES.md | `85624151629B2690` |
 | extra | test-catalog.md | docs/testing/test-catalog.md | `27221E6E6952C6EB` |
-| extra | tech-debt-and-future-work.md | docs/status/tech-debt-and-future-work.md | `2F40D4A1B3AA4CF9` |
 | extra | solution-report.md | docs/status/solution-report.md | `B4B2EC7DEE6A983D` |
 
 ---
