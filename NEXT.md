@@ -38,50 +38,21 @@ The only work that matters right now is running the 5-stage validation plan.
 | Universal guardrails section in every document | ✅ |
 | Result screen — copy to clipboard, download .md | ✅ |
 | Session persistence — sessionStorage | ✅ |
-| Netlify deploy + trainorbetrained.com | ⬜ |
-| Plausible Analytics (event tracking) | ⬜ |
+| Vercel deploy + trainorbetrained.com | ✅ |
+| Plausible Analytics (event tracking) | ✅ |
 | Age gate (13+ checkbox) | ⬜ |
 
 ---
 
 ## Immediate Next Steps (in order)
 
-### 1. Deploy to Netlify
+### 1. ✅ Deployed to Vercel
 
-```
-Build command:     npm run build
-Publish directory: dist/working-with-me/browser
-```
+Live at trainorbetrained.com via Vercel, connected to `Stephen-Ch/Train-or-Be-Trained` `main` branch. Auto-deploys on push.
 
-1. Push to GitHub repo (Stephen-Ch/Train-or-Be-Trained)
-2. netlify.com → Add new site → Import from Git → GitHub → select repo
-3. Set build settings above → Deploy
-4. Domain settings → Add trainorbetrained.com
+### 2. ✅ Plausible Analytics
 
-### 2. Add Plausible Analytics
-
-Sign up at plausible.io (free tier). Add your domain. They give you one script tag:
-
-```html
-<script defer data-domain="trainorbetrained.com"
-  src="https://plausible.io/js/script.js"></script>
-```
-
-Add to `src/index.html` in the `<head>`. That gives you page-level tracking immediately.
-
-Then add custom events in the components for the four things that matter:
-
-| Event | Where | Why |
-|---|---|---|
-| `assessment_started` | Lens screen on continue | Did they begin? |
-| `assessment_completed` | Result screen on load | Did they finish? |
-| `document_copied` | Copy button click | Did they take the output? |
-| `document_downloaded` | Download button click | Did they save it? |
-
-Plausible custom event syntax:
-```javascript
-window.plausible('assessment_completed');
-```
+Script live in `src/index.html`. Tracking: `assessment_started`, `assessment_completed`, `document_copied`, `document_downloaded`.
 
 ### 3. Add age gate (13+)
 

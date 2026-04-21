@@ -28,9 +28,9 @@ See NEXT.md for the full 5-stage validation plan.
 
 ## Validation Epic (Active — do these now)
 
-- [ ] Push to GitHub (Stephen-Ch/Train-or-Be-Trained)
-- [ ] Deploy to Netlify + connect trainorbetrained.com
-- [ ] Add Plausible Analytics — script tag + 4 events (started, completed, copied, downloaded)
+- [x] Push to GitHub (Stephen-Ch/Train-or-Be-Trained)
+- [x] Deploy to Vercel + connect trainorbetrained.com
+- [x] Add Plausible Analytics — script tag + 4 events (started, completed, copied, downloaded)
 - [ ] Add age gate — 13+ checkbox on intro screen before CTA
 - [ ] Recruit 8–12 knowledge workers for Stage 1 before/after test
 - [ ] Run Stage 1: before/after document comparison on 3 real tasks

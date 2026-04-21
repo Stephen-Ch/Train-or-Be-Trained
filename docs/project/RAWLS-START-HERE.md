@@ -1,8 +1,8 @@
-  # Start Here — Using GPT/Copilot with Rawls Game
+# Start Here — Using GPT/Copilot with Working With Me
 
-This repo uses the Blackjack-refined workflow structure and enforcement rules.
+This repo uses the vibe-coding v7 workflow structure and enforcement rules.
 
-**How we work:** See the [Stephen ↔ ChatGPT ↔ Copilot workflow](docs/project/AI-WORKFLOW.md) for the prompt-only collaboration loop.
+**Project:** Working With Me — a short self-assessment that generates a personal AI trainer document.
 
 **Workflow source of truth lives under `docs/vibe-coding`. Start every session by opening:**
 1. [docs/vibe-coding/README.md](docs/vibe-coding/README.md)

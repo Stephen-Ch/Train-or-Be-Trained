@@ -1,19 +1,17 @@
-# Branch Status — Rawls Game
+# Branch Status — Working With Me
 
 ## Active Branches
 
 | Branch | Status | Story ID | Notes | Last Updated |
-|--------|--------|----------|-------|--------------|
-| main | ACTIVE | — | Production branch | 2026-02-07 |
+|--------|--------|----------|-------|------|
+| main | ACTIVE | — | Production branch — auto-deploys to Vercel | 2026-04-20 |
 
 ## Stale PRs (open but inactive)
 
 | PR | Branch | Status | Notes |
 |----|--------|--------|-------|
-| #4 | copilot/add-persona-selection-engine | STALE | Created 2025-11-27; needs review |
-| #2 | copilot/create-content-pipeline-v1 | STALE | Created 2025-11-11; needs review |
-| #1 | copilot/review-project-status | STALE | Created 2025-11-11; needs review |
+| — | — | — | No stale PRs |
 
 ---
 
-Last updated: 2026-02-07
+Last updated: 2026-04-20

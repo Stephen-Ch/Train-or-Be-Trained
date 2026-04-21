@@ -1,11 +1,11 @@
-# forGPT Packet — Rawls Game
+# forGPT Packet — Working With Me
 
 > **Rule:** The forGPT packet is GENERATED. Do NOT manually add files here.
 > Run `docs/vibe-coding/tools/sync-forgpt.ps1` from the project root to regenerate.
 
 ## What is this folder?
 
-This folder contains a **generated snapshot** of the minimum docs needed to start a productive GPT/Copilot session for the Rawls Game project. Files here are copies — the canonical sources live elsewhere under `docs/`.
+This folder contains a **generated snapshot** of the minimum docs needed to start a productive GPT/Copilot session for the Working With Me project. Files here are copies — the canonical sources live elsewhere under `docs/`.
 
 ## How to use
 

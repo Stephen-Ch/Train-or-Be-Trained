@@ -1,6 +1,6 @@
 {
-  "description": "forGPT packet manifest for Rawls Game (JustSprites). Paths are DOCS_ROOT-relative (DOCS_ROOT=docs).",
-  "lastUpdated": "2026-02-07",
+  "description": "forGPT packet manifest for Working With Me. Paths are DOCS_ROOT-relative (DOCS_ROOT=docs).",
+  "lastUpdated": "2026-04-20",
   "files": [
     {
       "src": "project/RAWLS-START-HERE.md",
