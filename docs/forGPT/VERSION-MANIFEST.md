@@ -6,18 +6,18 @@
 
 | Field | Value |
 |-------|-------|
-| **Generated** | 2026-04-20 21:34:40 |
+| **Generated** | 2026-04-20 21:38:38 |
 | **DOCS_ROOT** | `docs` |
 | **Git Branch** | `main` |
-| **Git Commit** | `59c744b` |
-| **CORE Files** | 14 |
-| **EXTRA Files** | 7 |
-| **TOTAL Files** | 21 |
+| **Git Commit** | `b558961` |
+| **CORE Files** | 10 |
+| **EXTRA Files** | 6 |
+| **TOTAL Files** | 16 |
 
 ## What is CORE vs EXTRA?
 
-- **CORE (14 files):** Session-start essentials. These are the minimum set needed to begin a productive GPT session.
-- **EXTRA (7 files):** Supporting docs that provide additional context but aren't required for session startup.
+- **CORE (10 files):** Session-start essentials. These are the minimum set needed to begin a productive GPT session.
+- **EXTRA (6 files):** Supporting docs that provide additional context but aren't required for session startup.
 
 ## File Hashes (SHA256 prefix)
 
@@ -31,19 +31,14 @@
 | CORE | working-agreement-v1.md | docs/vibe-coding/protocol/working-agreement-v1.md | `FA999E53F5FB43BD` |
 | CORE | copilot-instructions-v7.md | docs/vibe-coding/protocol/copilot-instructions-v7.md | `0B8916852E0BF9EA` |
 | CORE | prompt-lifecycle.md | docs/vibe-coding/protocol/prompt-lifecycle.md | `6C795E22B9421821` |
-| CORE | session-start-checklist.md | docs/vibe-coding/session-start-checklist.md | `ED0168390CEDDB1A` |
 | CORE | PAUSE.md | docs/vibe-coding/PAUSE.md | `12772677C17ED09A` |
-| CORE | ResearchIndex.md | docs/research/ResearchIndex.md | `FA9912494504C943` |
-| CORE | protocol-primer.md | docs/vibe-coding/protocol-primer.md | `ABA335A059DD0A01` |
 | CORE | protocol-lite.md | docs/vibe-coding/protocol-lite.md | `884933C50C860679` |
-| CORE | branches.md | docs/status/branches.md | `CCCEAE8E9B03AB18` |
 | extra | stay-on-track.md | docs/vibe-coding/protocol/stay-on-track.md | `811E4109D55C5357` |
 | extra | alignment-mode.md | docs/vibe-coding/protocol/alignment-mode.md | `F470A5FC37EF2812` |
 | extra | required-artifacts.md | docs/vibe-coding/protocol/required-artifacts.md | `1B15FCD1AAE4D9F2` |
 | extra | verification-mode.md | docs/vibe-coding/protocol/verification-mode.md | `8C2C9CE6429CB604` |
 | extra | CONTENT-RULES.md | docs/project/CONTENT-RULES.md | `85624151629B2690` |
 | extra | test-catalog.md | docs/testing/test-catalog.md | `27221E6E6952C6EB` |
-| extra | solution-report.md | docs/status/solution-report.md | `B4B2EC7DEE6A983D` |
 
 ---
 

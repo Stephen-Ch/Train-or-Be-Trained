@@ -43,33 +43,13 @@
       "tier": "core"
     },
     {
-      "src": "vibe-coding/session-start-checklist.md",
-      "dest": "session-start-checklist.md",
-      "tier": "core"
-    },
-    {
       "src": "vibe-coding/PAUSE.md",
       "dest": "PAUSE.md",
       "tier": "core"
     },
     {
-      "src": "research/ResearchIndex.md",
-      "dest": "ResearchIndex.md",
-      "tier": "core"
-    },
-    {
-      "src": "vibe-coding/protocol-primer.md",
-      "dest": "protocol-primer.md",
-      "tier": "core"
-    },
-    {
       "src": "vibe-coding/protocol-lite.md",
       "dest": "protocol-lite.md",
-      "tier": "core"
-    },
-    {
-      "src": "status/branches.md",
-      "dest": "branches.md",
       "tier": "core"
     },
     {
@@ -102,10 +82,5 @@
       "dest": "test-catalog.md",
       "tier": "extra"
     },
-    {
-      "src": "status/solution-report.md",
-      "dest": "solution-report.md",
-      "tier": "extra"
-    }
   ]
 }
