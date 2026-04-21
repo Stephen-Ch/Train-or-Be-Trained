@@ -2,19 +2,19 @@
 
 **ACTIVE STORY ID:** TBTT-VALIDATION-MIXED-PROFILES-001
 
-**NEXT STEP:** Define 6 mixed profiles, 4 test prompts, and one pass/fail rubric for coherent vs stitched together.
+**NEXT STEP:** Implement a local Node script that defines the 6 exact mixed profiles and generates docs/project/MIXED-PROFILE-OUTPUTS.md plus docs/project/mixed-profile-manifest.json from existing Working With Me content.
 
-**DoD:** docs/project/MIXED-PROFILE-TEST-PLAN.md exists with six profile definitions, four test prompts, and a completed coherence evaluation for each profile, ending in an explicit beta gate decision.
+**DoD:** scripts/generate-mixed-profile-outputs.js exists, docs/project/mixed-profile-manifest.json records the exact 6 profile settings, docs/project/MIXED-PROFILE-OUTPUTS.md contains all 6 generated Working With Me outputs plus the 4 standard prompts and blank review rubric, and required gates pass.
 
 **Scope Guardrails**
-- In scope: mixed-profile validation setup and docs-only beta gate criteria in control-deck files.
-- Out of scope: app behavior changes, scoring logic redesign, question-set expansion, and non-validation roadmap work.
+- In scope: one new script under scripts/, one new manifest under docs/project/, one new generated output file under docs/project/, and NEXT.md freshness repair.
+- Out of scope: app behavior changes, scoring logic redesign, output-template wording changes, external APIs, browser automation, and package dependency changes.
 
 **Done When**
-- Six mixed profiles are defined to stress realistic A/B/C collisions.
-- The same four prompts are fixed and reused across all six profiles.
-- Each output is judged only as coherent or stitched together using one rubric.
-- If outputs are coherent, beta is marked GO immediately.
-- If contradictions appear, phrasing is adjusted and one additional pass is completed.
+- scripts/generate-mixed-profile-outputs.js exists and runs with no errors.
+- docs/project/mixed-profile-manifest.json contains all six profiles with exact control settings.
+- docs/project/MIXED-PROFILE-OUTPUTS.md contains all 6 labeled Working With Me outputs, the 4 standard prompts, and the blank rubric table.
+- All unit tests pass (Green Gate).
+- Commit is made with all three new files.
 
 **Last Updated:** 2026-04-20

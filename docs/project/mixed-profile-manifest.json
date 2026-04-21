@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-04-21T02:22:06.627Z",
+  "sourceContentPath": "src/assets/content/working-with-me.json",
+  "profiles": [
+    {
+      "id": "profile-1",
+      "name": "Profile 1 — High Rigor, Low Challenge",
+      "collision": "Does the document tell the AI to be rigorous without making it feel combative?",
+      "settings": {
+        "continuity": "B",
+        "scope": "B",
+        "load": "B",
+        "challenge": "C",
+        "rigor": "A"
+      }
+    },
+    {
+      "id": "profile-2",
+      "name": "Profile 2 — High Scope Control, Moderate Everything Else",
+      "collision": "Does the document produce an assistant that feels focused without feeling blinkered?",
+      "settings": {
+        "continuity": "B",
+        "scope": "A",
+        "load": "B",
+        "challenge": "B",
+        "rigor": "B"
+      }
+    },
+    {
+      "id": "profile-3",
+      "name": "Profile 3 — Low Filtering, High Uncertainty Signaling",
+      "collision": "Does the document ask for unfiltered output while also asking the AI to help with ambiguity without the two instructions contradicting each other?",
+      "settings": {
+        "continuity": "B",
+        "scope": "B",
+        "load": "C",
+        "challenge": "B",
+        "rigor": "A"
+      }
+    },
+    {
+      "id": "profile-4",
+      "name": "Profile 4 — High Continuity, Low Interruption Tolerance",
+      "collision": "Does the document produce an AI that feels continuous and non-interruptive without ignoring genuinely important clarification moments?",
+      "settings": {
+        "continuity": "A",
+        "scope": "C",
+        "load": "B",
+        "challenge": "B",
+        "rigor": "B"
+      }
+    },
+    {
+      "id": "profile-5",
+      "name": "Profile 5 — Mostly B, One A Dimension",
+      "collision": "Does one strong dimension pull the document into a noticeably different register, or does it blend cleanly?",
+      "settings": {
+        "continuity": "B",
+        "scope": "B",
+        "load": "B",
+        "challenge": "A",
+        "rigor": "B"
+      }
+    },
+    {
+      "id": "profile-6",
+      "name": "Profile 6 — Mostly B, One C Dimension",
+      "collision": "Does one weak dimension produce a noticeable gap or hedged instruction, or does it blend without friction?",
+      "settings": {
+        "continuity": "B",
+        "scope": "B",
+        "load": "B",
+        "challenge": "C",
+        "rigor": "B"
+      }
+    }
+  ]
+}
