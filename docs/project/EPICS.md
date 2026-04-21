@@ -1,17 +1,17 @@
-# EPICS — Rawls Game
+# EPICS — Train or Be Trained
 
 ## Epic List
 
-### OC-PROTOCOL-V7: Protocol v7 Evolution
+### TBTT-VALIDATION-001: Mixed-Profile Coherence Before Beta
 **Status:** IN PROGRESS  
-**Description:** Evolve the vibe-coding workflow to enforce story-driven development via Vision & User Story Gate, 3-Party Approval Gate, and required Control Deck docs (VISION/EPICS/NEXT). Goals: prevent ad-hoc "seems useful" work not aligned with active plan, ensure Stephen/ChatGPT/Copilot alignment before coding, keep NEXT.md lightweight (not paperwork). Success criteria: Doc Audit passes, prompts require Story ID + NEXT citation, 3-party approval gate enforced, NEXT.md stays under ~30 lines operational format.
+**Description:** Validate whether mixed A/B/C behavioral profiles generate coherent Working With Me outputs before beta. Goals: run a short, high-signal sanity pass (max 6 mixed profiles) using 4 prompts and a single coherence rubric, then make a clear beta decision. Success criteria: outputs read as coherent rather than stitched together across the mixed-profile set, with contradictions either absent or fixed in one additional pass.
 
-### EPIC-001: Question Flow V2 (QuestionV2 Component)
-**Status:** COMPLETE  
-**Description:** Migrate all 28 positions from original Question component to new QuestionV2 component with tutor mode, meta-line narration, and reflection buckets. Goals: decouple UI copy from TypeScript (move to JSON dictionary), improve UX consistency, enable future admin pipeline for copy management. Success criteria: All 28 positions render via QuestionV2, tutor copy centralized in qv2-tutor-copy.ts + qv2-tutor-copy.json, tests GREEN, build GREEN, route coverage complete.
-
-### EPIC-002: Content Schema V2
+### TBTT-BETA-001: Beta Readiness and Launch Guardrail
 **Status:** PLANNED  
-**Description:** Extend content schema to support deeper dives (challenges), nested challenge structure, and admin pipeline readiness. Goals: move from flat followUps[] to nested followUps[].challenges[], prepare for editable content via admin UI, maintain backward compatibility during migration. Success criteria: Content validator enforces nested schema, production JSON uses categories[].followUps[].challenges[], contract tests prove shape, build/test GREEN.
+**Description:** Ship beta immediately after mixed-profile validation passes, without adding new product surface area. Goals: avoid overfitting to internal toy prompts and prevent premature launch if coherence fails. Success criteria: beta gate decision is explicit, documented, and tied to mixed-profile evidence.
+
+### TBTT-POST-BETA-001: Real-Use Feedback Loop
+**Status:** PLANNED  
+**Description:** Collect early beta feedback focused on whether Working With Me changes assistant behavior in real tasks. Goals: identify contradictions or weak phrasing from real usage and prioritize only high-impact fixes. Success criteria: feedback themes are consolidated into a small, evidence-backed change list.
 
 ---
