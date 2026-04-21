@@ -6,10 +6,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Generated** | 2026-04-20 21:23:08 |
+| **Generated** | 2026-04-20 21:27:01 |
 | **DOCS_ROOT** | `docs` |
 | **Git Branch** | `main` |
-| **Git Commit** | `5e4cfc5` |
+| **Git Commit** | `eb520d9` |
 | **CORE Files** | 14 |
 | **EXTRA Files** | 8 |
 | **TOTAL Files** | 22 |
@@ -23,7 +23,7 @@
 
 | Tier | File | Source | Hash (first 16 chars) |
 |------|------|--------|----------------------|
-| CORE | RAWLS-START-HERE.md | docs/project/RAWLS-START-HERE.md | `66A6577AE4802A5C` |
+| CORE | RAWLS-START-HERE.md | docs/project/RAWLS-START-HERE.md | `7FC245D06BE99AAB` |
 | CORE | VISION.md | docs/project/VISION.md | `BB2D0C744D77529F` |
 | CORE | EPICS.md | docs/project/EPICS.md | `8F940544C5EBA09B` |
 | CORE | NEXT.md | docs/project/NEXT.md | `F850BB97D97221F3` |
@@ -36,15 +36,15 @@
 | CORE | ResearchIndex.md | docs/research/ResearchIndex.md | `FA9912494504C943` |
 | CORE | protocol-primer.md | docs/vibe-coding/protocol-primer.md | `ABA335A059DD0A01` |
 | CORE | protocol-lite.md | docs/vibe-coding/protocol-lite.md | `884933C50C860679` |
-| CORE | branches.md | docs/status/branches.md | `37501F7223313EA2` |
+| CORE | branches.md | docs/status/branches.md | `CCCEAE8E9B03AB18` |
 | extra | stay-on-track.md | docs/vibe-coding/protocol/stay-on-track.md | `811E4109D55C5357` |
 | extra | alignment-mode.md | docs/vibe-coding/protocol/alignment-mode.md | `F470A5FC37EF2812` |
 | extra | required-artifacts.md | docs/vibe-coding/protocol/required-artifacts.md | `1B15FCD1AAE4D9F2` |
 | extra | verification-mode.md | docs/vibe-coding/protocol/verification-mode.md | `8C2C9CE6429CB604` |
 | extra | CONTENT-RULES.md | docs/project/CONTENT-RULES.md | `85624151629B2690` |
 | extra | test-catalog.md | docs/testing/test-catalog.md | `27221E6E6952C6EB` |
-| extra | tech-debt-and-future-work.md | docs/status/tech-debt-and-future-work.md | `8EF1105805602A8F` |
-| extra | solution-report.md | docs/status/solution-report.md | `4BCAFCB4FD210475` |
+| extra | tech-debt-and-future-work.md | docs/status/tech-debt-and-future-work.md | `2F40D4A1B3AA4CF9` |
+| extra | solution-report.md | docs/status/solution-report.md | `B4B2EC7DEE6A983D` |
 
 ---
 

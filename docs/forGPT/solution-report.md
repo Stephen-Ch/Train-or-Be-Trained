@@ -1,4 +1,4 @@
-# Solution Report — Rawls Game
+# Solution Report — Working With Me
 
 # 2026-01-05 – OC-PROTOCOL-V7-S1G-PROMPT-CLASSES-AND-GOTCHAS-CLARITY-001: Define FORMAL vs CONVERSATIONAL prompt classes + clarify remaining protocol gotchas
 
