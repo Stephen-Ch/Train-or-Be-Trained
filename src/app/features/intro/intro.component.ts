@@ -15,7 +15,7 @@ function track(event: string): void {
     <div data-testid="view-intro">
 
       <!-- Hero -->
-      <section class="bg-white border-b border-gray-100 py-16 px-6">
+      <section class="bg-white border-b border-gray-100 pt-8 pb-16 md:py-16 px-6">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
 
           <!-- Text + CTA -->
@@ -188,7 +188,7 @@ function track(event: string): void {
             No account. No email required.
           </p>
           @if (!hasProgress()) {
-            <label class="inline-flex items-center gap-3 text-sm text-blue-100 cursor-pointer">
+            <label class="flex w-full items-center justify-center gap-3 text-sm text-blue-100 cursor-pointer">
               <input
                 type="checkbox"
                 data-testid="age-gate-footer"
@@ -201,7 +201,7 @@ function track(event: string): void {
           <button
             [disabled]="!ageConfirmed() && !hasProgress()"
             (click)="start()"
-            class="inline-block bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
+            class="block w-full sm:w-auto mx-auto bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed font-bold py-4 px-10 rounded-xl text-lg transition-colors shadow-sm">
             Build My AI Trainer
           </button>
           @if (!ageConfirmed() && !hasProgress()) {
