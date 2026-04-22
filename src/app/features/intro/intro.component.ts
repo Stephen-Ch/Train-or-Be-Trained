@@ -129,21 +129,21 @@ function track(event: string): void {
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">1</span>
               <div>
                 <p class="font-semibold text-gray-900">Answer a few questions about how you work</p>
-                <p class="text-sm text-gray-600 mt-1">Not personality labels. Behavioral patterns — how you make decisions, what overwhelms you, how you like to receive information.</p>
+                <p class="text-sm text-gray-600 mt-1">How you make decisions, what overwhelms you, how you like to receive information.</p>
               </div>
             </div>
             <div class="flex gap-5">
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">2</span>
               <div>
                 <p class="font-semibold text-gray-900">Get your personal AI training document</p>
-                <p class="text-sm text-gray-600 mt-1">Plain text, ready to use. Written in the second person — addressed to the AI — so you can paste it without editing.</p>
+                <p class="text-sm text-gray-600 mt-1">Plain text, ready for you to copy-and-paste or save and upload to any GPT..</p>
               </div>
             </div>
             <div class="flex gap-5">
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">3</span>
               <div>
                 <p class="font-semibold text-gray-900">Paste it once. Every conversation starts differently.</p>
-                <p class="text-sm text-gray-600 mt-1">Add it to Claude's custom instructions, ChatGPT's profile, Gemini's settings — or paste it at the top of any new chat.</p>
+                <p class="text-sm text-gray-600 mt-1">Add it to any AI: Claude's custom instructions, ChatGPT's profile, Gemini's settings.</p>
               </div>
             </div>
           </div>
@@ -212,9 +212,9 @@ export class IntroComponent {
   dimensions = [
     { label: 'Session Continuity', description: 'How much context the AI should reconstruct when you return.' },
     { label: 'Scope Management', description: 'Whether the AI should manage tangents or follow where you lead.' },
-    { label: 'Information Load', description: 'One thing at a time, or the full picture — you decide.' },
+    { label: 'Information Load', description: 'One thing at a time or the full picture all at once? Paragraphs or bullet points?' },
     { label: 'Challenge Level', description: 'How directly the AI should push back on your plans and ideas.' },
-    { label: 'Thinking Rigor', description: 'Ask first and flag uncertainty, or move fast and trust you to redirect.' },
+    { label: 'Thinking Rigor', description: 'Ask first and flag when uncertain, or move fast and trust you to redirect.' },
   ];
 
   start(): void {
