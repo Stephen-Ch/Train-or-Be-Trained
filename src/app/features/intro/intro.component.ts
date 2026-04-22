@@ -136,14 +136,14 @@ function track(event: string): void {
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">2</span>
               <div>
                 <p class="font-semibold text-gray-900">Get your personal AI training document</p>
-                <p class="text-sm text-gray-600 mt-1">Plain text, ready for you to copy-and-paste or save and upload to any GPT..</p>
+                <p class="text-sm text-gray-600 mt-1">Plain text, ready for you to copy-and-paste or save and upload to any AI</p>
               </div>
             </div>
             <div class="flex gap-5">
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">3</span>
               <div>
-                <p class="font-semibold text-gray-900">Paste it once. Every conversation starts differently.</p>
-                <p class="text-sm text-gray-600 mt-1">Add it to any AI: Claude's custom instructions, ChatGPT's profile, Gemini's settings.</p>
+                <p class="font-semibold text-gray-900">Every conversation starts differently.</p>
+                <p class="text-sm text-gray-600 mt-1">Your AI is now trained to work the way you work.</p>
               </div>
             </div>
           </div>
