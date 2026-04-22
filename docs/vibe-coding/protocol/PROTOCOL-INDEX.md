@@ -46,6 +46,7 @@
 ## PR & Merge Hygiene
 
 - PR/branch hygiene requirements → [PR / Branch Hygiene Gate](protocol-v7.md#pr--branch-hygiene-gate-mandatory)
+- X-branch contract (experimental, never-merge branches) → [X-Branch Contract](x-branch-contract.md)
 - Docs PR consolidation → [Docs PR Consolidation Rule](protocol-v7.md#docs-pr-consolidation-rule)
 - Pre-S2C sync check → [Pre-S2C Sync Check](protocol-v7.md#pre-s2c-sync-check-mandatory)
 - S2C / merge checklist → [S2C / Merge Checklist](protocol-v7.md#s2c--merge-checklist)

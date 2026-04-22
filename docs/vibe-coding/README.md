@@ -108,6 +108,7 @@ Legacy duplicates under `docs/protocol` now contain redirect banners and exist o
 | [merge-commands-overlay.example.md](templates/merge-commands-overlay.example.md) | Build Gate + Test Gate commands for merge workflow |
 | [hot-files-overlay.example.md](templates/hot-files-overlay.example.md) | Hot files/folders requiring analysis-first workflow |
 | [repo-policy-overlay.example.md](templates/repo-policy-overlay.example.md) | Branch policy, PR rules, merge method, naming conventions |
+| [x-branch-findings-template.md](templates/x-branch-findings-template.md) | Findings report for x-branch experiments (never-merge branches) |
 | [gpt-role-template.md](templates/gpt-role-template.md) | Compressed GPT role + Octopus model for forGPT packets |
 
 ## Contribution rules

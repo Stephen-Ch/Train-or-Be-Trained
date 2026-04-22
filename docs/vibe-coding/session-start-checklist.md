@@ -8,11 +8,14 @@
 
 ## Pre-Flight Checks (< 2 minutes)
 
-- [ ] **RUN START OF SESSION DOCS AUDIT** — This single command chains: kit update (subtree pull) → kit version print → Consumer-Kit Drift Gate → forGPT sync → Consumer doc-audit (hard fail) → Staleness Expiry Gate → Decision-Queue Gate → Tool/Auth Fragility Gate → audit print. Run it first; everything below is verified automatically (including overlay structure and required files).
+- [ ] **RUN START OF SESSION DOCS AUDIT** — This single command audits current repo state only: kit version/drift → packet state → Consumer doc-audit (hard fail) → Staleness Expiry Gate → Decision-Queue Gate → Tool/Auth Fragility Gate → audit print + required actions. Run it first; it verifies and reports without modifying the repo.
+- [ ] **Previous clean-close proof** — Review the advisory clean-close proof state surfaced by session-start. It reports whether the previous session's clean close is valid, missing, stale, contradictory, or unverifiable, but it does not replace the live audit.
 - [ ] **Consumer-Kit Drift** *(consumer repos only)* — Verify kit subtree is CURRENT (not STALE or DIVERGENT). Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Consumer-Kit Drift Gate](protocol/protocol-v7.md#consumer-kit-drift-gate-mandatory-at-session-start-in-consumer-repos).
+- [ ] **Required action on STALE kit** — If session-start reports kit lag, update the kit explicitly before proceeding. Session-start no longer performs subtree update automatically.
 - [ ] **Staleness Expiry** — Verify PAUSE.md handoff state is CURRENT (not STALE or EXPIRED). Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Staleness Expiry Gate](protocol/protocol-v7.md#staleness-expiry-gate-mandatory-at-session-boundaries).
 - [ ] **Decision Queue** — Verify DECISION NEEDED items are well-formed, bounded, and reviewed. Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Decision-Queue Gate](protocol/protocol-v7.md#decision-queue-gate-mandatory-at-session-boundaries).
 - [ ] **Tool/Auth Fragility** — Verify verification toolchain (gh, fetch) is healthy. Surfaced automatically by session-start. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Tool/Auth Fragility Gate](protocol/protocol-v7.md#toolauth-fragility-gate-mandatory-at-session-boundaries).
+- [ ] **Required action on stale/missing packet** — If session-start reports stale, missing, or unverifiable packet state, run packet sync explicitly when you need a current handoff packet. Session-start no longer refreshes the packet automatically.
 - [ ] **Goal Anchor** — Write North Star, Current Slice, and Proof before any work.
 - [ ] **NEXT.md Status** — Open [NEXT.md](../project/NEXT.md). Confirm Status = ACTIVE or PAUSED with clear Next Step.
 - [ ] **NEXT.md Freshness** — Surfaced automatically by Staleness Expiry Gate. Review `NEXT.md` "Immediate Next Steps" against current local and remote repo state before proceeding. Update or remove any items that are already completed, merged, resolved, blocked by changed circumstances, or otherwise obsolete. Status: PASS | WARN | BLOCKED — see [protocol-v7.md § Staleness Expiry Gate](protocol/protocol-v7.md#staleness-expiry-gate-mandatory-at-session-boundaries).
@@ -37,7 +40,7 @@
 | PRs blocking | Note in prompt; consider docs-only work |
 | Remote Reality: WARN | Repair mismatch or document as debt in NEXT.md/branches.md before starting work |
 | Remote Reality: BLOCKED | Note in PAUSE.md; proceed with awareness of unverified remote state |
-| Consumer-Kit Drift: WARN (STALE) | Run `git subtree pull` to update kit, or document version lag as known debt |
+| Consumer-Kit Drift: WARN (STALE) | Run `run-vibe -Tool kit-update` to update the embedded kit, or document version lag as known debt |
 | Consumer-Kit Drift: BLOCKED (DIVERGENT) | STOP. Investigate and revert unauthorized changes inside the kit subtree |
 | Staleness Expiry: WARN (STALE) | Review PAUSE.md; confirm or update handoff state and Date; then proceed |
 | Staleness Expiry: BLOCKED (EXPIRED) | STOP. Re-verify all handoff state against current reality; rebuild PAUSE.md |
@@ -56,6 +59,7 @@
 - [ ] **Workspace Reality** — Verify worktrees, stashes, unmerged branches, untracked files. Classify all leftovers. Record status (PASS / WARN / BLOCKED). See [protocol-v7.md § Workspace Reality Gate](protocol/protocol-v7.md#workspace-reality-gate-mandatory-at-session-close).
 - [ ] **Disposition table** — Every leftover non-main item classified: ACTIVE / PR OPEN / PARKED / MERGED / OBSOLETE / DECISION NEEDED / BLOCKED.
 - [ ] **CLEAN FIELD READY** — Print `YES` only when Active Lane + Remote Reality + Workspace Reality all qualify. Otherwise `NO` with action items.
+- [ ] **Clean-close proof maintenance** — A successful clean close refreshes the repo-local clean-close proof; a non-clean close removes any prior proof so the next session does not inherit stale success evidence.
 - [ ] **NEXT.md Freshness** — If session work changed current priorities or closed planned work, update `NEXT.md` before wrap-up so the next session does not inherit stale "Immediate Next Steps."
 - [ ] **PAUSE.md** — Record parked leftovers, decision-needed items, and exact next step. Update the Date field to today (Staleness Expiry freshness stamp). Populate the Decision Queue section for every DECISION NEEDED disposition item.
 - [ ] **Friction Log** — If qualifying kit/process friction occurred this session, append one MEDIUM/HIGH entry to `.kit-feedback/FRICTION-LOG.local.md` per [friction-log-standard.md](standards/friction-log-standard.md). If none, skip.
@@ -63,6 +67,7 @@
 
 > **"RUN END OF SESSION" means the full contract.** Active-lane green alone is NOT sufficient.
 > `CLEAN FIELD READY: YES` requires all three gates (Active Lane, Remote Reality, Workspace Reality) to qualify.
+> Any `CLEAN FIELD READY: NO` result is a failed closeout and returns a nonzero exit.
 > See [protocol-v7.md § Workspace Reality and Closure Language](protocol/protocol-v7.md#workspace-reality-and-closure-language) for forbidden casual closure phrases.
 
 ---

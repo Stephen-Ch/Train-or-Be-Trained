@@ -1,17 +1,17 @@
 ﻿<#
 .SYNOPSIS
-  Session-start wrapper: updates kit subtree > prints kit version > Consumer-Kit Drift Gate > syncs forGPT > runs Consumer doc-audit > Staleness Expiry Gate > Decision-Queue Gate > Tool/Auth Fragility Gate > prints audit block.
+    Session-start wrapper: audit-only default that reports kit drift, packet state, doc-audit, and session gates without modifying the repo.
 .DESCRIPTION
   Run this from ANY consumer repo (any subdirectory). It detects repo root and DOCS_ROOT automatically.
   Designed to be invoked by Copilot when the user says: RUN START OF SESSION DOCS AUDIT
 .PARAMETER SkipUpdate
-  Skip the subtree pull even if the vibe-coding-kit remote exists.
+    Deprecated compatibility flag. Session-start is audit-only by default and does not update the kit.
 .PARAMETER SkipAudit
   Skip the Consumer doc-audit step (still prints kit version).
 .PARAMETER Force
-  Continue on dirty tree instead of hard-stopping. Tree=DIRTY will still be reported.
+    Deprecated compatibility flag. Session-start is audit-only by default and does not mutate the repo.
 .PARAMETER WhatIf
-  Print commands that would run without executing subtree pull, forGPT sync, or doc-audit.
+    Print commands that would run without executing doc-audit.
 #>
 [CmdletBinding()]
 param(
@@ -24,30 +24,28 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# -- Helper: run git tolerant of stderr progress ---------------
-function Invoke-GitSafe {
-    <#
-    .SYNOPSIS
-      Runs git with stderr tolerance so progress output does not
-      become a terminating error under $ErrorActionPreference=Stop.
-      Throws only when git returns a non-zero exit code.
-    #>
+$cleanCloseProofSchemaVersion = 1
+$cleanCloseProofFreshDays = 7
+
+# -- Helper: resolve repo-local clean-close proof path ---------
+function Resolve-CleanCloseProofPath {
     [CmdletBinding()]
-    param([Parameter(ValueFromRemainingArguments)][string[]]$GitArgs)
-    $prevEAP = $ErrorActionPreference
-    $ErrorActionPreference = "Continue"
-    try {
-        $output = & git @GitArgs 2>&1
-        if ($LASTEXITCODE -ne 0) {
-            $ErrorActionPreference = $prevEAP
-            $errText = ($output | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String).Trim()
-            if (-not $errText) { $errText = ($output | Out-String).Trim() }
-            throw "git $($GitArgs -join ' ') failed (exit $LASTEXITCODE): $errText"
-        }
-        return $output
-    } finally {
-        $ErrorActionPreference = $prevEAP
+    param(
+        [Parameter(Mandatory)][string]$RepoRoot
+    )
+
+    $gitDirRaw = ((git rev-parse --git-dir 2>$null) | Out-String).Trim()
+    if (-not $gitDirRaw) {
+        throw "git rev-parse --git-dir returned no path"
     }
+
+    if ([System.IO.Path]::IsPathRooted($gitDirRaw)) {
+        $gitDirFull = $gitDirRaw
+    } else {
+        $gitDirFull = Join-Path $RepoRoot $gitDirRaw
+    }
+
+    return Join-Path $gitDirFull "vibe-coding\clean-close-proof.json"
 }
 
 # -- 0. Repo root ----------------------------------------------
@@ -67,10 +65,12 @@ try {
 
 # -- 1. Branch + tree state ------------------------------------
 $branch = (git branch --show-current 2>$null) -join ""
+$headSha = (git rev-parse --short HEAD 2>$null) -join ""
 $dirtyFiles = git status --porcelain | Where-Object { $_ -notmatch '^\?\?' }
 $treeState = if ($dirtyFiles) { "DIRTY" } else { "CLEAN" }
-$autoStashed = $false
-$stashName = $null
+$requiredActions = @()
+$subtreeDirty = @()
+$nonSubtreeDirty = @()
 
 # -- Tool/Auth Fragility tracking (populated throughout script) --
 $taGhStatus = "UNAVAILABLE"     # AVAILABLE | DEGRADED | UNAVAILABLE
@@ -118,6 +118,76 @@ if (-not (Test-Path (Join-Path $repoRoot $subtreePrefix))) {
     exit 1
 }
 
+# -- 2a. Previous clean-close proof (advisory only) ------------
+$cleanCloseProofStatus = "MISSING"
+$cleanCloseProofAgeDays = -1
+$cleanCloseProofMessage = "No previous-session clean-close proof was found."
+$cleanCloseProofPath = $null
+
+try {
+    $cleanCloseProofPath = Resolve-CleanCloseProofPath -RepoRoot $repoRoot
+    if (Test-Path $cleanCloseProofPath) {
+        $proofJson = Get-Content $cleanCloseProofPath -Raw
+        $proof = $proofJson | ConvertFrom-Json
+        $requiredProofFields = @(
+            'schemaVersion',
+            'writtenAtUtc',
+            'repoName',
+            'docsRoot',
+            'branch',
+            'head',
+            'cleanFieldReady',
+            'activeLane',
+            'remoteReality',
+            'workspaceReality',
+            'toolAuth',
+            'kitVersion'
+        )
+
+        foreach ($field in $requiredProofFields) {
+            if (-not ($proof.PSObject.Properties.Name -contains $field)) {
+                throw "Missing required field '$field'"
+            }
+        }
+
+        if ([int]$proof.schemaVersion -ne $cleanCloseProofSchemaVersion) {
+            throw "Unsupported schema version '$($proof.schemaVersion)'"
+        }
+
+        $proofWrittenAt = [datetime]::Parse($proof.writtenAtUtc, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)
+        $proofWrittenAtUtc = $proofWrittenAt.ToUniversalTime()
+        $proofFreshCutoffUtc = (Get-Date).ToUniversalTime().AddDays(-$cleanCloseProofFreshDays)
+        $cleanCloseProofAgeDays = [math]::Floor(((Get-Date).ToUniversalTime() - $proofWrittenAt.ToUniversalTime()).TotalDays)
+
+        if (-not [bool]$proof.cleanFieldReady) {
+            throw "cleanFieldReady is not true"
+        }
+
+        $repoName = Split-Path $repoRoot -Leaf
+        $proofContradictsCurrentState = (
+            $proof.repoName -ne $repoName -or
+            $proof.docsRoot -ne $docsRoot -or
+            $proof.branch -ne $branch -or
+            $proof.head -ne $headSha -or
+            $treeState -ne 'CLEAN'
+        )
+
+        if ($proofWrittenAtUtc -lt $proofFreshCutoffUtc) {
+            $cleanCloseProofStatus = "STALE"
+            $cleanCloseProofMessage = "Previous-session clean-close proof is stale."
+        } elseif ($proofContradictsCurrentState) {
+            $cleanCloseProofStatus = "CONTRADICTORY"
+            $cleanCloseProofMessage = "Previous-session clean-close proof contradicts current repo state."
+        } else {
+            $cleanCloseProofStatus = "VALID"
+            $cleanCloseProofMessage = "Previous session clean-close proof is valid."
+        }
+    }
+} catch {
+    $cleanCloseProofStatus = "UNVERIFIABLE"
+    $cleanCloseProofMessage = "Previous-session clean-close proof could not be verified."
+}
+
 # -- 2b. Overlay-outside-head check (Octopus Invariant 2) ------
 # See OCTOPUS-INVARIANTS.md — overlays MUST NOT live inside the kit head.
 $overlaysInsideHead = Join-Path $repoRoot "$docsRoot/vibe-coding/overlays"
@@ -130,10 +200,8 @@ if (-not (Test-Path $overlayIndex)) {
     Write-Host "WARNING: Overlay index missing at $docsRoot/overlays/OVERLAY-INDEX.md. Create it per OCTOPUS-INVARIANTS.md." -ForegroundColor Yellow
 }
 
-# -- 2c. Dirty-file classification + auto-stash ----------------
-if ($treeState -eq "DIRTY" -and -not $SkipUpdate) {
-    $subtreeDirty = @()
-    $nonSubtreeDirty = @()
+# -- 2c. Dirty-file classification (audit-only) ----------------
+if ($treeState -eq "DIRTY") {
     foreach ($line in $dirtyFiles) {
         $path = $line.Substring(3).Trim()
         if ($path -match ' -> (.+)$') { $path = $Matches[1] }
@@ -144,93 +212,41 @@ if ($treeState -eq "DIRTY" -and -not $SkipUpdate) {
         }
     }
 
-    if ($subtreeDirty.Count -gt 0) {
-        Write-Host "HARD STOP: Kit subtree files are dirty. Commit or stash these manually before session-start:" -ForegroundColor Red
-        $subtreeDirty | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
-        if ($nonSubtreeDirty.Count -gt 0) {
-            Write-Host "Non-subtree dirty files (not blocking, but also present):" -ForegroundColor Yellow
-            $nonSubtreeDirty | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
-        }
-        Write-Host "Note: -Force bypasses the initial precheck but does NOT bypass git subtree merge safety." -ForegroundColor Yellow
-        exit 1
-    }
+}
 
-    if ($nonSubtreeDirty.Count -gt 0) {
-        $stashName = "session-start-autostash-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-        Write-Host "Auto-stashing $($nonSubtreeDirty.Count) non-subtree dirty file(s) before kit update..." -ForegroundColor Yellow
-        $nonSubtreeDirty | ForEach-Object { Write-Host "  $_" -ForegroundColor Gray }
-        try {
-            Invoke-GitSafe stash push -m $stashName
-            $autoStashed = $true
-            Write-Host "Stashed as: $stashName" -ForegroundColor Green
-        } catch {
-            Write-Host "HARD STOP: Auto-stash failed. Commit or stash manually, then re-run session-start." -ForegroundColor Red
-            Write-Host "Error: $_" -ForegroundColor Red
-            exit 1
-        }
+if ($SkipUpdate) {
+    Write-Host "NOTE: -SkipUpdate has no effect. Session-start is audit-only by default." -ForegroundColor DarkGray
+}
+if ($Force) {
+    Write-Host "NOTE: -Force has no effect. Session-start does not mutate the repo." -ForegroundColor DarkGray
+}
+
+if ($treeState -eq "DIRTY") {
+    Write-Host ""
+    Write-Host "--- Working Tree Status ---" -ForegroundColor Cyan
+    Write-Host "Tracked changes detected. Audit completed without changing your files." -ForegroundColor Yellow
+    if ($subtreeDirty.Count -gt 0) {
+        Write-Host "Dirty kit-subtree files:" -ForegroundColor Yellow
+        $subtreeDirty | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
+        $requiredActions += "You need to resolve tracked changes inside the kit subtree before proceeding."
     }
-} elseif ($treeState -eq "DIRTY" -and $SkipUpdate) {
-    if (-not $Force) {
-        Write-Host "HARD STOP: Working tree is dirty. Commit or stash first, or use -Force." -ForegroundColor Red
-        Write-Host "Dirty files:" -ForegroundColor Yellow
-        $dirtyFiles | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
-        exit 1
+    if ($nonSubtreeDirty.Count -gt 0) {
+        Write-Host "Dirty non-subtree files:" -ForegroundColor Yellow
+        $nonSubtreeDirty | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
+        $requiredActions += "You need to resolve tracked changes before using the update path."
     }
 }
 
-# -- 3. Kit update (subtree pull) ------------------------------
-$kitUpdateResult = "NOOP"
+# -- 3. Kit update status (audit-only) -------------------------
+$kitUpdateResult = "NOT_RUN(AuditOnly)"
 $kitRemoteUrl = "https://github.com/Stephen-Ch/vibe-coding-kit.git"
 $kitRemoteName = $null
-
-if ($SkipUpdate) {
-    $kitUpdateResult = "SKIPPED(Flag)"
-} else {
-    # Find existing remote whose URL matches vibe-coding-kit
-    $remotes = git remote -v 2>$null
-    foreach ($line in $remotes) {
-        if ($line -match '(\S+)\s+.*vibe-coding-kit.*\(fetch\)') {
-            $kitRemoteName = $Matches[1]
-            break
-        }
-    }
-
-    if (-not $kitRemoteName) {
-        # Add the remote automatically
-        $kitRemoteName = "vibe-coding-kit"
-        if ($WhatIf) {
-            Write-Host "[WhatIf] Would run: git remote add $kitRemoteName $kitRemoteUrl" -ForegroundColor Cyan
-        } else {
-            Write-Host "Adding remote '$kitRemoteName'..." -ForegroundColor Yellow
-            Invoke-GitSafe remote add $kitRemoteName $kitRemoteUrl | Out-Null
-        }
-    }
-
-    if ($WhatIf) {
-        Write-Host "[WhatIf] Would run: git fetch $kitRemoteName" -ForegroundColor Cyan
-        Write-Host "[WhatIf] Would run: git subtree pull --prefix $subtreePrefix $kitRemoteName main --squash" -ForegroundColor Cyan
-        $kitUpdateResult = "SKIPPED(WhatIf)"
-    } else {
-        Write-Host "Fetching $kitRemoteName..." -ForegroundColor Yellow
-        Invoke-GitSafe fetch $kitRemoteName | Out-Null
-        $taFetchStatus = "AVAILABLE"
-
-        Write-Host "Pulling subtree ($subtreePrefix)..." -ForegroundColor Yellow
-        try {
-            $pullOutput = Invoke-GitSafe subtree pull --prefix $subtreePrefix $kitRemoteName main --squash
-            $pullText = ($pullOutput | Out-String).Trim()
-            if ($pullText -match "Already up to date") {
-                $kitUpdateResult = "NOOP"
-            } else {
-                $kitUpdateResult = "DONE"
-            }
-            Write-Host $pullText -ForegroundColor Gray
-        } catch {
-            Write-Host "HARD STOP: Subtree pull failed." -ForegroundColor Red
-            Write-Host "Error: $_" -ForegroundColor Red
-            Write-Host "Suggested fix: Ensure '$subtreePrefix' was originally added with 'git subtree add --prefix $subtreePrefix $kitRemoteName main --squash'" -ForegroundColor Yellow
-            exit 1
-        }
+# Find existing remote whose URL matches vibe-coding-kit using current local config only.
+$remotes = git remote -v 2>$null
+foreach ($line in $remotes) {
+    if ($line -match '(\S+)\s+.*vibe-coding-kit.*\(fetch\)') {
+        $kitRemoteName = $Matches[1]
+        break
     }
 }
 
@@ -252,19 +268,11 @@ Write-Host "KitVersion: $kitVersion (Effective $kitEffective)" -ForegroundColor 
 # -- 3c. Kit version lag check (WARN only) --------------------
 $kitVersionRemote = "(unavailable)"
 $kitLagResult = "SKIP"
+$lagRef = $null
 try {
-    # Determine the remote ref to read from
-    $lagRef = $null
     if ($kitRemoteName) {
-        # Remote was already fetched in step 3; use its main ref
         $lagRef = "$kitRemoteName/main"
-    } else {
-        # Kit mode or SkipUpdate — try fetching the ref directly
-        try {
-            git fetch $kitRemoteUrl main --depth=1 2>$null | Out-Null
-            $lagRef = "FETCH_HEAD"
-            if ($taFetchStatus -eq "UNAVAILABLE") { $taFetchStatus = "AVAILABLE" }
-        } catch { }
+        $taFetchStatus = "DEGRADED"
     }
 
     if ($lagRef) {
@@ -280,11 +288,11 @@ try {
 Write-Host "KitVersionLocal=$kitVersion" -ForegroundColor Gray
 if ($kitVersionRemote -eq "(unavailable)") {
     Write-Host "KitVersionRemote=(unavailable)" -ForegroundColor Yellow
-    Write-Host "WARN: Could not check remote kit version (offline or fetch failed)." -ForegroundColor Yellow
+    Write-Host "WARN: Could not check remote kit version from current local refs. Audit did not fetch or update the kit." -ForegroundColor Yellow
     $kitLagResult = "WARN(unavailable)"
 } elseif ($kitVersion -ne $kitVersionRemote) {
     Write-Host "KitVersionRemote=$kitVersionRemote" -ForegroundColor Yellow
-    Write-Host "WARN: Kit version lag - local $kitVersion vs remote $kitVersionRemote. Run kit subtree pull to update." -ForegroundColor Yellow
+    Write-Host "WARN: Kit version lag - local $kitVersion vs remote $kitVersionRemote. Audit did not update the kit." -ForegroundColor Yellow
     $kitLagResult = "WARN(lag)"
 } else {
     Write-Host "KitVersionRemote=$kitVersionRemote" -ForegroundColor Green
@@ -302,9 +310,11 @@ if ($kitLagResult -eq "WARN(lag)") {
     $driftStatus = "WARN"
     $driftClassification = "STALE"
     $driftNotes += "Kit version lag: local $kitVersion vs remote $kitVersionRemote"
+    $requiredActions += "You need to run run-vibe -Tool kit-update before proceeding."
 } elseif ($kitLagResult -eq "WARN(unavailable)") {
     $driftStatus = "WARN"
     $driftNotes += "Remote kit version unavailable — cannot confirm currency"
+    $requiredActions += "Kit currency could not be confirmed. You need to verify remote state manually before proceeding."
 }
 
 # Factor 2: Sentinel file integrity (committed divergence detection)
@@ -350,29 +360,16 @@ Write-Host ("  Classification : {0}" -f $driftClassification) -ForegroundColor $
 Write-Host ("  Drift Status   : {0}" -f $driftStatus) -ForegroundColor $(if ($driftStatus -eq 'PASS') { 'Green' } elseif ($driftStatus -eq 'WARN') { 'Yellow' } else { 'Red' })
 foreach ($note in $driftNotes) { Write-Host "    -> $note" -ForegroundColor Yellow }
 
-# -- 4. forGPT sync -------------------------------------------
+# -- 4. forGPT packet state (audit-only) ----------------------
 $forGptStatus = "MISSING"
 $vmDate = "MISSING"
 $vmCommit = "MISSING"
+$packetStatus = "UNKNOWN"
+$packetNotes = @()
 
-# Check two possible locations for sync-forgpt.ps1
-$syncScript = Join-Path $repoRoot "$docsRoot/forGPT/sync-forgpt.ps1"
-if (-not (Test-Path $syncScript)) {
-    $syncScript = Join-Path $repoRoot "$docsRoot/vibe-coding/tools/sync-forgpt.ps1"
-}
-
-if (Test-Path $syncScript) {
+$forGptDir = Join-Path $repoRoot "$docsRoot/forGPT"
+if (Test-Path $forGptDir) {
     $forGptStatus = "PRESENT"
-    if ($WhatIf) {
-        Write-Host "[WhatIf] Would run: $syncScript -Force" -ForegroundColor Cyan
-    } else {
-        Write-Host "Running forGPT sync..." -ForegroundColor Yellow
-        try {
-            & $syncScript -Force 2>&1 | Out-Null
-        } catch {
-            Write-Host "  Warning: forGPT sync failed: $_" -ForegroundColor Yellow
-        }
-    }
 }
 
 # Parse VERSION-MANIFEST if present
@@ -385,6 +382,35 @@ if (Test-Path $vmPath) {
     if ($vmContent -match '\*\*Git Commit\*\*\s*\|\s*`([^`]+)`') {
         $vmCommit = $Matches[1]
     }
+}
+
+$headCommit = (git rev-parse --short HEAD 2>$null) -join ""
+if ($forGptStatus -eq "MISSING") {
+    $packetStatus = "MISSING"
+    $packetNotes += "forGPT directory missing"
+    $requiredActions += "You need to run packet sync now if you need a current packet for handoff."
+} elseif (-not (Test-Path $vmPath)) {
+    $packetStatus = "MISSING"
+    $packetNotes += "VERSION-MANIFEST.md missing"
+    $requiredActions += "You need to run packet sync now if you need a current packet for handoff."
+} elseif ($vmCommit -eq "MISSING") {
+    $packetStatus = "UNKNOWN"
+    $packetNotes += "VERSION-MANIFEST.md present but Git Commit could not be parsed"
+    $requiredActions += "Packet freshness could not be confirmed. You need to verify packet state manually or run packet sync now."
+} elseif ($headCommit -and $vmCommit -ne $headCommit) {
+    $packetStatus = "STALE"
+    $packetNotes += "VERSION-MANIFEST commit $vmCommit does not match current HEAD $headCommit"
+    $requiredActions += "You need to run packet sync now if you need a current packet for handoff."
+} else {
+    $packetStatus = "CURRENT"
+}
+
+Write-Host ""
+Write-Host "--- Packet Status ---" -ForegroundColor Cyan
+Write-Host ("  Packet         : {0}" -f $packetStatus) -ForegroundColor $(if ($packetStatus -eq 'CURRENT') { 'Green' } elseif ($packetStatus -eq 'STALE' -or $packetStatus -eq 'UNKNOWN') { 'Yellow' } else { 'Red' })
+foreach ($note in $packetNotes) { Write-Host "    -> $note" -ForegroundColor Yellow }
+if ($packetStatus -ne 'CURRENT') {
+    Write-Host "    -> Audit did not run packet sync." -ForegroundColor Yellow
 }
 
 # -- 4b. Consumer doc-audit (hard fail) -----------------------
@@ -737,147 +763,16 @@ if ($vcStatus -eq "OK") {
     Write-Host "  Visibility: no overlay at <DOCS_ROOT>/overlays/visibility-contract.md — see templates/visibility-contract-overlay.example.md" -ForegroundColor DarkGray
 }
 
-# -- 6d. PROJECT-STATE-SUMMARY.md generation (consumer only) ----
-$pssStatus = "SKIP"
-$pssForGptDir = Join-Path $repoRoot "$docsRoot/forGPT"
-if (Test-Path $pssForGptDir) {
-    $pssPath = Join-Path $pssForGptDir "PROJECT-STATE-SUMMARY.md"
-
-    if ($WhatIf) {
-        Write-Host "[WhatIf] Would generate: $docsRoot/forGPT/PROJECT-STATE-SUMMARY.md" -ForegroundColor Cyan
-        $pssStatus = "SKIP(WhatIf)"
-    } else {
-        try {
-            # -- Gather additional data --
-
-            # Recent commits (last 5)
-            $pssCommits = @()
-            try { $pssCommits = @(git log --oneline -5 2>$null) } catch { }
-
-            # Parse NEXT.md for active story + next step
-            $pssActiveStory = $null
-            $pssNextStep = $null
-            if ($nextCandidate -and (Test-Path $nextCandidate)) {
-                $pssNextLines = Get-Content $nextCandidate
-                $pssSection = $null
-                foreach ($pssLine in $pssNextLines) {
-                    if ($pssLine -match '^\s*##\s+.*\b(Active|Current)\b.*\b(Story|Lane)\b') {
-                        $pssSection = "story"; continue
-                    }
-                    if ($pssLine -match '^\s*##\s+.*\b(Immediate|Next)\b.*\b(Step|Action)\b') {
-                        $pssSection = "nextstep"; continue
-                    }
-                    if ($pssLine -match '^\s*##\s') { $pssSection = $null; continue }
-                    $pssTrimmed = $pssLine.Trim()
-                    if ($pssSection -and $pssTrimmed -and $pssTrimmed -notmatch '^[\|+-]') {
-                        if ($pssSection -eq "story" -and -not $pssActiveStory) {
-                            $pssActiveStory = $pssTrimmed -replace '^[-*]\s*', ''
-                        }
-                        if ($pssSection -eq "nextstep" -and -not $pssNextStep) {
-                            $pssNextStep = $pssTrimmed -replace '^[-*]\s*', ''
-                        }
-                    }
-                }
-            }
-            if (-not $pssActiveStory) { $pssActiveStory = "(see NEXT.md)" }
-            if (-not $pssNextStep) { $pssNextStep = "(see NEXT.md)" }
-
-            # Parse PAUSE.md blockers section
-            $pssBlockers = @()
-            if ($pausePath -and (Test-Path $pausePath)) {
-                $pssPauseLines = Get-Content $pausePath
-                $pssInBlockers = $false
-                foreach ($pssLine in $pssPauseLines) {
-                    if ($pssLine -match '^\s*##\s+.*\bBlock') { $pssInBlockers = $true; continue }
-                    if ($pssInBlockers -and $pssLine -match '^\s*##\s') { break }
-                    $pssTrimmed = $pssLine.Trim()
-                    if ($pssInBlockers -and $pssTrimmed -and $pssTrimmed -ne 'None.' -and $pssTrimmed -ne 'None' -and $pssTrimmed -notmatch 'YYYY-MM-DD' -and $pssTrimmed -notmatch '^[\|+-]') {
-                        $pssBlockers += $pssTrimmed
-                    }
-                }
-            }
-
-            # -- Build summary content --
-            $pssTimestamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
-            $pssContent = @()
-            $pssRepoName = Split-Path $repoRoot -Leaf
-            $pssContent += "# Project State Summary"
-            $pssContent += ""
-            $pssContent += "> **Project:** $pssRepoName"
-            $pssContent += "> **Generated:** $pssTimestamp by session-start.ps1"
-            $pssContent += "> **Branch:** $branch | **Tree:** $treeState"
-            $pssContent += ""
-            $pssContent += "**This is a generated snapshot, not a source of truth.**"
-            $pssContent += "Confirm important decisions against NEXT.md and PAUSE.md."
-            $pssContent += ""
-            $pssContent += "---"
-            $pssContent += ""
-            $pssContent += "## Active Work"
-            $pssContent += ""
-            $pssNextAge = if ($nextmdStalenessAge -ge 0) { " ($nextmdStalenessAge days old)" } else { "" }
-            $pssContent += "- **NEXT.md:** $nextmdStalenessClassification$pssNextAge"
-            $pssContent += "- **Active Story:** $pssActiveStory"
-            $pssContent += "- **Next Step:** $pssNextStep"
-            $pssContent += "- **Branch:** $branch"
-            $pssContent += ""
-            $pssContent += "## Session Gates"
-            $pssContent += ""
-            $pssContent += "| Gate | Verdict |"
-            $pssContent += "|------|--------|"
-            $pssContent += "| Consumer Audit | $auditResult |"
-            $pssContent += "| Consumer-Kit Drift | $driftStatus ($driftClassification) |"
-            $pssContent += "| Staleness Expiry | $stalenessStatus (PAUSE=$stalenessClassification, NEXT=$nextmdStalenessClassification) |"
-            $pssContent += "| Decision Queue | $dqStatus (items=$dqCount) |"
-            $pssContent += "| Tool/Auth | $taStatus |"
-            $pssContent += ""
-            $pssContent += "## Context"
-            $pssContent += ""
-            $pssContent += "- **Kit Version:** $kitVersion (Effective $kitEffective)"
-            $pssContent += "- **Open PRs:** $prCount -- $prList"
-            if ($dqCount -gt 0) {
-                $pssContent += "- **Decision Queue Items:** $dqCount"
-            }
-            $pssContent += ""
-            $pssContent += "## Recent Commits"
-            $pssContent += ""
-            if ($pssCommits.Count -gt 0) {
-                foreach ($pssC in $pssCommits) {
-                    $pssContent += "- $pssC"
-                }
-            } else {
-                $pssContent += "- (none available)"
-            }
-            $pssContent += ""
-            $pssContent += "## PAUSE State"
-            $pssContent += ""
-            $pssPauseAge = if ($stalenessAge -ge 0) { " ($stalenessAge days old)" } else { "" }
-            $pssContent += "- **Classification:** $stalenessClassification$pssPauseAge"
-            if ($pssBlockers.Count -gt 0) {
-                $pssContent += "- **Blockers:**"
-                foreach ($pssB in $pssBlockers) {
-                    $pssContent += "  - $pssB"
-                }
-            } else {
-                $pssContent += "- **Blockers:** None detected"
-            }
-            $pssContent += ""
-
-            $pssContent | Set-Content -Path $pssPath -Encoding utf8
-            if (Test-Path $pssPath) {
-                $pssStatus = "GENERATED"
-                Write-Host "Generated: $docsRoot/forGPT/PROJECT-STATE-SUMMARY.md" -ForegroundColor Green
-            } else {
-                $pssStatus = "FAILED(write)"
-                Write-Host "WARNING: PROJECT-STATE-SUMMARY.md was not written (check permissions/disk)." -ForegroundColor Yellow
-            }
-        } catch {
-            $pssStatus = "FAILED"
-            Write-Host "WARNING: PROJECT-STATE-SUMMARY.md generation failed: $_" -ForegroundColor Yellow
-        }
-    }
-} else {
-    Write-Host "ProjectStateSummary: SKIP (no forGPT directory at $docsRoot/forGPT)" -ForegroundColor DarkGray
+Write-Host ""
+Write-Host "--- Clean-Close Proof ---" -ForegroundColor Cyan
+Write-Host ("  Proof          : {0}" -f $cleanCloseProofStatus) -ForegroundColor $(if ($cleanCloseProofStatus -eq 'VALID') { 'Green' } elseif ($cleanCloseProofStatus -eq 'MISSING') { 'DarkGray' } else { 'Yellow' })
+if ($cleanCloseProofAgeDays -ge 0) {
+    Write-Host ("  Proof Age      : {0} day(s)" -f $cleanCloseProofAgeDays) -ForegroundColor $(if ($cleanCloseProofAgeDays -le $cleanCloseProofFreshDays) { 'Green' } else { 'Yellow' })
 }
+Write-Host "    -> $cleanCloseProofMessage" -ForegroundColor $(if ($cleanCloseProofStatus -eq 'VALID') { 'Green' } elseif ($cleanCloseProofStatus -eq 'MISSING') { 'DarkGray' } else { 'Yellow' })
+
+$pssPath = Join-Path $forGptDir "PROJECT-STATE-SUMMARY.md"
+$pssStatus = if ($forGptStatus -eq "PRESENT" -and (Test-Path $pssPath)) { "PRESENT" } elseif ($forGptStatus -eq "PRESENT") { "MISSING" } else { "SKIP(no forGPT directory)" }
 
 # -- 7. Print session audit block ------------------------------
 Write-Host ""
@@ -887,35 +782,24 @@ Write-Host "DOCS_ROOT=$docsRoot | Reason=$docsReason"
 Write-Host "forGPT=$forGptStatus | VERSION-MANIFEST=$vmDate | Commit=$vmCommit | KitUpdate=$kitUpdateResult"
 Write-Host "KitVersion=$kitVersion | Effective=$kitEffective | KitLag=$kitLagResult | ConsumerAudit=$auditResult"
 Write-Host "ConsumerDrift=$driftStatus ($driftClassification)"
+Write-Host "PacketStatus=$packetStatus"
+Write-Host "CleanCloseProof=$cleanCloseProofStatus"
 Write-Host "StalenessExpiry=$stalenessStatus (PAUSE=$stalenessClassification, NEXT=$nextmdStalenessClassification)"
 Write-Host "DecisionQueue=$dqStatus (items=$dqCount, malformed=$dqMalformed)"
 Write-Host "ToolAuth=$taStatus (gh=$taGhStatus, fetch=$taFetchStatus)"
 Write-Host "Visibility=$vcStatus"
-if ($pssStatus -match '^FAILED') {
-    Write-Host "ProjectStateSummary=$pssStatus  <- WARNING: see above for error details" -ForegroundColor Yellow
-} else {
-    Write-Host "ProjectStateSummary=$pssStatus"
-}
+Write-Host "ProjectStateSummary=$pssStatus"
 Write-Host "ResearchIndex=$riPath | LastUpdated=$riDate"
 Write-Host "OpenPRs=$prCount - $prList"
 Write-Host "=========================================" -ForegroundColor Cyan
 
+if ($requiredActions.Count -gt 0) {
+    Write-Host ""
+    Write-Host "Required Actions:" -ForegroundColor Yellow
+    $requiredActions | Select-Object -Unique | ForEach-Object { Write-Host "  - $_" -ForegroundColor Yellow }
+}
+Write-Host "Audit completed without changing your files." -ForegroundColor Cyan
+
 } finally {
-    if ($autoStashed) {
-        Write-Host "" -ForegroundColor Yellow
-        Write-Host "Restoring auto-stashed changes..." -ForegroundColor Yellow
-        try {
-            Invoke-GitSafe stash pop
-            Write-Host "Auto-stash restored successfully." -ForegroundColor Green
-        } catch {
-            Write-Host "WARNING: Auto-stash restore failed or had conflicts." -ForegroundColor Red
-            Write-Host "Your changes are preserved in stash '$stashName'." -ForegroundColor Yellow
-            Write-Host "The kit update may have completed, but your non-subtree changes need manual recovery." -ForegroundColor Yellow
-            Write-Host "Recovery steps:" -ForegroundColor Yellow
-            Write-Host "  1. git stash show    — review stashed changes" -ForegroundColor Yellow
-            Write-Host "  2. git stash pop     — retry applying the stash" -ForegroundColor Yellow
-            Write-Host "  3. Resolve any conflicts, then: git stash drop" -ForegroundColor Yellow
-        }
-    }
     Pop-Location
 }
