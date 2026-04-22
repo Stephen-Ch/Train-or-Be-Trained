@@ -26,6 +26,7 @@ Do NOT edit this template inside the kit head — it will be overwritten on subt
 |---------|-------|
 | Default branch | `main` |
 | Feature branch pattern | `feature/<scope>-<short-description>` |
+| X-branch pattern | `x/<experiment-name>` (never merged — see [x-branch-contract.md](../protocol/x-branch-contract.md)) |
 | Merge method | Fast-forward only (`--ff-only`) |
 | Delete branch after merge | Yes / No |
 

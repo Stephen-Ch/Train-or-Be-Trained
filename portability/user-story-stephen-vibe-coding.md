@@ -82,7 +82,7 @@
 | **Minimum PRs** | Fewer PRs = easier for Maintainer to review |
 | **Docs PR consolidation** | All docs-only changes go to one PR when possible |
 | **No merges without Maintainer** | He's the approver; don't merge without his OK |
-| **Branch naming** | `docs/...` for docs-only, `fix/...` for bugs, `feat/...` for features |
+| **Branch naming** | `docs/...` for docs-only, `fix/...` for bugs, `feat/...` for features, `x/...` for experiments (never merged — see [x-branch-contract.md](../protocol/x-branch-contract.md)) |
 | **One concern per PR** | Don't mix unrelated changes |
 
 ---

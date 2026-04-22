@@ -98,17 +98,19 @@ powershell -NoProfile -ExecutionPolicy Bypass -File <SUBTREE>/tools/run-vibe.ps1
 ```
 
 **What it does (chained, in order):**
-1. **Kit update** — finds the `vibe-coding-kit` remote and runs `git subtree pull` to update the kit in the consumer repo. If the remote doesn't exist, it adds it automatically. If non-subtree files are dirty (e.g. control-deck repairs), they are auto-stashed before the pull and restored afterward. Dirty kit-subtree files still hard-stop.
-2. **Kit version print** — reads `VIBE-CODING.VERSION.md` and prints `KitVersion: vX.Y.Z (Effective YYYY-MM-DD)`.
-3. **forGPT sync** — runs `sync-forgpt.ps1` if present, refreshing the forGPT packet.
+1. **Audit current repo state** — inspects branch, tracked tree state, DOCS_ROOT wiring, kit version, packet artifacts, and session gates without modifying the repo.
+2. **Advisory continuity proof check** — reads the repo-local clean-close proof when present and reports whether the previous session's clean close is valid, missing, stale, contradictory, or unverifiable.
+3. **Kit version print + drift report** — reads `VIBE-CODING.VERSION.md`, reports version lag from current local refs when available, and surfaces Consumer-Kit Drift without auto-updating the subtree.
 4. **Consumer doc-audit (hard fail)** — runs `doc-audit.ps1 -Mode Consumer` (with `-StartSession` if supported). If it fails, the session STOPS with a non-zero exit. Use `-SkipAudit` to bypass.
-5. **Audit print** — outputs the session audit block (RepoRoot, DOCS_ROOT, forGPT, KitVersion, ConsumerAudit, ResearchIndex, OpenPRs).
+5. **Audit print + required actions** — outputs the session audit block and explicitly tells the operator what they need to do next when the repo is dirty, the kit is stale, the packet is stale/missing, or state is degraded/unverifiable. Clean-close proof state is advisory only and does not create a new hard stop.
 
 **Optional flags:**
-- `-SkipUpdate` — skip the subtree pull even if the remote exists
+- `-SkipUpdate` — deprecated compatibility flag; session-start is audit-only by default and does not update the kit
 - `-SkipAudit` — skip the Consumer doc-audit step (still prints kit version)
-- `-Force` — when `-SkipUpdate` is used, continue on dirty working tree (still reports Tree=DIRTY). When update runs, non-subtree files are auto-stashed automatically; `-Force` does not bypass subtree merge safety
-- `-WhatIf` — print-only mode: no subtree pull, no forGPT sync, no doc-audit execution
+- `-Force` — deprecated compatibility flag; session-start is audit-only by default and does not mutate the repo
+- `-WhatIf` — print-only mode: no doc-audit execution
+
+**Important:** `RUN START OF SESSION DOCS AUDIT` no longer updates the kit or refreshes the packet automatically. If the audit reports stale kit or stale/missing packet state, you need to run the explicit repair or packet-sync action yourself before proceeding.
 
 **Hard Stop rule:** If any other command is requested before the session audit has been run, reply:
 > Hard Stop. Run **RUN START OF SESSION DOCS AUDIT** first.
@@ -121,7 +123,35 @@ Where `<DOCS_ROOT>` is `docs-engineering` or `docs` (whichever contains `vibe-co
 
 ---
 
-## RUN END OF SESSION (repo hygiene)
+## RUN KIT UPDATE (explicit consumer repair)
+
+When the user says **RUN KIT UPDATE**, Copilot runs:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File <SUBTREE>/tools/run-vibe.ps1 -Tool kit-update
+```
+
+**What it does (chained, in order):**
+1. **Preflight hard-stops** — verifies repo topology, blocks unresolved conflicts and in-progress git operations, classifies tracked dirt, and blocks unsafe forGPT edits before any mutation.
+2. **Target verification** — verifies the target kit remote/ref, fetches that ref explicitly, reads the target kit version, and confirms required sentinel files exist before any subtree pull.
+3. **Controlled subtree update** — runs `git subtree pull --prefix <DOCS_ROOT>/vibe-coding <remote> <ref> --squash` only after all preflight checks and verification pass.
+4. **Post-update verification** — re-reads local kit version, re-checks sentinel parity, and confirms no unresolved conflicts remain.
+5. **Boundary reminder** — prints the result and reminds the operator that packet sync was not run.
+
+**Optional flags:**
+- `-WhatIf` — verify the target and print the update plan without running the subtree pull
+- `-ToolArgs @('-RemoteName','<remote>','-Ref','<ref>')` — override the auto-discovered kit remote/ref when needed
+
+**Important:** `RUN KIT UPDATE` is the only Step 2 mutation path for embedded kit repair. It does not run packet sync, does not auto-stash broad dirty state, and does not bypass blocker gates.
+
+### Fallback (if run-vibe unavailable)
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File <DOCS_ROOT>/vibe-coding/tools/kit-update.ps1
+```
+
+---
+
+## RUN END OF SESSION (full closeout gate)
 
 When the user says **RUN END OF SESSION**, Copilot runs:
 
@@ -131,17 +161,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File <SUBTREE>/tools/run-vibe.ps1
 
 **What it does:**
 1. **Fetch origin** — updates remote refs so branch checks are accurate.
-2. **Tracked changes check** — lists any tracked (staged/modified) files. If any exist, **exits 1** (hard stop).
-3. **Untracked items** — lists untracked files (warning only; exit 0).
-4. **Non-merged branches** — lists local branches not merged into origin/<default> (report only; no deletes).
-5. **Summary** — prints RepoRoot, DOCS_ROOT, branch, HEAD, and all findings.
+2. **Evidence collection** — surfaces tracked changes, untracked items, non-merged branches, Remote Reality, Workspace Reality, and the combined clean-field verdict.
+3. **Strict close result** — prints `CLEAN FIELD READY: YES` only when the full contract qualifies; any `CLEAN FIELD READY: NO` result exits nonzero.
+4. **Clean-close proof maintenance** — writes the repo-local clean-close proof only after a real clean close, and removes any prior proof on a non-clean close.
+5. **Optional report** — writes the same end-session report when `-WriteReport` is used.
 
 **Optional flags:**
 - `-WriteReport` — write a markdown status report under `<DOCS_ROOT>/status/`
 - `-SkipFetch` — skip `git fetch origin` (use stale remote refs)
 - `-WhatIf` — print-only mode: no fetch, no report written
 
-**No deletes; report-only.**
+**No deletes; no cleanup automation.**
 
 ### Fallback (if run-vibe unavailable)
 ```powershell

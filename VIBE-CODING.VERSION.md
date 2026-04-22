@@ -1,10 +1,16 @@
 # Vibe-Coding Kit Version
 
-**Version:** v7.3.7  
-**Effective Date:** 2026-04-18
+**Version:** v7.4.1  
+**Effective Date:** 2026-04-21
 
 ## Purpose
 Defines required artifacts + gates used by Doc Audit. This file is the **single source of truth** for the kit bundle version. Per-file `Bundle:` headers were removed in v7.2.2 to prevent version drift -- see changelog below.
+
+## What Changed in v7.4.1
+- **Step 3 release bump for strict end-session closeout.** Consumer repos can now detect the already-published Step 3 change through normal version checks: `tools/end-session.ps1` returns nonzero for any `CLEAN FIELD READY: NO` result. This release commit changes only the version source of truth and does not modify runtime behavior.
+
+## What Changed in v7.4.0
+- **X-Branch Contract (v1).** Added `protocol/x-branch-contract.md`: defines experimental, never-merge branches (`x/` prefix) with one-session timebox, mandatory findings artifact, exit states (reject / adopt conceptually), INSTRUMENTATION mode threshold table, and branch-hygiene treatment. Added `templates/x-branch-findings-template.md` for structured experiment reports. Updated `tools/end-session.ps1` to report x-branches separately from normal non-merged branches (with age and color-coded staleness). Cross-references added to PROTOCOL-INDEX.md, README.md, user-story branch naming, and repo-policy overlay template.
 
 ## What Changed in v7.3.7
 - **GPT-side project-identity gate.** Added a "Project-Identity Check" section to `templates/gpt-role-template.md`: GPT must verify incoming requests match the current project context and STOP on material mismatch. `session-start.ps1` now emits a `> **Project:** <repo-name>` line in PROJECT-STATE-SUMMARY to give GPT an explicit identity anchor.
@@ -235,6 +241,7 @@ Defines required artifacts + gates used by Doc Audit. This file is the **single 
 - Created Control Deck templates (VISION.template.md, EPICS.template.md, NEXT.template.md)
 
 ## Version History
+- v7.4.1 (2026-04-21): Release bump for already-published Step 3 strict end-session closeout so consumer version checks can detect and sync it
 - v7.2.6 (2026-02-26): Return packet policy + Start-Here location + migration overlay guidance + confidence clarification
 - v7.2.5 (2026-02-26): PS 5.1 compatibility fix for sync-forgpt.ps1 (3-arg Join-Path → nested 2-arg)
 - v7.2.4 (2026-02-24): North Star source rule + Goal Anchor Fields
@@ -250,4 +257,4 @@ Defines required artifacts + gates used by Doc Audit. This file is the **single 
 
 ---
 
-Last updated: 2026-02-26
+Last updated: 2026-04-21

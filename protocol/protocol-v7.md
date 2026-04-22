@@ -89,7 +89,7 @@ Every work prompt MUST include:
 
 **Doc Audit Sequencing:** Doc Audit is a **session-level gate**, not a per-prompt gate.
 
-- **Session level (once per session):** Doc Audit runs at session start via `RUN START OF SESSION DOCS AUDIT` (which invokes `tools/session-start.ps1`). The wrapper chains: kit update → forGPT sync → Consumer-Kit Drift Gate → Staleness Expiry Gate → Decision-Queue Gate → Tool/Auth Fragility Gate → doc-audit Population Gate. Doc Audit MUST have returned PASS in this session before any coding work begins.
+- **Session level (once per session):** Doc Audit runs at session start via `RUN START OF SESSION DOCS AUDIT` (which invokes `tools/session-start.ps1`). The wrapper is audit-only by default: it reports advisory clean-close proof state, kit drift, packet status, Consumer-Kit Drift Gate, Staleness Expiry Gate, Decision-Queue Gate, Tool/Auth Fragility Gate, and doc-audit Population Gate without auto-updating the kit or auto-syncing the packet. If update or packet sync is needed, the operator must run it explicitly after the audit reports the required action. Clean-close proof state is continuity evidence only; current live audit results remain authoritative. Doc Audit MUST have returned PASS in this session before any coding work begins.
 - **Per-prompt level:** Doc Audit does NOT re-run before each prompt. The Prompt Review Gate references the session-level Doc Audit result. If Doc Audit was not run this session or returned FAIL, STOP and run/remediate it first.
 - **Post-commit rerun trigger:** After each commit, run rerun-trigger detection to determine whether Doc Audit must be rerun (see [required-artifacts.md](../required-artifacts.md) "Doc Audit Rerun Detection" for the git command and path rule).
 
@@ -250,7 +250,7 @@ This is NOT end-of-session closeout. This is NOT the Reset Ritual (which re-prio
 forGPT is a **point-in-time snapshot** for agent handoff, not a live mirror of canonical docs.
 
 **Sync schedule (when forGPT MUST be current):**
-- Session start (automated via `session-start.ps1`)
+- Session start audit (reported by `session-start.ps1`; run packet sync explicitly if the audit says the packet is stale or missing)
 - Session end (run `run-vibe -Tool sync-forgpt` before handoff)
 - Explicit agent handoff (GPT ↔ Copilot)
 - Major milestone close
@@ -996,6 +996,7 @@ If any gate is WARN or BLOCKED:
 2. **Remote Reality Gate** — fetch, classify branches, verify PR state
 3. **Workspace Reality Gate** — worktrees, stashes, untracked files, dirty file count, non-merged branch count
 4. **Final clean-field verdict** — `CLEAN FIELD READY: YES` or `NO` with evidence
+5. **Clean-close proof maintenance** — write the repo-local clean-close proof only when `CLEAN FIELD READY: YES`, and remove any prior proof on `CLEAN FIELD READY: NO`
 
 **Operator obligations (not automated by the tool):**
 
@@ -1034,8 +1035,9 @@ The `tools/end-session.ps1` script MUST:
 - Surface all three verdicts (Active Lane, Remote Reality, Workspace Reality) separately
 - Print `CLEAN FIELD READY: YES` only when the full contract qualifies
 - Print `CLEAN FIELD READY: NO` with specific action items when any gate fails
+- Write the repo-local clean-close proof only after a clean close qualifies, and remove any prior proof on non-clean close
 - Never equate "no tracked changes" with "clean field"
-- Exit nonzero when Workspace Reality is BLOCKED (not just when tracked changes exist)
+- Exit nonzero whenever `CLEAN FIELD READY: NO`
 
 ---
 
@@ -1049,7 +1051,7 @@ The `tools/end-session.ps1` script MUST:
 
 **CURRENT consumer:** The consumer's kit subtree version matches the published kit version, sentinel file content matches the kit source, and required consumer-side wiring exists. The consumer is safe to proceed.
 
-**STALE consumer:** The consumer's kit subtree version is behind the published kit version. The subtree has not been locally contaminated — it simply needs a `git subtree pull` to catch up. Session work may proceed with awareness, but kit-dependent gates may enforce outdated rules.
+**STALE consumer:** The consumer's kit subtree version is behind the published kit version. The subtree has not been locally contaminated — it needs the explicit `run-vibe -Tool kit-update` repair path to catch up. Session work may proceed with awareness, but kit-dependent gates may enforce outdated rules.
 
 **DIVERGENT consumer:** The consumer's kit subtree contains content that differs from the corresponding kit source version. This means someone committed changes inside the `<DOCS_ROOT>/vibe-coding/` subtree prefix outside of a subtree pull. This is always a problem — the consumer's kit content no longer matches any published kit state.
 
@@ -1093,9 +1095,9 @@ Missing required wiring with the kit current → WARN. Doc-audit catches most st
 | Status | Action |
 |--------|--------|
 | **PASS** | Proceed normally |
-| **WARN (STALE)** | Run `git subtree pull` to update kit, or document version lag as known debt |
+| **WARN (STALE)** | Run `run-vibe -Tool kit-update` to update the embedded kit, or document version lag as known debt |
 | **WARN (unavailable)** | Proceed with awareness that currency could not be verified (offline) |
-| **BLOCKED (DIVERGENT)** | STOP. Investigate committed changes inside the kit subtree. Revert local contamination or re-run subtree pull to restore kit integrity |
+| **BLOCKED (DIVERGENT)** | STOP. Investigate committed changes inside the kit subtree. Revert local contamination, then rerun `run-vibe -Tool kit-update` to restore kit integrity |
 
 ### Forbidden Language
 

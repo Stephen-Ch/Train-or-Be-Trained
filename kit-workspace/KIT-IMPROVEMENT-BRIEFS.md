@@ -1,9 +1,9 @@
-# Kit Improvement Briefs — v7.3.2 Assessment
+# Kit Improvement Briefs
 
-> **Date:** 2026-04-16
-> **Kit Version Assessed:** v7.3.2 (Effective 2026-04-14)
-> **Purpose:** Give GPT enough detail to compose precise, executable Copilot prompts for three targeted improvements identified during external assessment.
-> **Scope:** DOCS ONLY. All edits are `.md` files inside the kit root.
+> **Date:** 2026-04-16 (Improvements 1–3), 2026-04-19 (Improvement 4)
+> **Kit Version Assessed:** v7.3.2 (Improvements 1–3), v7.4.0 (Improvement 4)
+> **Purpose:** Give GPT enough detail to compose precise, executable Copilot prompts for targeted improvements identified during assessment.
+> **Scope:** DOCS and TOOLING. Improvements 1–3 are docs-only. Improvement 4 spans docs (4A) and tooling (4B).
 > **Audience:** GPT (Planner/Prompt Writer) → generates FORMAL WORK PROMPTs → Copilot executes.
 
 ---
@@ -278,9 +278,11 @@ When composing the FORMAL WORK PROMPT for each improvement:
 - Improvement 1: `KIT-IMPROVE-DOC-AUDIT-SEQ-001`
 - Improvement 2: `KIT-IMPROVE-STOP-INDEX-001`
 - Improvement 3: `KIT-IMPROVE-STALENESS-NEXTMD-001`
+- Improvement 4A: `KIT-IMPROVE-TEMPLATE-DRIFT-DOCS-001`
+- Improvement 4B: `KIT-IMPROVE-TEMPLATE-DRIFT-TOOL-001`
 
-**Story ID for all three:**
-`Story: MAINTENANCE/PROTOCOL — Kit improvements per kit-workspace/KIT-IMPROVEMENT-BRIEFS.md (2026-04-16 assessment)`
+**Story ID for all:**
+`Story: MAINTENANCE/PROTOCOL — Kit improvements per kit-workspace/KIT-IMPROVEMENT-BRIEFS.md`
 
 **Preflight block (include in every prompt):**
 ```
@@ -292,7 +294,7 @@ Preflight:
 - Required output: edited .md file(s) per brief
 ```
 
-**Green Gate for all three:** Docs-only → Population Gate: `.\tools\doc-audit.ps1` must return PASS (no placeholder tokens, no overlay-inside-head violations).
+**Green Gate for all:** Population Gate: `.\tools\doc-audit.ps1` must return PASS (no placeholder tokens, no overlay-inside-head violations). For Sub-Prompt 4B (tooling), also run the script in Consumer mode against a test fixture to verify template-drift detection.
 
 **Completion Report must include:**
 - Files changed (list)
@@ -301,4 +303,166 @@ Preflight:
 - `doc-audit.ps1` verdict: PASS / FAIL
 - For Improvement 3 only: "TECH DEBT flagged: session-start.ps1 tool update deferred — Story: MAINTENANCE/PROTOCOL"
 
-**Sequencing:** Run as three separate prompts in order (1 → 2 → 3). Each requires its own Completion Report and doc-audit PASS before the next begins.
+**Sequencing:** Run as separate prompts in order (1 → 2 → 3 → 4). Each requires its own Completion Report and doc-audit PASS before the next begins. Improvement 4 requires two sub-prompts (4A docs, 4B tooling).
+
+---
+
+---
+
+## IMPROVEMENT 4: Template-Drift Detection — Overlay Provenance and Reconciliation Gate
+
+> **Priority:** CRITICAL — without this, kit template changes (new overlay rows, updated guidance, new contracts like x-branch) are invisible to consumers after initial overlay setup. Every future kit improvement that touches a template file has the same propagation gap.
+>
+> **Date Added:** 2026-04-19
+> **Discovered During:** KIT-XBRANCH-CONTRACT-V1-IMPLEMENT-001 — the `repo-policy-overlay.example.md` gained an x-branch row, but no mechanism exists to tell consumers their local `repo-policy.md` is now stale.
+
+### The Problem
+
+The kit provides templates in `templates/*.example.md` as starting points. Consumers copy them to `<DOCS_ROOT>/overlays/` during onboarding and customize them. After initial copy, **no mechanism detects when the upstream template changes**.
+
+**Current state of overlay tracking:**
+
+| Layer | What Exists | What's Missing |
+|-------|-------------|----------------|
+| `OVERLAY-INDEX.md` | Manifest table: overlay name, consumer path, purpose | No "derived from template version" column; no hash or date tracking |
+| `doc-audit.ps1` | Checks overlay index exists; checks overlays are outside kit head | No template-to-overlay comparison; no drift detection |
+| `DOCS-HEALTH-CONTRACT.md` | Defines overlay index existence check (#3) and placement check (#4) | No template-drift check defined |
+| `session-start.ps1` | Consumer-Kit Drift Gate compares 3 sentinel files | Overlay files are not sentinel-tracked; drift gate ignores them |
+
+**Concrete failure scenario (just happened):**
+1. Kit v7.4.0 adds an x-branch row to `templates/repo-policy-overlay.example.md`
+2. Consumer runs `session-start.ps1` → subtree pull brings kit v7.4.0 into `<DOCS_ROOT>/vibe-coding/`
+3. All gates return PASS
+4. Consumer's `<DOCS_ROOT>/overlays/repo-policy.md` still has the old content — **no warning emitted**
+5. Agent sessions in the consumer repo have no awareness of x-branch rules unless the human manually checks the template diff
+
+This gap affects **every template**, not just repo-policy. Stack-profile, hot-files, merge-commands, visibility-contract — all have the same propagation blindspot.
+
+### Proposed Fix — Two Sub-Prompts
+
+This improvement requires both docs changes and tooling changes, so it is split into two sub-prompts.
+
+---
+
+#### Sub-Prompt 4A: Docs — Define the Contract and Update the Overlay-Index Template (DOCS ONLY)
+
+**Step 1 — Add a "Template-Drift Detection" check to `DOCS-HEALTH-CONTRACT.md`**
+
+Add as Check #7 (after the existing six):
+
+```markdown
+## 7. Template-Drift Detection (WARN)
+
+**Rule:** Each consumer overlay listed in `OVERLAY-INDEX.md` SHOULD record the kit template file version it was last reconciled against. When the kit template's `File Version` is newer than the recorded reconciliation version, the audit emits a WARNING naming the stale overlay.
+
+**Severity:** WARN (not FAIL). Overlays are intentionally customized; drift is expected. The gate only ensures the consumer is *aware* of upstream changes.
+
+**Evidence:**
+- Parse the `Kit Template Version` column in `OVERLAY-INDEX.md`
+- Compare each value against the `File Version` header in the corresponding `templates/*.example.md` file in the kit subtree
+- If the kit template version is newer → WARN: `Overlay <name> last reconciled against template version <old>; current template version is <new>. Review <DOCS_ROOT>/vibe-coding/templates/<template>.example.md for changes.`
+
+**Operator Action on WARN:**
+1. Diff the kit template against the consumer overlay (`diff <DOCS_ROOT>/overlays/<name>.md <DOCS_ROOT>/vibe-coding/templates/<name>.example.md`)
+2. Adopt relevant changes into the consumer overlay
+3. Update the `Kit Template Version` column in `OVERLAY-INDEX.md` to the current template version
+4. Re-run doc-audit to clear the warning
+
+**Not Covered:** Consumer overlays with no corresponding kit template (project-specific overlays) are ignored by this check.
+```
+
+**Step 2 — Update `templates/overlay-index.example.md` to add provenance column**
+
+Add a `Kit Template Version` column to the manifest table:
+
+| Overlay | Consumer Location | Kit Template | Kit Template Version | Purpose |
+|---------|-------------------|--------------|----------------------|---------|
+| `stack-profile.md` | `<DOCS_ROOT>/overlays/stack-profile.md` | `templates/stack-profile-overlay.example.md` | `2026-02-26` | Stack and tooling profile |
+| `merge-commands.md` | `<DOCS_ROOT>/overlays/merge-commands.md` | `templates/merge-commands-overlay.example.md` | `2026-02-26` | PR merge command reference |
+| `hot-files.md` | `<DOCS_ROOT>/overlays/hot-files.md` | `templates/hot-files-overlay.example.md` | `2026-02-26` | Frequently-edited files |
+| `repo-policy.md` | `<DOCS_ROOT>/overlays/repo-policy.md` | `templates/repo-policy-overlay.example.md` | `2026-04-19` | Branch and PR policy |
+| `visibility-contract.md` | `<DOCS_ROOT>/overlays/visibility-contract.md` | `templates/visibility-contract-overlay.example.md` | `2026-02-26` | Monitoring and observability links |
+
+The `Kit Template Version` column value must match the `File Version:` header line in the corresponding kit template file. The consumer updates this column when they reconcile.
+
+**Step 3 — Add cross-reference to `session-start-checklist.md`**
+
+After the existing "Consumer-Kit Drift" item, add:
+
+```markdown
+- [ ] **Template-Drift Check** — Surfaced automatically by doc-audit. If any overlay's `Kit Template Version` in OVERLAY-INDEX.md is older than the kit template's `File Version`, a WARN is emitted. Review and reconcile stale overlays. Status: CLEAN | WARN — see [DOCS-HEALTH-CONTRACT.md § Template-Drift Detection](DOCS-HEALTH-CONTRACT.md#7-template-drift-detection-warn).
+```
+
+**Step 4 — Ensure all kit template files in `templates/` have a `File Version:` header**
+
+Verify that every `templates/*.example.md` file contains a `File Version: YYYY-MM-DD` line in its header block. If any are missing, add one using the file's last git commit date (`git log -1 --format="%as" -- <file>`).
+
+---
+
+**Files to Edit (Sub-Prompt 4A):**
+
+| File | Action |
+|------|--------|
+| `DOCS-HEALTH-CONTRACT.md` | Add Check #7: Template-Drift Detection |
+| `templates/overlay-index.example.md` | Add `Kit Template` and `Kit Template Version` columns to table |
+| `session-start-checklist.md` | Add Template-Drift Check item |
+| `templates/*.example.md` (all) | Verify/add `File Version:` header if missing |
+
+**Success Criteria (Sub-Prompt 4A):**
+- DOCS-HEALTH-CONTRACT.md contains Check #7 with WARN severity, evidence method, and operator action
+- overlay-index.example.md table has a `Kit Template Version` column with date values
+- session-start-checklist.md has a Template-Drift Check item
+- All `templates/*.example.md` files have a `File Version:` header
+- `doc-audit.ps1` passes (no regressions)
+- Note in Completion Report: Tool enforcement deferred to Sub-Prompt 4B
+
+**Scope Guard (Sub-Prompt 4A):**
+- Do NOT modify `tools/doc-audit.ps1` — that is Sub-Prompt 4B
+- Do NOT modify any consumer repos
+- Do NOT change any existing overlay content — only the index template format
+
+---
+
+#### Sub-Prompt 4B: Tooling — Implement Template-Drift Check in doc-audit.ps1
+
+**Step 1 — Add template-drift detection logic to `tools/doc-audit.ps1`**
+
+In Consumer mode, after the existing PRE-B check (Overlay index existence), add a new check:
+
+```
+Check PRE-D: Template-Drift Detection
+```
+
+Logic:
+1. Parse `<DOCS_ROOT>/overlays/OVERLAY-INDEX.md` for rows containing a `Kit Template Version` column
+2. For each row, resolve the kit template path: `<DOCS_ROOT>/vibe-coding/<Kit Template>` value
+3. Read the template file's `File Version:` header line
+4. Compare the overlay's recorded version against the template's current version (string date comparison, `YYYY-MM-DD` format)
+5. If template version > recorded version → emit WARNING with overlay name, recorded version, current template version, and diff guidance
+6. If overlay index has no `Kit Template Version` column → skip check with INFO message: "OVERLAY-INDEX.md does not include Kit Template Version column — template-drift detection skipped. See overlay-index.example.md for the updated format."
+
+**Step 2 — Update the audit summary block**
+
+Add a `Template Drift` row to the summary output:
+- `CLEAN` if all overlays are current or no provenance column exists
+- `WARN (N stale)` if N overlays have older versions than their templates
+
+---
+
+**Files to Edit (Sub-Prompt 4B):**
+
+| File | Action |
+|------|--------|
+| `tools/doc-audit.ps1` | Add PRE-D template-drift check in Consumer mode |
+
+**Success Criteria (Sub-Prompt 4B):**
+- doc-audit.ps1 Consumer mode includes template-drift detection
+- WARNs emitted for stale overlays; no false positives for overlays without kit template mappings
+- Graceful skip if overlay index lacks the `Kit Template Version` column (backward-compatible with existing consumers who haven't updated their index yet)
+- `doc-audit.ps1 -Mode Kit` still passes on the kit repo
+- Manual test: create a test overlay index with an old version date, confirm WARN is emitted
+
+**Scope Guard (Sub-Prompt 4B):**
+- Do NOT modify `session-start.ps1` — doc-audit is called by session-start; the warning will surface automatically
+- Do NOT change the severity from WARN to FAIL — overlays are intentionally customized; divergence is normal
+- Do NOT auto-modify consumer overlays — only detect and report
