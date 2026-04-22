@@ -99,7 +99,7 @@ function track(event: string): void {
           <div class="order-2 md:order-1 flex-shrink-0 w-full md:w-72">
             <img
               src="assets/images/working-dog.jpg"
-              alt="Professional struggling with generic AI responses"
+              alt="Dog working alongside professional"
               class="w-full h-64 object-cover rounded-2xl shadow-sm">
           </div>
 
