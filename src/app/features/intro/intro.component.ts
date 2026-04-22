@@ -113,7 +113,7 @@ function track(event: string): void {
             </p>
             <p class="text-gray-700 leading-relaxed">
               You can tell it these things, over and over, if you remember. Or you can
-              <strong>generate a document that does it right.</strong>
+              <strong>train it to work the way you want.</strong>
             </p>
           </div>
 
