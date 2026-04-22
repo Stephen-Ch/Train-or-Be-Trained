@@ -83,7 +83,7 @@ function track(event: string): void {
           <!-- Hero image -->
           <div class="flex-shrink-0 w-full md:w-80 lg:w-96">
             <img
-              src="assets/images/hero-focused-professional.jpg"
+              src="assets/images/messy-dog.jpg"
               alt="Professional focused at laptop"
               class="w-full h-72 md:h-80 object-cover rounded-2xl shadow-md">
           </div>

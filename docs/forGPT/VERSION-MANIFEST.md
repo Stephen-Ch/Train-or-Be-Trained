@@ -6,10 +6,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Generated** | 2026-04-20 21:38:38 |
+| **Generated** | 2026-04-22 12:01:26 |
 | **DOCS_ROOT** | `docs` |
 | **Git Branch** | `main` |
-| **Git Commit** | `b558961` |
+| **Git Commit** | `c06dad1` |
 | **CORE Files** | 10 |
 | **EXTRA Files** | 6 |
 | **TOTAL Files** | 16 |
@@ -24,10 +24,10 @@
 | Tier | File | Source | Hash (first 16 chars) |
 |------|------|--------|----------------------|
 | CORE | START-HERE.md | docs/project/START-HERE.md | `7FC245D06BE99AAB` |
-| CORE | VISION.md | docs/project/VISION.md | `BB2D0C744D77529F` |
-| CORE | EPICS.md | docs/project/EPICS.md | `8F940544C5EBA09B` |
-| CORE | NEXT.md | docs/project/NEXT.md | `F850BB97D97221F3` |
-| CORE | protocol-v7.md | docs/vibe-coding/protocol/protocol-v7.md | `D89FC80E18996B8D` |
+| CORE | VISION.md | docs/project/VISION.md | `B9BD0AAAC6EC92F3` |
+| CORE | EPICS.md | docs/project/EPICS.md | `C53F61C80518E993` |
+| CORE | NEXT.md | docs/project/NEXT.md | `0F92837CA3FEB28D` |
+| CORE | protocol-v7.md | docs/vibe-coding/protocol/protocol-v7.md | `B60683EF3A6AE9B6` |
 | CORE | working-agreement-v1.md | docs/vibe-coding/protocol/working-agreement-v1.md | `FA999E53F5FB43BD` |
 | CORE | copilot-instructions-v7.md | docs/vibe-coding/protocol/copilot-instructions-v7.md | `0B8916852E0BF9EA` |
 | CORE | prompt-lifecycle.md | docs/vibe-coding/protocol/prompt-lifecycle.md | `6C795E22B9421821` |

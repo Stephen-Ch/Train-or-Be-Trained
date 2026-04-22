@@ -4,6 +4,9 @@
     "titleBar.activeForeground": "#333333",
     "titleBar.inactiveBackground": "#D0D0D0",
     "titleBar.inactiveForeground": "#666666",
-    "activityBar.activeBackground": "#C0C0C0"
+    "activityBar.activeBackground": "#C0C0C0",
+    "commandCenter.foreground": "#000000",
+    "commandCenter.background": "#FFFFFF",
+    "commandCenter.activeBackground": "#E6E6E6"
   }
 }
