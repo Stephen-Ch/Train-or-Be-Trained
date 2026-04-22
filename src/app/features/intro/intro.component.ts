@@ -84,7 +84,7 @@ function track(event: string): void {
           <div class="order-1 md:order-2 flex-shrink-0 w-full md:w-80 lg:w-96">
             <img
               src="assets/images/messy-dog.jpg"
-              alt="Professional focused at laptop"
+              alt="Cute terrier standing in a mess he made"
               class="w-full h-72 md:h-80 object-cover rounded-2xl shadow-md">
           </div>
 
@@ -99,7 +99,7 @@ function track(event: string): void {
           <div class="order-2 md:order-1 flex-shrink-0 w-full md:w-72">
             <img
               src="assets/images/working-dog.jpg"
-              alt="Dog working alongside professional"
+              alt="Border collie watching over a flock of sheep on moorland"
               class="w-full h-64 object-cover rounded-2xl shadow-sm">
           </div>
 
