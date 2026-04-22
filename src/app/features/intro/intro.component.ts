@@ -96,7 +96,7 @@ function track(event: string): void {
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
 
           <!-- Problem image -->
-          <div class="flex-shrink-0 w-full md:w-72">
+          <div class="order-2 md:order-1 flex-shrink-0 w-full md:w-72">
             <img
               src="assets/images/problem-frustrated-professional.jpg"
               alt="Professional struggling with generic AI responses"
@@ -104,7 +104,7 @@ function track(event: string): void {
           </div>
 
           <!-- Problem text -->
-          <div class="flex-1 space-y-5">
+          <div class="order-1 md:order-2 flex-1 space-y-5">
             <h2 class="text-2xl font-bold text-gray-900">Your AI doesn't know you.</h2>
             <p class="text-gray-700 leading-relaxed">
               Every conversation starts from zero. It doesn't know that long responses overwhelm you.
@@ -214,7 +214,7 @@ export class IntroComponent {
     { label: 'Scope Management', description: 'Whether the AI should manage tangents or follow where you lead.' },
     { label: 'Information Load', description: 'One thing at a time or the full picture all at once? Paragraphs or bullet points?' },
     { label: 'Challenge Level', description: 'How directly the AI should push back on your plans and ideas.' },
-    { label: 'Thinking Rigor', description: 'Ask first and flag when uncertain, or move fast and trust you to redirect.' },
+    { label: 'Thinking Rigor', description: 'Whether to ask questions and flag when uncertain, or move fast and trust you to redirect.' },
   ];
 
   start(): void {
