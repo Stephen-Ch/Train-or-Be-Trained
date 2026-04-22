@@ -27,8 +27,8 @@ function track(event: string): void {
               AI is like a dog — either you're training it, or it's training you.
             </p>
             <p class="text-lg text-gray-600 leading-relaxed">
-              Most people never teach their AI anything about themselves.
-              So it treats them like everyone else.
+              Most of us never teach our AI anything about ourselves.
+              So it treats us like everyone else.
             </p>
             <p class="text-lg text-gray-700 font-medium">
               <em>Working With Me</em> fixes that.
@@ -112,7 +112,7 @@ function track(event: string): void {
               after an interruption you've lost the thread and need to be caught up.
             </p>
             <p class="text-gray-700 leading-relaxed">
-              You can tell it these things — once, by hand, imprecisely. Or you can
+              You can tell it these things, over and over, if you remember. Or you can
               <strong>generate a document that does it right.</strong>
             </p>
           </div>
@@ -128,7 +128,7 @@ function track(event: string): void {
             <div class="flex gap-5">
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">1</span>
               <div>
-                <p class="font-semibold text-gray-900">Answer honest questions about how you work</p>
+                <p class="font-semibold text-gray-900">Answer a few questions about how you work</p>
                 <p class="text-sm text-gray-600 mt-1">Not personality labels. Behavioral patterns — how you make decisions, what overwhelms you, how you like to receive information.</p>
               </div>
             </div>
