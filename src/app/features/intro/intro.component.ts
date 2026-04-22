@@ -19,7 +19,7 @@ function track(event: string): void {
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
 
           <!-- Text + CTA -->
-          <div class="flex-1 space-y-6 text-center md:text-left">
+          <div class="order-2 md:order-1 flex-1 space-y-6 text-center md:text-left">
             <h1 class="text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
               Train or Be Trained.
             </h1>
@@ -81,7 +81,7 @@ function track(event: string): void {
           </div>
 
           <!-- Hero image -->
-          <div class="flex-shrink-0 w-full md:w-80 lg:w-96">
+          <div class="order-1 md:order-2 flex-shrink-0 w-full md:w-80 lg:w-96">
             <img
               src="assets/images/messy-dog.jpg"
               alt="Professional focused at laptop"
@@ -187,6 +187,17 @@ function track(event: string): void {
             5 minutes. Free. Nothing stored — the whole thing runs in your browser.
             No account. No email required.
           </p>
+          @if (!hasProgress()) {
+            <label class="inline-flex items-center gap-3 text-sm text-blue-100 cursor-pointer">
+              <input
+                type="checkbox"
+                data-testid="age-gate-footer"
+                [checked]="ageConfirmed()"
+                (change)="ageConfirmed.set(!ageConfirmed())"
+                class="w-4 h-4 rounded border-blue-200 text-blue-600 focus:ring-blue-300">
+              I confirm I am 13 or older
+            </label>
+          }
           <button
             [disabled]="!ageConfirmed() && !hasProgress()"
             (click)="start()"
@@ -194,7 +205,7 @@ function track(event: string): void {
             Build My AI Trainer
           </button>
           @if (!ageConfirmed() && !hasProgress()) {
-            <p class="text-blue-200 text-xs">Confirm you are 13 or older above to continue.</p>
+            <p class="text-blue-200 text-xs">Confirm you are 13 or older to continue.</p>
           }
         </div>
       </section>
