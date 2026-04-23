@@ -1,188 +1,68 @@
-# Just Sprites - Static Site
+# Train or Be Trained
 
-A comprehensive political philosophy survey application that determines your alignment with various philosophical frameworks, built as a multi-page static site with strong SEO and social sharing capabilities.
+[![CI](https://github.com/Stephen-Ch/Train-or-Be-Trained/actions/workflows/ci.yml/badge.svg)](https://github.com/Stephen-Ch/Train-or-Be-Trained/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-live-blue.svg)](https://train-or-be-trained.vercel.app)
 
-## 🚀 Quick Start
+Beta status: beta-ready and currently entering public beta.
 
-### Prerequisites
-- Node.js 22+ (for development and build)
+Train or Be Trained is a short setup wizard that generates a reusable Working With Me guide for your AI assistant.
 
-### Development (Angular Dev Server — Port 4200)
+## What it is
 
-```bash
-npm ci           # Install dependencies
-npm start        # Start dev server → http://localhost:4200
-```
+Train or Be Trained helps people set up AI to work in a way that better fits their style.
+It generates one reusable Working With Me document you can paste into your assistant setup.
+The product is a collaboration agreement, not a personality profile.
 
-### Production Build (Static Dist — Port 8080)
+## Problem it solves
 
-```bash
-npm run build           # Build to dist/rawls-game/browser
-npm run serve:dist      # Serve dist → http://localhost:8080
-```
+Most AI sessions start with generic assumptions. People end up repeating the same preferences every time.
+This tool gives you a structured way to state how you want an assistant to pace, challenge, and communicate.
+It is not a psychometric diagnosis, not professional advice, and not a guarantee of truth or accuracy.
 
-> ⚠️ **WARNING: Port Collision**
-> 
-> Never serve the production dist on port 4200. If you do, the PWA service worker
-> can take over 4200 and you'll see stale JS even after you restart `ng serve`.
-> 
-> **Safe workflow:**
-> - Dev: `npm start` → 4200
-> - Prod dist: `npm run serve:dist` → 8080
-> - If 4200 is "stuck", use `npm run start:4201` or see `docs/status/stale-browser-code-runbook.md`
+## How it works
 
-### Testing
-```bash
-npm test         # Run all tests (Karma + ChromeHeadless)
-```
+1. Run a short setup wizard.
+2. Answer practical questions about collaboration preferences.
+3. Receive a generated Working With Me document.
+4. Reuse that document across assistants and sessions.
 
-## 📁 Site Structure
+Example output snippet:
 
-### Main Pages
-- **Homepage** (`/`) - Landing page with site introduction
-- **Survey** (`/survey/`) - Interactive political philosophy assessment
-- **Results Preview** (`/results/preview/`) - Sample results with radar chart
-- **Resources** (`/resources/`) - Additional reading and information
-- **Profiles Hub** (`/profiles/`) - Overview of all philosophy profiles
+On uncertainty: When you're not confident, say so before you answer — not as a footnote. Use "I think" or "I'm not sure" instead of stating uncertain things as fact.
 
-### Individual Profile Pages
-- **The Visionary Realist** (`/profiles/visionary-realist/`)
-- **Individual profile pages available only for The Visionary Realist** (`/profiles/visionary-realist/`)
+## Design decisions
 
-### Development Tools
-- **OG Image Builder** (`/og-builder/`) - Generate social media cards
+- No backend: runs fully in the browser.
+- Content-driven: behavior is defined by explicit authored content, not opaque tuning.
+- Plain-language output: instructions are written to be pasted and used immediately.
+- Beta evidence: content was iterated through adversarial review and mixed-profile behavior testing before beta.
+- Best fit today: writing, planning, analysis, coding, and repeated decision-support workflows.
+- Current limitation: image-generation workflows are not the strongest fit right now.
 
-## 🛠️ Development Features
+## Tech stack
 
-### Performance Optimizations
-- ✅ Critical CSS inlined on all pages (~1-2KB per page)
-- ✅ Non-blocking CSS loading with `media="print" onload` technique
-- ✅ JavaScript deferred for better loading performance
-- ✅ Font preconnecting for Google Fonts optimization
+- Angular 20 + TypeScript
+- Tailwind CSS
+- Karma/Jasmine unit tests
+- Playwright end-to-end tests
 
-### SEO Ready
-- ✅ Unique title tags and meta descriptions for all pages
-- ✅ Open Graph and Twitter Card meta tags
-- ✅ Structured data (JSON-LD) for rich snippets
-- ✅ XML sitemap with all pages (`/sitemap.xml`)
-- ✅ Search engine friendly robots.txt (`/robots.txt`)
-- ✅ Canonical URLs for duplicate content prevention
+## Running locally
 
-### Social Sharing
-- ✅ Share buttons for Twitter/X, Facebook, LinkedIn
-- ✅ Copy link functionality with modern Clipboard API
-- ✅ Profile card PNG export (1200×630 pixels)
-- ✅ UTM tracking parameters for analytics
-- ✅ Toast notifications for user feedback
+Prerequisite: Node.js.
 
-### Accessibility
-- ✅ Semantic HTML5 structure
-- ✅ Proper heading hierarchy
-- ✅ ARIA labels and landmarks
-- ✅ Keyboard navigation support
-- ✅ Mobile-responsive Bootstrap 5.3.3 layout
-- ✅ Touch-friendly interfaces (44px minimum targets)
+- Install dependencies: `npm install`
+- Start dev server: `npm start`
+- Run tests: `npm test`
+- Build production bundle: `npm run build`
 
-## 📊 Testing
+Live site: https://train-or-be-trained.vercel.app
 
-### Automated Testing (236 tests)
-```bash
-npm test
-```
+## Contributing
 
-**Test Coverage:**
-- Step 00: Smoke tests (1 test)
-- Step 01: Site structure (24 tests)  
-- Step 03: Structured data (8 tests)
-- Step 04: Profiles hub (8 tests)
-- Step 05: Profile pages (30 tests)
-- Step 06: Share cards (18 tests)
-- Step 07: Share links (28 tests)
-- Step 08: Survey accessibility (24 tests)
-- Step 09: Results page (26 tests)
-- Step 10: Performance/SEO (33 tests)
-- Step 11: OG builder (18 tests)
-- Step 12: QA checklist (18 tests)
+Contributions are welcome, especially content-quality improvements that make the generated Working With Me output clearer and more useful.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-### Manual QA
-Follow the comprehensive checklist in `QA.md` for manual testing:
-- SEO meta tag validation
-- Social media preview testing
-- Mobile responsiveness
-- Cross-browser compatibility
-- Performance verification
+## License
 
-## 🔧 Technical Stack
-
-### Frontend
-- **HTML5** - Semantic markup
-- **CSS3** - Custom styles + Bootstrap 5.3.3
-- **Vanilla JavaScript** - No frameworks, pure JS
-- **Bootstrap 5.3.3** - Responsive layout and components
-- **Font Awesome 6.5.2** - Icons
-
-### Development
-- **Node.js** - Build and test scripts
-- **Cheerio 1.0.0-rc.12** - HTML parsing for tests
-- **Python HTTP Server** - Local development serving
-
-### External Services
-- **Google Fonts** - Typography (La Belle Aurore)
-- **CDN Resources** - Bootstrap and Font Awesome via jsDelivr
-
-## 📱 Browser Support
-
-### Desktop
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-
-### Mobile
-- ✅ iOS Safari 14+
-- ✅ Chrome Mobile 90+
-- ✅ Samsung Internet 14+
-
-## 🚀 Deployment
-
-### Static Hosting Ready
-This is a static site that works on any web server:
-- **Netlify** - Deploy via Git or drag-and-drop
-- **Vercel** - Connect to repository for automatic deploys
-- **GitHub Pages** - Host directly from repository
-- **Apache/Nginx** - Traditional web server hosting
-- **CDN** - CloudFlare, AWS CloudFront, etc.
-
-### Pre-Deployment Checklist
-1. Run `npm run build` to validate all files
-2. Run `npm test` to ensure all tests pass
-3. Complete manual QA using `QA.md` checklist
-4. Update domain URLs in `sitemap.xml` and `robots.txt`
-5. Set up analytics tracking if needed
-6. Configure HTTPS redirect on your hosting platform
-
-### Build Output Analysis
-- **HTML files**: ~124 KB total (8 pages with inline critical CSS)
-- **CSS files**: ~8 KB (site.css with Bootstrap loading externally)
-- **JS files**: ~101 KB (state, scoring, share utilities)
-- **JSON files**: ~18 KB (profiles and values data)
-- **Assets**: ~48 KB (images, icons, other resources)
-
-## 📄 License
-
-MIT License - Based on the philosophical work of John Rawls
-
-## 🤝 Contributing
-
-This project follows a test-driven development approach:
-1. All changes must pass the existing test suite
-2. New features should include corresponding tests
-3. Follow the established code style and structure
-4. Update documentation as needed
-
----
-
-**Dev Server URL**: http://localhost:4200  
-**Prod Dist URL**: http://localhost:8080 (via `npm run serve:dist`)  
-**Test Command**: `npm test`  
-**Build Command**: `npm run build`
+MIT. See [LICENSE](LICENSE).
