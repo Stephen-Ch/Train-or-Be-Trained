@@ -14,6 +14,8 @@ Train or Be Trained helps people set up AI to work in a way that better fits the
 It generates one reusable Working With Me document you can paste into your assistant setup.
 The product is a collaboration agreement, not a personality profile.
 
+![Train or Be Trained home screen](src/assets/images/home.png)
+
 ## Problem it solves
 
 Most AI sessions start with generic assumptions. People end up repeating the same preferences every time.
@@ -30,6 +32,8 @@ It is not a psychometric diagnosis, not professional advice, and not a guarantee
 Example output snippet:
 
 On uncertainty: When you're not confident, say so before you answer - not as a footnote. Use "I think" or "I'm not sure" instead of stating uncertain things as fact.
+
+![Generated Working With Me output screen](src/assets/images/output.png)
 
 ## Design decisions
 
