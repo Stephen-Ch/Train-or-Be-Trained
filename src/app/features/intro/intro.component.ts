@@ -136,7 +136,7 @@ function track(event: string): void {
               <span class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">2</span>
               <div>
                 <p class="font-semibold text-gray-900">Get your personal AI training document</p>
-                <p class="text-sm text-gray-600 mt-1">Download the file and upload to any AI whenever you need it, or  to copy-and-paste into an AI to try it out</p>
+                <p class="text-sm text-gray-600 mt-1">Download the file and upload to any AI, or copy-and-paste to try it out</p>
               </div>
             </div>
             <div class="flex gap-5">
