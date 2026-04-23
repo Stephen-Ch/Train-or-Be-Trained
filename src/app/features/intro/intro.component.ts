@@ -19,7 +19,7 @@ function track(event: string): void {
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
 
           <!-- Text + CTA -->
-          <div class="order-2 md:order-1 flex-1 space-y-6 text-center md:text-left">
+          <div class="order-2 md:order-2 flex-1 space-y-6 text-center md:text-left">
             <h1 class="text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
               Train or Be Trained.
             </h1>
@@ -81,7 +81,7 @@ function track(event: string): void {
           </div>
 
           <!-- Hero image -->
-          <div class="order-1 md:order-2 flex-shrink-0 w-full md:w-80 lg:w-96">
+          <div class="order-1 md:order-1 flex-shrink-0 w-full md:w-80 lg:w-96">
             <img
               src="assets/images/messy-dog.jpg"
               alt="Cute terrier standing in a mess he made"
@@ -96,7 +96,7 @@ function track(event: string): void {
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
 
           <!-- Problem image -->
-          <div class="order-2 md:order-1 flex-shrink-0 w-full md:w-72">
+          <div class="order-2 md:order-2 flex-shrink-0 w-full md:w-72">
             <img
               src="assets/images/working-dog.jpg"
               alt="Border collie watching over a flock of sheep on moorland"
@@ -104,7 +104,7 @@ function track(event: string): void {
           </div>
 
           <!-- Problem text -->
-          <div class="order-1 md:order-2 flex-1 space-y-5">
+          <div class="order-1 md:order-1 flex-1 space-y-5">
             <h2 class="text-2xl font-bold text-gray-900">Your AI doesn't know you.</h2>
             <p class="text-gray-700 leading-relaxed">
               Every conversation starts from zero. It doesn't know that long responses overwhelm you.

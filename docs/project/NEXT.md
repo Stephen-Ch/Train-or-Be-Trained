@@ -8,7 +8,7 @@
 
 **Scope Guardrails**
 - In scope: one new script under scripts/, one new manifest under docs/project/, one new generated output file under docs/project/, and NEXT.md freshness repair.
-- Out of scope: app behavior changes, scoring logic redesign, output-template wording changes, external APIs, browser automation, and package dependency changes.
+- Exclusions: no edits to src/, no scoring-engine changes, no content wording changes, and no dependency updates; only scripts/generate-mixed-profile-outputs.js plus docs/project output artifacts are touched.
 
 **Done When**
 - scripts/generate-mixed-profile-outputs.js exists and runs with no errors.
