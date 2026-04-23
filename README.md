@@ -1,5 +1,4 @@
-# Train-or-be-trained - Static Site
-
+# Train-or-be-trained
 Train or Be Trained is a lightweight setup wizard that helps users generate a reusable “Working With Me” guide for AI assistants, built as a content-driven web app optimized for fast delivery, SEO, and social sharing.
 
 ## 🚀 Quick Start
