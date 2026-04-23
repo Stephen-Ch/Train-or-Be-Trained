@@ -100,7 +100,7 @@ function track(event: string): void {
             <img
               src="assets/images/working-dog.jpg"
               alt="Border collie watching over a flock of sheep on moorland"
-              class="w-full h-64 object-cover rounded-2xl shadow-sm">
+              class="w-full h-64 object-cover md:object-contain rounded-2xl shadow-sm">
           </div>
 
           <!-- Problem text -->
