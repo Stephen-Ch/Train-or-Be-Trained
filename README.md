@@ -1,6 +1,6 @@
-# Just Sprites - Static Site
+# Train-or-be-trained - Static Site
 
-A comprehensive political philosophy survey application that determines your alignment with various philosophical frameworks, built as a multi-page static site with strong SEO and social sharing capabilities.
+Train or Be Trained is a lightweight setup wizard that helps users generate a reusable “Working With Me” guide for AI assistants, built as a content-driven web app optimized for fast delivery, SEO, and social sharing.
 
 ## 🚀 Quick Start
 
