@@ -96,11 +96,11 @@ function track(event: string): void {
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10">
 
           <!-- Problem image -->
-          <div class="order-2 md:order-2 flex-shrink-0 w-full md:w-72">
+          <div class="order-2 md:order-2 flex-shrink-0 w-full md:w-72 rounded-2xl overflow-hidden shadow-sm">
             <img
               src="assets/images/working-dog.jpg"
               alt="Border collie watching over a flock of sheep on moorland"
-              class="w-full h-64 object-cover md:object-contain rounded-2xl shadow-sm">
+              class="w-full h-64 object-cover md:object-contain rounded-2xl">
           </div>
 
           <!-- Problem text -->
